@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.email.R;
+import com.example.email.fragments.ContactFragment;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
 
@@ -17,14 +18,14 @@ import java.util.List;
 
 public class ContactActivity extends AppCompatActivity {
 
-    private static final String CRIME_KEY_ID = "ftn.sit.email.activities.contact_id";
+    private static final String CONTACT_KEY_ID = "ftn.sit.email.activities.contact_id";
 
     private ViewPager mViewPager;
     private List<Contact> mContacts;
 
     public static Intent newIntent(Context packageContext, int contact_id){
         Intent intent = new Intent(packageContext, ContactActivity.class);
-        intent.putExtra(CRIME_KEY_ID, contact_id);
+        intent.putExtra(CONTACT_KEY_ID, contact_id);
         return intent;
     }
 
@@ -34,7 +35,7 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        int contactId = getIntent().getIntExtra(CRIME_KEY_ID, -1);
+        int contactId = getIntent().getIntExtra(CONTACT_KEY_ID, -1);
 
         mContacts = Repository.get(this).getContacts();
 
@@ -45,8 +46,8 @@ public class ContactActivity extends AppCompatActivity {
             @Override
             public Fragment getItem(int position) {
                 Contact contact = mContacts.get(position);
-                return  null;
-                //return ContactFragment.newInstance(contact.getId());
+
+                return ContactFragment.newInstance(contact.getId());
             }
 
             @Override
