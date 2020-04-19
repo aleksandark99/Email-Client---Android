@@ -68,7 +68,6 @@ public class ContactFragment extends Fragment {
         CardView cardViewBottom = root.findViewById(R.id.card_view_bottom);
         cardViewBottom.setCardBackgroundColor(color);
 
-
         LinearLayout saveChanges = root.findViewById(R.id.linear_layout_bottom);
         saveChanges.setOnClickListener((View v) -> {
             Toast.makeText(getActivity(), "Saving changes...", Toast.LENGTH_SHORT).show();

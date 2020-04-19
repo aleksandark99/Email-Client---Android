@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+
+/*Dummy repository Singleton class for storing different objects*/
 public class Repository {
 
     private final int[] avatars = {R.drawable.kotur,R.drawable.dejan, R.drawable.brboric, R.drawable.ziga};
