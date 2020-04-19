@@ -8,5 +8,5 @@ import com.example.email.R;
 
 public class Helper {
 
-    
+
 }
