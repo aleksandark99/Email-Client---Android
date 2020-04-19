@@ -1,4 +1,19 @@
 <resources>
     <string name="app_name">Email</string>
     <string name="add_contact">Add new contact</string>
+
+    <string name="inbox">Inbox</string>
+    <string name="inbox_description">Go to app\'s inbox</string>
+
+    <string name="search_contacts">Search</string>
+    <string name="search_contacts_description">Search for contacts</string>
+
+    <string name="folder">Folders</string>
+    <string name="folder_description">Go to app\'s folders</string>
+
+    <string name="settings">Settings</string>
+    <string name="settings_description">Change your preferences</string>
+
+    <string name="open_drawer">Open drawer</string>
+    <string name="close_drawer">Close drawer</string>
 </resources>

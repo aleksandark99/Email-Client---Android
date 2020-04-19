@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.adapters.ContactNavigationAdapter;
 import com.example.email.adapters.ContactsAdapter;
 import com.example.email.model.items.ContactNavItem;
 import com.example.email.repository.Repository;
@@ -45,7 +46,7 @@ public class ContactsActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         drawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
 
-        drawerList.setAdapter(new ProfileAdapter(this, mNavItems));
+        drawerList.setAdapter(new ContactNavigationAdapter(this, mNavItems));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -58,7 +59,7 @@ public class ContactsActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
         }
 
-        drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
+       // drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.open_drawer, R.string.close_drawer) {
@@ -104,6 +105,14 @@ public class ContactsActivity extends AppCompatActivity {
         }
     }
 
+    private void prepareDrawerItems(){
+        //Item for Create Email Activity
+        mNavItems.add(new ContactNavItem(getString(R.string.inbox),getString(R.string.inbox_description), R.drawable.ic_inbox_black_24dp));
+        mNavItems.add(new ContactNavItem(getString(R.string.search_contacts), getString(R.string.search_contacts_description),  R.drawable.ic_contacts_search));
+        mNavItems.add(new ContactNavItem(getString(R.string.folder), getString(R.string.folder_description),  R.drawable.ic_folder_black_24dp));
+        mNavItems.add(new ContactNavItem(getString(R.string.settings), getString(R.string.settings_description),  R.drawable.ic_settings_applications_black_24dp));
+        //3 more items...
+    }
 
 
     @Override
