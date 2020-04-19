@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.ContactsAdapter;
+import com.example.email.model.items.ContactNavItem;
 import com.example.email.repository.Repository;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class ContactsActivity extends AppCompatActivity {
     private RelativeLayout drawerPane;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
-    private ArrayList<ProfileNavItem> mNavItems = new ArrayList<ProfileNavItem>();
+    private ArrayList<ContactNavItem> mNavItems = new ArrayList<ContactNavItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
