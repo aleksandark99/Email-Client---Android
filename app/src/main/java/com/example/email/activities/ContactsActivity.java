@@ -8,10 +8,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -54,12 +58,12 @@ public class ContactsActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            //actionBar.setIcon(R.drawable.ic_launcher);
-            //actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
+            actionBar.setIcon(R.drawable.ic_launcher);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
             actionBar.setHomeButtonEnabled(true);
         }
 
-       // drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
+       drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.open_drawer, R.string.close_drawer) {
@@ -77,8 +81,7 @@ public class ContactsActivity extends AppCompatActivity {
             }
         };
         drawerLayout.addDrawerListener(drawerToggle);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // getSupportActionBar().setHomeButtonEnabled(true);
+
 
         mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
         ContactsAdapter adapter = new ContactsAdapter(Repository.get(this).getContacts(),this);
@@ -103,6 +106,19 @@ public class ContactsActivity extends AppCompatActivity {
                 return true;
             default: return true;
         }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+// Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     private void prepareDrawerItems(){
@@ -139,4 +155,36 @@ public class ContactsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        private Context c;
+
+        public DrawerItemClickListener(Context c){
+            this.c = c;
+        }
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //Code to run when an item in the navigation drawer gets clicked
+            String message = "";
+            switch (position){
+                case 1:
+                    message = "Open inbox...";
+                    break;
+                case 2:
+                    message = "Search contacts...";
+                    break;
+                case 3:
+                    message = "Open folders...";
+                    break;
+                case 4:
+                    message = "Open settings...";
+                    break;
+
+            }
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+        }
+    };
 }

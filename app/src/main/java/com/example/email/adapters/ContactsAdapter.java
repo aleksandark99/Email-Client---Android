@@ -1,6 +1,7 @@
 package com.example.email.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
+import com.example.email.activities.ContactActivity;
 import com.example.email.model.Contact;
 
 import java.util.ArrayList;
@@ -67,8 +69,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         ll.setOnClickListener((View v) -> {
 
-            //Intent intent = ContactActivity.newIntent(mContext, mContacts.get(position).getId());
-            //mContext.startActivity(intent);
+            Intent intent = ContactActivity.newIntent(mContext, mContacts.get(position).getId());
+            mContext.startActivity(intent);
 
         });
 
