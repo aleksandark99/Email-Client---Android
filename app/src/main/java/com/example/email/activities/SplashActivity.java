@@ -20,11 +20,12 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         //Intent loginIntent = LoginActivity.newIntent(this);
+        Intent loginIntent = LoginActivity.newIntent(this);
         Thread timer = new Thread(() -> {
             try {
                 if (isNetworkAvailableAndConnected()) {
                     Thread.sleep(SLEEP_TIME);
-                    //startActivity(loginIntent);
+                    startActivity(loginIntent);
                     finish();
                 } else showToast("Check internet connection");
             } catch (InterruptedException ie) {ie.printStackTrace();} catch (Exception e){e.printStackTrace();}
