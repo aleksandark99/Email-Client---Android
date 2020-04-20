@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+
+        <item android:id="@+id/profile_item"
+            android:icon="@drawable/ic_inbox_black_24dp"
+            android:title="Inbox"/>
+
+        <item android:id="@+id/messages_item"
+            android:icon="@drawable/ic_contacts_search"
+            android:title="Contacts"/>
+
+        <item android:id="@+id/contacts_item"
+            android:icon="@drawable/ic_folder_black_24dp"
+            android:title="Folders"/>
+
+        <item android:id="@+id/settings_item"
+            android:icon="@drawable/ic_settings_applications_black_24dp"
+            android:title="Settings"/>
+
+    </group>
+
+    <item android:title="Others">
+
+        <menu>
+            <item android:id="@+id/logOut"
+                android:title="Log Out"/>
+        </menu>
+
+
+    </item>
+
+</menu>
