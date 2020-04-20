@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/login_backround"
-    tools:context=".activities.LoginActivity">
+    android:background="@drawable/register_background"
+    tools:context=".activities.RegisterActivity">
 
 
     <EditText
@@ -41,8 +40,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.478" />
 
+    <EditText
+        android:id="@+id/passwordConfirmField"
+        android:layout_width="210dp"
+        android:layout_height="43dp"
+        android:background="#66000000"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.572" />
+
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/loginButtonReg"
         android:layout_width="123dp"
         android:layout_height="45dp"
         android:background="#7A8AE3"
@@ -54,42 +69,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordField"
-        app:layout_constraintVertical_bias="0.066" />
+        app:layout_constraintVertical_bias="0.57" />
 
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/registerConfirmButton"
         android:layout_width="123dp"
         android:layout_height="45dp"
         android:background="#7A8AE3"
-        android:text="REGISTER"
+        android:text="Confirm"
         android:textColor="#4B2391"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.756" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordField"
+        app:layout_constraintVertical_bias="0.264" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="205dp"
         android:layout_height="28dp"
-        android:text="Have an account ? "
+        android:text="Have an account ?"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.524"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.298" />
+        app:layout_constraintVertical_bias="0.724" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="124dp"
         android:layout_height="33dp"
-        android:text="New user ?"
+        android:text="Fill in data"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
@@ -98,7 +115,5 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.659" />
-
-
+        app:layout_constraintVertical_bias="0.309" />
 </androidx.constraintlayout.widget.ConstraintLayout>

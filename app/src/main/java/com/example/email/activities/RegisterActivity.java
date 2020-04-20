@@ -9,35 +9,43 @@ import android.widget.Button;
 
 import com.example.email.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
+
+    public static Intent newIntent(Context packageContext) {
+        Intent i = new Intent(packageContext, RegisterActivity.class);
+        return i;
+    }
 
     Button LoginButton;
-    Button Register;
+    Button RegisterConfirmButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        Intent registerIntent = RegisterActivity.newIntent(this);
+        setContentView(R.layout.activity_register);
 
-        LoginButton =(Button) findViewById(R.id.loginButton);
+        Intent loginIntent = LoginActivity.newIntent(this);
+        LoginButton =(Button) findViewById(R.id.loginButtonReg);
         LoginButton.setOnClickListener(v -> {
-            //start EmailsActivity ili onu sa listom svih activitija za sada
-            //treba da dodje provera podataka itd itd...
+            startActivity(loginIntent);
+
 
         });
-        Register =(Button) findViewById(R.id.registerButton);
-        Register.setOnClickListener(v -> {
-            startActivity(registerIntent);
+
+        RegisterConfirmButton =(Button) findViewById(R.id.registerConfirmButton);
+        RegisterConfirmButton.setOnClickListener(v -> {
+            
+
+            // ako su username i password ispunjavaju uslove pozovi metodu za kreiranje acc-a
+            // i prebaci ga na login activity
+            startActivity(loginIntent);
+
 
         });
+
+
+
     }
-
-    public static Intent newIntent(Context packageContext) {
-        Intent i = new Intent(packageContext, LoginActivity.class);
-        return i;
-    } // smart call intent
-
-
     @Override
     protected void onStart() {
         super.onStart();
