@@ -18,12 +18,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Intent registerIntent = RegisterActivity.newIntent(this);
+        Intent goToEmailsIntent = EmailsActivity.newIntent(this);
 
         LoginButton =(Button) findViewById(R.id.loginButton);
         LoginButton.setOnClickListener(v -> {
             //start EmailsActivity ili onu sa listom svih activitija za sada
             //treba da dodje provera podataka itd itd...
-
+            startActivity(goToEmailsIntent);
         });
         Register =(Button) findViewById(R.id.registerButton);
         Register.setOnClickListener(v -> {
