@@ -12,9 +12,12 @@
 
     <!-- Render problems is caused by newest version of material design alpha06
     To avoid this, replacing with alpha02, an older version will solve the problem -->
+    <!-- file build.gradle is in gitignore so material design version
+        must be 02 :) -->
 
     <!--  Navigation View is missing here -->
     <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:headerLayout="@layout/drawer_header"
