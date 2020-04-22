@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
@@ -46,7 +47,9 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         holder.from.setText(messages.get(position).getFrom());
         holder.subject.setText(messages.get(position).getSubject());
         holder.shortContent.setText(messages.get(position).getContent());
-
+        if(messages.get(position).isUnread()==false){
+            holder.cardView.setBackgroundColor(0xFFFFFFFF);
+        }
     }
 
     @Override
@@ -57,13 +60,14 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
     public class EmailsViewHolder extends RecyclerView.ViewHolder {
 
         TextView from,subject,shortContent,date;
+        CardView cardView;
         public EmailsViewHolder(@NonNull View itemView){
             super(itemView);
             from=itemView.findViewById(R.id.fromText);
             subject=itemView.findViewById(R.id.subjectText);
             date=itemView.findViewById(R.id.dateText);
             shortContent=itemView.findViewById(R.id.shortContentText);
-
+            cardView=itemView.findViewById(R.id.cardViewEmailRow);//test za unread
 
         }
 

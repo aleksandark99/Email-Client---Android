@@ -53,6 +53,9 @@ public class EmailsActivity extends AppCompatActivity {
     m1.setSubject("m1Subject");
     m2.setSubject("m2Subject");
     m3.setSubject("m3Subject");
+    m1.setUnread(true);
+    m2.setUnread(false);
+    m3.setUnread(true);
 
     tags1.add(t1);
     tags1.add(t3);
