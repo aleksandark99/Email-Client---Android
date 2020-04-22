@@ -12,14 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.EmailsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-
-        </activity>
+        <activity android:name=".activities.CreateFolderActivity"
+            android:theme="@style/PopUpTheme"></activity>
+        <activity
+            android:name=".activities.EmailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activities.FoldersActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.LoginActivity" />
         <activity

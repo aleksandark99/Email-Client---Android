@@ -32,4 +32,10 @@
 <!--    </style>-->
 
 
+    <style name="PopUpTheme" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
 </resources>
