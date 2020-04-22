@@ -1,23 +1,37 @@
 package com.example.email.activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.email.R;
 import com.example.email.adapters.EmailsAdapter;
 import com.example.email.model.Message;
 import com.example.email.model.items.Tag;
+import com.google.android.material.navigation.NavigationView;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class EmailsActivity extends AppCompatActivity {
+public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     RecyclerView recyclerView ;
+    private Toolbar toolbar;
+    DrawerLayout emailsDrawerLayour;
+    NavigationView navEmail;
+
     ArrayList<Message> messages;
     Message m1;
     Message m2;
@@ -35,6 +49,33 @@ public class EmailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emails);
         recyclerView = findViewById(R.id.emailsRecyclerView);
+        toolbar = findViewById(R.id.customEmailsToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //
+
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);// set drawable icon
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navEmail=findViewById(R.id.navViewEmails);
+
+        emailsDrawerLayour = findViewById(R.id.emailsDrawerLayout);
+
+        navEmail.bringToFront();
+
+        ActionBarDrawerToggle tg= new ActionBarDrawerToggle(this,emailsDrawerLayour,toolbar,R.string.open_drawer,R.string.close_drawer);
+        emailsDrawerLayour.addDrawerListener(tg);
+        tg.syncState();
+        //
+        navEmail.setNavigationItemSelectedListener(this);
+
+        /* Setting up NavDrawer's header name */
+
+        View headerName = navEmail.getHeaderView(0);
+
+        TextView name = headerName.findViewById(R.id.name);
+
+        name.setText("LoggedUser Name");
 
         //
         messages=new ArrayList<Message>();
@@ -80,8 +121,26 @@ public class EmailsActivity extends AppCompatActivity {
         recyclerView.setAdapter(emailsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.emails_menu_toolbar,menu);
+        return true;
+    }
+
     public static Intent newIntent(Context packageContext) {
         Intent i = new Intent(packageContext, EmailsActivity.class);
         return i;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
     }
 }

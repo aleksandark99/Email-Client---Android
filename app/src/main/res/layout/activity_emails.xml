@@ -1,13 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    tools:context=".activities.EmailsActivity"-->
+<!--    android:theme="@style/ToolBarTheme"-->
+<!--    >-->
+<androidx.drawerlayout.widget.DrawerLayout
+    android:id="@+id/emailsDrawerLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.EmailsActivity">
+    tools:context=".activities.EmailsActivity"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/emailsRecyclerView"
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navViewEmails"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/drawer_items"
+        android:layout_gravity="start"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="136dp"
+        tools:layout_editor_absoluteY="28dp">
+
+
+
+        <include layout="@layout/custom_toolbar_emails">
+
+        </include>
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/toolbar3"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@color/colorPrimary"-->
+<!--            android:minHeight="?attr/actionBarSize"-->
+<!--            android:theme="?attr/actionBarTheme"-->
+<!--            app:navigationIcon="@drawable/ic_menu"-->
+
+<!--            >-->
+
+<!--        </androidx.appcompat.widget.Toolbar>-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/emailsRecyclerView"
+
+            android:layout_width="match_parent"
+            android:layout_height="624dp" />
+
+    </LinearLayout>
+
+    <!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar3"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="66dp"-->
+<!--        android:layout_marginStart="1dp"-->
+<!--        android:layout_marginEnd="1dp"-->
+<!--        android:background="?attr/colorPrimary"-->
+<!--        android:minHeight="?attr/actionBarSize"-->
+<!--        android:theme="?attr/actionBarTheme"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+    <!--    <SearchView-->
+<!--        android:layout_width="337dp"-->
+<!--        android:layout_height="52dp"-->
+<!--        tools:layout_editor_absoluteX="73dp"-->
+<!--        tools:layout_editor_absoluteY="0dp" />-->
+</androidx.drawerlayout.widget.DrawerLayout>
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

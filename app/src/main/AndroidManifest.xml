@@ -15,8 +15,8 @@
         <activity android:name=".activities.CreateFolderActivity"
             android:theme="@style/PopUpTheme"></activity>
         <activity
-            android:name=".activities.EmailsActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        android:name=".activities.EmailsActivity"
+        android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activities.FoldersActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -39,6 +39,9 @@
             </intent-filter>
             -->
         </activity>
+        <activity
+            android:name=".activities.ActivityZaTest"
+            android:theme="@style/Theme.MaterialComponents"></activity>
         <activity android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
