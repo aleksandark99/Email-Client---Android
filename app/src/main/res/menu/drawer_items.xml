@@ -4,15 +4,15 @@
     <group android:checkableBehavior="single">
 
 
-        <item android:id="@+id/profile_item"
+        <item android:id="@+id/messages_item"
             android:icon="@drawable/ic_inbox_black_24dp"
             android:title="Inbox"/>
 
-        <item android:id="@+id/messages_item"
+        <item android:id="@+id/contacts_item"
             android:icon="@drawable/ic_contacts_search"
             android:title="Contacts"/>
 
-        <item android:id="@+id/contacts_item"
+        <item android:id="@+id/folders_item"
             android:icon="@drawable/ic_folder_black_24dp"
             android:title="Folders"/>
 

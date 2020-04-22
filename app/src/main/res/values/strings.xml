@@ -13,6 +13,7 @@
 
     <string name="settings">Settings</string>
     <string name="settings_description">Change your preferences</string>
+    <string name="title_check_sort">Check the type</string>
 
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
@@ -32,5 +33,15 @@
         <item>89</item>
         <item>5</item>
     </integer-array>
+
+    <string-array name="sortingTypes">
+        <item>Descending</item>
+        <item>Ascending</item>
+    </string-array>
+
+    <string-array name="sortingValues">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
 
 </resources>

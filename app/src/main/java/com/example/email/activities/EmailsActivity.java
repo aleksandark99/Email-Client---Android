@@ -140,7 +140,32 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        int itemId = item.getItemId();
+
+        switch (itemId){
+
+            case R.id.contacts_item:
+
+                startActivity(new Intent(EmailsActivity.this, ContactsActivity.class));
+
+                break;
+
+            case R.id.settings_item:
+
+                startActivity(new Intent(EmailsActivity.this, SettingsActivity.class));
+
+                break;
+
+            case R.id.folders_item:
+
+                startActivity(new Intent(EmailsActivity.this, FoldersActivity.class));
+
+                break;
+        }
+
+        return true;
+
     }
 }

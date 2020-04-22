@@ -124,6 +124,30 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+        int itemId = item.getItemId();
+
+        switch (itemId){
+
+            case R.id.messages_item:
+
+                startActivity(new Intent(FoldersActivity.this, EmailsActivity.class));
+
+                break;
+
+            case R.id.contacts_item:
+
+                startActivity(new Intent(FoldersActivity.this, ContactsActivity.class));
+
+                break;
+
+            case R.id.settings_item:
+
+                startActivity(new Intent(FoldersActivity.this, SettingsActivity.class));
+
+                break;
+        }
+
         return true;
+
     }
 }

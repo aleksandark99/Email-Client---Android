@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        app:key="sync"
+        app:title="Sync"
+        app:icon="@drawable/ic_sync">
+        <SwitchPreferenceCompat
+            app:key="enable_sync"
+            app:title="Enable periodic syncing"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="about"
+        app:title="About"
+        app:icon="@drawable/ic_info">
+        <Preference
+            app:key="version"
+            app:title="Android version"
+            app:summary="9"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="screen"
+        app:title="Screen"
+        app:icon="@drawable/ic_dark">
+        <SwitchPreferenceCompat
+            app:key="mode"
+            app:title="Dark mode"
+            app:summary="Use a dark theme for this application"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="sort"
+        app:title="Sorting"
+        app:icon="@drawable/ic_sort">
+
+        <ListPreference
+            app:key="sortValuesMessages"
+            app:title="Sort messages"
+            android:dialogTitle="@string/title_check_sort"
+            app:summary="Desc"
+            app:entries="@array/sortingTypes"
+            app:entryValues="@array/sortingValues"/>
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
