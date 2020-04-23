@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -127,6 +128,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         // EmailsAdapter emailsAdapter = new EmailsAdapter(this,messages);
         recyclerView.setAdapter(emailsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
+
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.FoldersActivity"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="stasrt">
 
     <!-- Render problems is caused by newest version of material design alpha06
     To avoid this, replacing with alpha02, an older version will solve the problem -->
@@ -30,6 +30,7 @@
         android:background="#fff">
 
         <!-- Toolbar may have some changes -->
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/foldersToolbar"
             android:layout_width="0dp"
@@ -37,22 +38,27 @@
             android:background="@color/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
+            app:layout_constraintBottom_toBottomOf="@+id/recViewFolders"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/ic_menu"/>
+            app:layout_constraintVertical_bias="0.0"
+            app:navigationIcon="@drawable/ic_menu" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recViewFolders"
-            android:layout_width="409dp"
-            android:layout_height="700dp"
+            android:layout_width="416dp"
+            android:layout_height="664dp"
             android:layout_marginStart="1dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="45dp"
             android:layout_marginEnd="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
+            app:layout_constraintHorizontal_bias="0.142"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/foldersToolbar" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnAddFolder"
