@@ -3,6 +3,7 @@ package com.example.email.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +32,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     private Toolbar toolbar;
     DrawerLayout emailsDrawerLayour;
     NavigationView navEmail;
+    MenuItem search;
+    SearchView searchView;
+    EmailsAdapter emailsAdapter;
 
     ArrayList<Message> messages;
     Message m1;
@@ -69,13 +73,14 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         //
         navEmail.setNavigationItemSelectedListener(this);
 
-        /* Setting up NavDrawer's header name */
+
 
         View headerName = navEmail.getHeaderView(0);
 
         TextView name = headerName.findViewById(R.id.name);
 
         name.setText("LoggedUser Name");
+        //
 
         //
         messages=new ArrayList<Message>();
@@ -117,7 +122,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         //Ovo je samo za sad dok ne odradimo back za dobavljanje poruka pa cemo
         // ovo messages dobijati vadjenjem iz intenta a pri pozivu samog activitija stavljati u intent tu listu
-        EmailsAdapter emailsAdapter = new EmailsAdapter(this,messages);
+         emailsAdapter = new EmailsAdapter(this,messages);
+
+        // EmailsAdapter emailsAdapter = new EmailsAdapter(this,messages);
         recyclerView.setAdapter(emailsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -131,6 +138,23 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.emails_menu_toolbar,menu);
+        search=menu.findItem(R.id.searchIconId);
+        searchView= (SearchView) search.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                emailsAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+
         return true;
     }
 

@@ -16,7 +16,9 @@
         android:title="Search"
         android:icon="@drawable/ic_search_icon"
         android:id="@+id/searchIconId"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        >
     </item>
 
     <item

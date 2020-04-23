@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,15 +16,22 @@ import com.example.email.R;
 import com.example.email.model.Message;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.zip.Inflater;
 
-public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsViewHolder> {
+public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsViewHolder> implements Filterable {
 
     ArrayList<Message> messages;
     Context ctx;
+    //za filter proba
+    ArrayList<Message> messagesAll;
+    //
     public EmailsAdapter(Context ctx, ArrayList<Message> messages){
     this.messages=messages;
     this.ctx=ctx;
+    //za FilterProba
+    this.messagesAll=new ArrayList<>(messages);
+
     }
 
 
@@ -56,6 +65,40 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
     public int getItemCount() {
         return messages.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    Filter filter=new Filter() {
+        //run on background thread
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            ArrayList<Message> filteredMessages = new ArrayList<Message>();
+            if (constraint.toString().isEmpty()){
+                filteredMessages.addAll(messagesAll);
+            }else {
+                for(Message message:messagesAll){
+                    if(message.getContent().toLowerCase().contains(constraint.toString().toLowerCase())){
+                        filteredMessages.add(message);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredMessages;
+
+            return filterResults;
+        }
+        //run on ui thread
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            messages.clear();
+            messages.addAll((Collection<? extends Message>) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public class EmailsViewHolder extends RecyclerView.ViewHolder {
 
