@@ -56,8 +56,11 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         holder.from.setText(messages.get(position).getFrom());
         holder.subject.setText(messages.get(position).getSubject());
         holder.shortContent.setText(messages.get(position).getContent());
-        if(messages.get(position).isUnread()==false){
-            holder.cardView.setBackgroundColor(0xFFFFFFFF);
+//        if(messages.get(position).isUnread()==false){
+//            holder.cardView.setBackgroundColor(0xFFFFFFFF);
+//        }
+        if(messages.get(position).isUnread()){
+            holder.cardView.setBackgroundColor(0xFFF6A8A8);
         }
     }
 
@@ -96,7 +99,11 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         protected void publishResults(CharSequence constraint, FilterResults results) {
             messages.clear();
             messages.addAll((Collection<? extends Message>) results.values);
+
+
+
             notifyDataSetChanged();
+
         }
     };
 

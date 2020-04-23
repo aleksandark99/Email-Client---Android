@@ -113,7 +113,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     m2.setTags(tags2);
     m3.setTags(tags2);
     m1.setContent("Content za m1");
-    m2.setContent("Content za m2");
+    m2.setContent("Content za m23");
     m3.setContent("Content za m3");
 
     messages.add(m1);
