@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
+import com.example.email.utility.PictureUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,6 +100,9 @@ public class ContactFragment extends Fragment {
             dispatchTakePictureIntent();
         });
 
+        mPhotoView = root.findViewById(R.id.image_profile);
+
+        imageWidth = mPhotoView.getMeasuredWidth(); imageHeight = mPhotoView.getMeasuredWidth();
 
         return root;
     }
@@ -126,6 +130,8 @@ public class ContactFragment extends Fragment {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
+        } else {
+            Toast.makeText(getActivity(), "Camera not working", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -133,6 +139,7 @@ public class ContactFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             updatePhotoView();
+            galleryAddPic();
         }
     }
 
@@ -154,15 +161,23 @@ public class ContactFragment extends Fragment {
         return new File(externalFilesDir, mContact.getPhotoFilename());
     }
 
-    private void updatePhotoView(int imageWidth, int imageHeight) {
+    private void updatePhotoView() {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
+            //set dummy
         } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(
-                    mPhotoFile.getPath(), imageWidth, imageHeight
-            );
+           // Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), imageWidth, imageHeight);
+            Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
             mPhotoView.setImageBitmap(bitmap);
         }
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mPhotoFile.getAbsolutePath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
     }
 
     public static ContactFragment newInstance(int idContact) {
