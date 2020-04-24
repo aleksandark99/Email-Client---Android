@@ -78,6 +78,9 @@ public class CreateContactActivity extends AppCompatActivity {
         saveChanges = findViewById(R.id.card_view_bottom);
         saveChanges.setOnClickListener(v -> {
 
+            Toast.makeText(this, "Saving", Toast.LENGTH_SHORT).show();
+
+
             TextInputLayout firstName = findViewById(R.id.first_name_input_box);
             this.name = firstName.getEditText().getText().toString();
 
@@ -89,9 +92,23 @@ public class CreateContactActivity extends AppCompatActivity {
 
             TextInputLayout info = findViewById(R.id.info);
             this.info = info.getEditText().getText().toString();
+
+            Repository repository = Repository.get(this);
+            newContact.setId(repository.newId());
+
+            newContact.setFirstname(name); newContact.setLastname(lastname);
+
+            if (mPhotoFile != null) newContact.setCurrentPhotoPath(mPhotoFile.getAbsolutePath());
+            else newContact.setAvatar(R.drawable.dummy_contact_photo);
+
+            Log.i("ID: ", String.valueOf(newContact.getId()));
+
+            repository.getContacts().add(newContact);
+            finish();
+
         });
 
-        inputEmail.addTextChangedListener(new TextWatcher() {
+        /*inputEmail.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
             }
@@ -105,7 +122,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
                 displayEmail.setText(s);
             }
-        });
+        });*/
 
 
     }

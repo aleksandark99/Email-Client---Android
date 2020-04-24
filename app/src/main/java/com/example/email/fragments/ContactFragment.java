@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,10 +102,14 @@ public class ContactFragment extends Fragment {
         });
 
         mPhotoView = root.findViewById(R.id.image_profile);
+        Log.i("WIDTH iz farag",String.valueOf(mPhotoView.getWidth()));
+        Log.i("HEIGHT iz farag",String.valueOf(mPhotoView.getHeight()));
 
-        checkForPhoto(container);
+        //checkForPhoto(container);
 
         imageWidth = mPhotoView.getMeasuredWidth(); imageHeight = mPhotoView.getMeasuredWidth();
+
+        updatePhotoView();
 
         return root;
     }
@@ -168,10 +173,14 @@ public class ContactFragment extends Fragment {
     private void updatePhotoView() {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
+            Log.i("WIDTH iz fragmenta",String.valueOf(mPhotoView.getWidth()));
+            Log.i("HEIGHT iz fragmenta",String.valueOf(mPhotoView.getHeight()));
             //set dummy
         } else {
            // Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), imageWidth, imageHeight);
-            Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
+            Log.i("WIDTH iz fragmenta",String.valueOf(mPhotoView.getWidth()));
+            Log.i("HEIGHT iz fragmenta",String.valueOf(mPhotoView.getHeight()));
+            Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView,mPhotoFile.getAbsolutePath());
             mPhotoView.setImageBitmap(bitmap);
         }
     }
