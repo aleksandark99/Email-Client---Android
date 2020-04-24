@@ -1,5 +1,10 @@
 package com.example.email.model;
 
+import android.content.Context;
+import android.os.Environment;
+
+import java.io.File;
+
 public class Contact {
 
 
@@ -52,6 +57,20 @@ public class Contact {
 
     public void setAvatar(int avatar) {
         mAvatar = avatar;
+    }
+
+
+    public File getPhotoFile(Contact contact, Context context) {
+        File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+        return new File(externalFilesDir, contact.getPhotoFilename());
+    }
+
+    public String getPhotoFilename() {
+        return "IMG_" + getId() + "_" + getEmail() + "_" + ".jpg";
     }
 
 }
