@@ -1,9 +1,13 @@
 package com.example.email.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,19 +20,27 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
 
+import java.io.File;
+import java.io.IOException;
+
 public class ContactFragment extends Fragment {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_TAKE_PHOTO = 2;
 
     private static final String CONTACT_KEY_ID = "ftn.sit.emailme.fragments.contact_id";
     private Contact mContact;
     private Button mCameraButton;
+    private File mPhotoFile;
+    private ImageView mPhotoView;
+    private int imageWidth, imageHeight;
 
     public ContactFragment() {
         // Required empty public constructor
@@ -41,6 +53,7 @@ public class ContactFragment extends Fragment {
 
         int contactId = getArguments().getInt(CONTACT_KEY_ID);
         mContact = Repository.get(getActivity()).findContactById(contactId);
+       // mPhotoFile =
     }
 
     @Override
@@ -97,16 +110,29 @@ public class ContactFragment extends Fragment {
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+            // Create the File where the photo should go
+           mPhotoFile = getPhotoFile();
+            /*try {
+                mPhotoFile = getPhotoFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }*/
+            // Continue only if the File was successfully created
+            if (mPhotoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                        "com.example.email.fileprovider",
+                        mPhotoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            updatePhotoView();
         }
     }
 
@@ -118,6 +144,26 @@ public class ContactFragment extends Fragment {
             imageView.setImageBitmap(imageBitmap);
         }
     }*/
+
+    public File getPhotoFile() {
+        File externalFilesDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+        return new File(externalFilesDir, mContact.getPhotoFilename());
+    }
+
+    private void updatePhotoView(int imageWidth, int imageHeight) {
+        if (mPhotoFile == null || !mPhotoFile.exists()) {
+            mPhotoView.setImageDrawable(null);
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    mPhotoFile.getPath(), imageWidth, imageHeight
+            );
+            mPhotoView.setImageBitmap(bitmap);
+        }
+    }
 
     public static ContactFragment newInstance(int idContact) {
         Bundle args = new Bundle();

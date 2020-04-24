@@ -4,12 +4,20 @@ import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Contact {
 
 
     private int id, mAvatar;
-    private String mFirstname, mLastname, mEmail;
+    private String mFirstname;
+
+
+
+    private String mLastname;
+    private String mEmail;
+    private String mCurrentPhotoPath;
 
     public Contact(int id, String firstname, String lastname, String email, int mAvatar) {
         this.id = id;
@@ -59,18 +67,21 @@ public class Contact {
         mAvatar = avatar;
     }
 
-
-    public File getPhotoFile(Contact contact, Context context) {
-        File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        if (externalFilesDir == null) {
-            return null;
-        }
-        return new File(externalFilesDir, contact.getPhotoFilename());
+    public String getCurrentPhotoPath() {
+        return mCurrentPhotoPath;
     }
 
-    public String getPhotoFilename() {
-        return "IMG_" + getId() + "_" + getEmail() + "_" + ".jpg";
+    public void setCurrentPhotoPath(String currentPhotoPath) {
+        mCurrentPhotoPath = currentPhotoPath;
+    }
+
+
+    public String getPhotoFilename()  {
+        //return "IMG_" + getId() + "_" + getEmail() + "_" + ".jpg";
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_" + ".jpg";
+        mCurrentPhotoPath = imageFileName;
+        return  imageFileName;
     }
 
 }
