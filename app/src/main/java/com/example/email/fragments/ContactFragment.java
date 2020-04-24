@@ -64,12 +64,12 @@ public class ContactFragment extends Fragment {
         View root =  inflater.inflate(R.layout.fragment_contact, container, false);
 
         ImageView imageView = root.findViewById(R.id.image_profile);
-        if (mContact.getAvatar() != -1){
+        /*if (mContact.getAvatar() != -1){
             Drawable drawableContact = container.getResources().getDrawable(mContact.getAvatar());
             imageView.setImageDrawable(drawableContact);
         } else {
             //set dummy image..
-        }
+        }*/
 
 
         EditText firstnameEditText = (EditText)root.findViewById(R.id.first_name_input_box);
@@ -97,31 +97,50 @@ public class ContactFragment extends Fragment {
         mCameraButton = root.findViewById(R.id.camera);
         mCameraButton.setOnClickListener((View v) -> {
            // Toast.makeText(getActivity(), "Saving changes...", Toast.LENGTH_SHORT).show();
-            dispatchTakePictureIntent();
+            //dispatchTakePictureIntent();
         });
 
         mPhotoView = root.findViewById(R.id.image_profile);
+
+        checkForPhoto(container);
 
         imageWidth = mPhotoView.getMeasuredWidth(); imageHeight = mPhotoView.getMeasuredWidth();
 
         return root;
     }
 
+    private void checkForPhoto(ViewGroup container){
+        if (mContact.getCurrentPhotoPath().equals("") && mContact.getAvatar() == -1){
+            File files = new File(Environment.getExternalStorageDirectory().toString());
+            for (File img : files.listFiles()){
+                if (img.getAbsolutePath().equals(mContact.getCurrentPhotoPath())){
+                    mPhotoFile = img;
+                    updatePhotoView();
+                    break;
+                }
+            }
+           Drawable drawableContact = container.getResources().getDrawable(mContact.getAvatar());
+
+            mPhotoView.setImageDrawable(drawableContact);
+
+
+        }
+    }
 
 
 
-
-    private void dispatchTakePictureIntent() {
+    /*private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
 
             // Create the File where the photo should go
-           mPhotoFile = getPhotoFile();
-            /*try {
-                mPhotoFile = getPhotoFile();
+           File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+           mPhotoFile = null;
+            try {
+                mPhotoFile = mContact.createImageFile(storageDir);
             } catch (IOException ex) {
                 // Error occurred while creating the File
-            }*/
+            }
             // Continue only if the File was successfully created
             if (mPhotoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(getActivity(),
@@ -133,7 +152,7 @@ public class ContactFragment extends Fragment {
         } else {
             Toast.makeText(getActivity(), "Camera not working", Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -144,14 +163,7 @@ public class ContactFragment extends Fragment {
     }
 
 
-    public File getPhotoFile() {
-        File externalFilesDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
-        if (externalFilesDir == null) {
-            return null;
-        }
-        return new File(externalFilesDir, mContact.getPhotoFilename());
-    }
 
     private void updatePhotoView() {
         if (mPhotoFile == null || !mPhotoFile.exists()) {

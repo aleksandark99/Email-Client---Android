@@ -31,7 +31,6 @@ import java.util.ArrayList;
 public class ContactsActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
-
     private DrawerLayout drawerLayout;
     private RelativeLayout drawerPane;
     private ListView drawerList;
@@ -103,7 +102,10 @@ public class ContactsActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_new:
                 Toast.makeText(this, "Creats new contact", Toast.LENGTH_SHORT).show();
-                return true;
+                Intent createNewContactIntent = new Intent(ContactsActivity.this, CreateContactActivity.class);
+                startActivity(createNewContactIntent);
+                return false;
+
             default: return true;
         }
     }

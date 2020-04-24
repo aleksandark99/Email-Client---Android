@@ -1,10 +1,12 @@
 package com.example.email.repository;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.example.email.R;
 import com.example.email.model.Contact;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -34,9 +36,20 @@ public class Repository {
                         "Lastname " + idContact,
                         "email@contact" + idContact + ".com",
                         avatars[idContact - 1]
+
+
                 ))
                 .collect(Collectors.toCollection(ArrayList::new));
 
+    }
+
+    public File getPhotoFile(Contact contact, Context context) {
+        File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (externalFilesDir == null) {
+            return null;
+        }
+        return new File(externalFilesDir, contact.getPhotoFilename());
     }
 
     public ArrayList<Contact> getContacts(){
