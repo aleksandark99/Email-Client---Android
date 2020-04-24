@@ -69,7 +69,7 @@
                             android:id="@+id/first_name_input_box"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/ic_action_username"
+                            android:drawableLeft="@drawable/ic_person_black_24dp"
                             android:drawablePadding="10dp"
                             android:text="Djura">
 
@@ -88,7 +88,7 @@
                             android:id="@+id/last_name_input_box"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/ic_action_username"
+                            android:drawableLeft="@drawable/ic_person_black_24dp"
                             android:drawablePadding="10dp"
                             android:text="Djuric">
 
@@ -107,7 +107,7 @@
                             android:id="@+id/email_input_box"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/ic_action_username"
+                            android:drawableLeft="@drawable/ic_email_black_24dp"
                             android:drawablePadding="10dp"
                             android:text="Email@smtg">
 
@@ -125,7 +125,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/ic_action_username"
+                            android:drawableLeft="@drawable/ic_info_black_24dp"
                             android:drawablePadding="10dp"
                             android:text="Info">
 
