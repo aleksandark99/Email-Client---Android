@@ -25,16 +25,16 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         Intent loginIntent = LoginActivity.newIntent(this);
-        LoginButton =(Button) findViewById(R.id.loginButtonReg);
+        LoginButton = (Button) findViewById(R.id.loginButtonReg);
         LoginButton.setOnClickListener(v -> {
             startActivity(loginIntent);
 
 
         });
 
-        RegisterConfirmButton =(Button) findViewById(R.id.registerConfirmButton);
+        RegisterConfirmButton = (Button) findViewById(R.id.registerConfirmButton);
         RegisterConfirmButton.setOnClickListener(v -> {
-            
+
 
             // ako su username i password ispunjavaju uslove pozovi metodu za kreiranje acc-a
             // i prebaci ga na login activity
@@ -44,8 +44,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
-
     }
+
     @Override
     protected void onStart() {
         super.onStart();

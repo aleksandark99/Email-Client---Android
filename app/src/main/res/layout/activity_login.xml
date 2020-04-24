@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_backround"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
     tools:context=".activities.LoginActivity">
 
 
@@ -14,11 +14,11 @@
         android:id="@+id/textView"
         android:layout_width="205dp"
         android:layout_height="28dp"
+        android:layout_marginBottom="10dp"
         android:text="Have an account ? "
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,24 +29,23 @@
         android:id="@+id/usernameText"
         android:layout_width="210dp"
         android:layout_height="43dp"
+        android:layout_marginBottom="10dp"
         android:background="#66000000"
         android:ems="10"
         android:hint="Username"
         android:inputType="textPersonName"
-        android:textAlignment="center"
-        android:layout_marginBottom="10dp"
-        />
+        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/passwordField"
         android:layout_width="210dp"
         android:layout_height="43dp"
+        android:layout_marginBottom="10dp"
         android:background="#66000000"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
         android:textAlignment="center"
-        android:layout_marginBottom="10dp"
 
         />
 
@@ -54,36 +53,32 @@
         android:id="@+id/loginButton"
         android:layout_width="123dp"
         android:layout_height="45dp"
+        android:layout_marginBottom="10dp"
         android:background="#7A8AE3"
         android:text="Login"
         android:textColor="#4B2391"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"
-        />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="124dp"
         android:layout_height="33dp"
+        android:layout_marginBottom="10dp"
         android:text="New user ?"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:layout_marginBottom="10dp"
-        />
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/registerButton"
         android:layout_width="123dp"
         android:layout_height="45dp"
+        android:layout_marginBottom="10dp"
         android:background="#7A8AE3"
         android:text="REGISTER"
         android:textColor="#4B2391"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"
-        />
+        android:textStyle="bold" />
 
 </LinearLayout>
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

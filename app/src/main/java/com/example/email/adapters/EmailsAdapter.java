@@ -23,14 +23,15 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
     ArrayList<Message> messages;
     Context ctx;
-    //za filter proba
+    //za filter messages
     ArrayList<Message> messagesAll;
-    //
-    public EmailsAdapter(Context ctx, ArrayList<Message> messages){
-    this.messages=messages;
-    this.ctx=ctx;
-    //za FilterProba
-    this.messagesAll=new ArrayList<>(messages);
+
+
+    public EmailsAdapter(Context ctx, ArrayList<Message> messages) {
+        this.messages = messages;
+        this.ctx = ctx;
+        //za FilterProba
+        this.messagesAll = new ArrayList<>(messages);
 
     }
 
@@ -39,27 +40,18 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
     @Override
     public EmailsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(ctx);
-        View view = inflater.inflate(R.layout.emails_row,parent,false);
+        View view = inflater.inflate(R.layout.emails_row, parent, false);
         return new EmailsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull EmailsViewHolder holder, int position) {
-        //Zanemraiti ovo glupost teska nastala usled zaboravljene linije u xml i ocajnickog pokusaja da se bug nastalom istom linijom resi ...
-//        for(int i=0;i<messages.size();i++){
-//            holder.date.setText("Resiti api 24/26");
-//            holder.from.setText(messages.get(position).getFrom());
-//            holder.subject.setText(messages.get(position).getSubject());
-//            holder.shortContent.setText(messages.get(position).getContent());
-//        }
         holder.date.setText("Resiti api 24/26");
         holder.from.setText(messages.get(position).getFrom());
         holder.subject.setText(messages.get(position).getSubject());
         holder.shortContent.setText(messages.get(position).getContent());
-//        if(messages.get(position).isUnread()==false){
-//            holder.cardView.setBackgroundColor(0xFFFFFFFF);
-//        }
-        if(messages.get(position).isUnread()){
+
+        if (messages.get(position).isUnread()) {
             holder.cardView.setBackgroundColor(0xFFF6A8A8);
         }
     }
@@ -74,17 +66,17 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         return filter;
     }
 
-    Filter filter=new Filter() {
+    Filter filter = new Filter() {
         //run on background thread
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
 
             ArrayList<Message> filteredMessages = new ArrayList<Message>();
-            if (constraint.toString().isEmpty()){
+            if (constraint.toString().isEmpty()) {
                 filteredMessages.addAll(messagesAll);
-            }else {
-                for(Message message:messagesAll){
-                    if(message.getContent().toLowerCase().contains(constraint.toString().toLowerCase())){
+            } else {
+                for (Message message : messagesAll) {
+                    if (message.getContent().toLowerCase().contains(constraint.toString().toLowerCase())) {
                         filteredMessages.add(message);
                     }
                 }
@@ -94,12 +86,12 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
             return filterResults;
         }
+
         //run on ui thread
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             messages.clear();
             messages.addAll((Collection<? extends Message>) results.values);
-
 
 
             notifyDataSetChanged();
@@ -109,18 +101,18 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
     public class EmailsViewHolder extends RecyclerView.ViewHolder {
 
-        TextView from,subject,shortContent,date;
+        TextView from, subject, shortContent, date;
         CardView cardView;
-        public EmailsViewHolder(@NonNull View itemView){
+
+        public EmailsViewHolder(@NonNull View itemView) {
             super(itemView);
-            from=itemView.findViewById(R.id.fromText);
-            subject=itemView.findViewById(R.id.subjectText);
-            date=itemView.findViewById(R.id.dateText);
-            shortContent=itemView.findViewById(R.id.shortContentText);
-            cardView=itemView.findViewById(R.id.cardViewEmailRow);//test za unread
+            from = itemView.findViewById(R.id.fromText);
+            subject = itemView.findViewById(R.id.subjectText);
+            date = itemView.findViewById(R.id.dateText);
+            shortContent = itemView.findViewById(R.id.shortContentText);
+            cardView = itemView.findViewById(R.id.cardViewEmailRow);//test za unread
 
         }
-
 
 
     }
