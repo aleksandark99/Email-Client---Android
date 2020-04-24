@@ -20,7 +20,7 @@ import com.example.email.repository.Repository;
 
 public class ContactFragment extends Fragment {
 
-    private static final String CONTACT_KEY_ID = "ftn.sit.emailme.fragments.crime_id";
+    private static final String CONTACT_KEY_ID = "ftn.sit.emailme.fragments.contact_id";
     private Contact mContact;
 
     public ContactFragment() {
