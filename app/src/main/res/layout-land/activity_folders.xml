@@ -14,7 +14,7 @@
     To avoid this, replacing with alpha02, an older version will solve the problem -->
     <!-- file build.gradle is in gitignore so material design version
         must be 02 :) -->
-
+    
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="wrap_content"
@@ -48,14 +48,13 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recViewFolders"
-            android:layout_width="416dp"
-            android:layout_height="664dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="45dp"
-            android:layout_marginEnd="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="90dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.142"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/foldersToolbar" />
 

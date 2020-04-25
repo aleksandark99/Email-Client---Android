@@ -21,7 +21,7 @@ import com.example.email.adapters.FoldersAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FoldersAdapter.OnNoteListener {
 
     String[] foldersName;
 
@@ -89,7 +89,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         /*  Adapters for RecycleView */
 
-        FoldersAdapter foldersAdapter = new FoldersAdapter(this, foldersName, messageCount, images);
+        FoldersAdapter foldersAdapter = new FoldersAdapter(this, foldersName, messageCount, images, this::onNoteClick);
         recyclerView.setAdapter(foldersAdapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -148,6 +148,11 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         }
 
         return true;
+
+    }
+
+    @Override
+    public void onNoteClick(int position) {
 
     }
 }

@@ -19,12 +19,15 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
     int[] messageCount;
     int[] images;
 
-    public FoldersAdapter(Context ctx, String[] names, int[] messages, int[] idImage){
+    private OnNoteListener mOnNoteListener;
+
+    public FoldersAdapter(Context ctx, String[] names, int[] messages, int[] idImage, OnNoteListener mListener){
 
         context = ctx;
         folderNames = names;
         messageCount = messages;
         images = idImage;
+        mOnNoteListener = mListener;
 
     }
 
@@ -36,7 +39,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
 
         View view = inflater.inflate(R.layout.folder_row, parent, false);
 
-        return new FoldersViewAdapter(view);
+        return new FoldersViewAdapter(view, mOnNoteListener);
     }
 
     @Override
@@ -53,20 +56,36 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
         return folderNames.length;
     }
 
-    public class FoldersViewAdapter extends RecyclerView.ViewHolder {
+    public class FoldersViewAdapter extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView fNameView, mCountView;
 
         ImageView folderImage;
 
-        public FoldersViewAdapter(@NonNull View itemview) {
+        OnNoteListener onNoteListener;
+
+        public FoldersViewAdapter(@NonNull View itemview, OnNoteListener listener) {
 
             super(itemview);
 
             fNameView = itemview.findViewById(R.id.tv_folder_name);
             mCountView = itemview.findViewById(R.id.tv_mCount);
             folderImage = itemview.findViewById(R.id.imageFolder);
+            onNoteListener = listener;
+
+            itemview.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+
+            onNoteListener.onNoteClick(getLayoutPosition());
+        }
+    }
+
+    public interface OnNoteListener{
+
+        void onNoteClick(int position);
     }
 
 }
