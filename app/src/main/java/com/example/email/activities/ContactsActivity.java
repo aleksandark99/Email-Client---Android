@@ -125,15 +125,16 @@ public class ContactsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            //Contact newContact = (Contact) data.getParcelableExtra(NEW_CONTACT_KEY);
-            boolean photoTaken = data.getBooleanExtra("photoTaken", false);
-            if (photoTaken){
-                mRecyclerView.setAdapter( new ContactsAdapter(mRepository.getContacts(),this));
-            }
+
+            //boolean photoTaken = data.getBooleanExtra("photoTaken", false);
+            mRecyclerView.setAdapter( new ContactsAdapter(mRepository.getContacts(),this));
+
         } else if (resultCode == RESULT_CANCELED) {
             Log.i("Tag", "vratio");
             return;
         }
+
+        //mRecyclerView.setAdapter( new ContactsAdapter(mRepository.getContacts(),this));
     }
 
     @Override
@@ -159,6 +160,8 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -167,6 +170,8 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        mRecyclerView.setAdapter(new ContactsAdapter(mRepository.getContacts(),this));
+
     }
 
     @Override

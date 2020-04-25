@@ -220,7 +220,7 @@
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save changes"
+                android:text="Save contact"
                 android:textAlignment="center">
 
             </TextView>

@@ -67,7 +67,7 @@ public class CreateContactActivity extends AppCompatActivity {
         if(savedInstanceState == null){
             mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
         } else {
-            String name = savedInstanceState.getString("name"); editTextBoxName.setText(name);
+            String name = savedInstanceState.getString("firstName"); editTextBoxName.setText(name);
             String lastName = savedInstanceState.getString("lastName"); editTextBoxLastname.setText(lastName);
             String email = savedInstanceState.getString("email"); editTextBoxEmail.setText(email);
             String info = savedInstanceState.getString("info"); editTextBoxInfo.setText(info);
