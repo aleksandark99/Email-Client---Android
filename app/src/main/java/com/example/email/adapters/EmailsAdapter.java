@@ -127,6 +127,8 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             shortContent = itemView.findViewById(R.id.shortContentText1);
             cardView = itemView.findViewById(R.id.cardViewEmailRow1);//test za unread
             chipGroup = itemView.findViewById(R.id.ChipGroupRow);
+
+
         }
 
 
