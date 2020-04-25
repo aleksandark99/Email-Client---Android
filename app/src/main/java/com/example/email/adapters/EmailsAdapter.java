@@ -40,7 +40,9 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
     @Override
     public EmailsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(ctx);
-        View view = inflater.inflate(R.layout.emails_row, parent, false);
+//        View view = inflater.inflate(R.layout.emails_row, parent, false);
+        View view = inflater.inflate(R.layout.new_emails_row, parent, false);
+
         return new EmailsViewHolder(view);
     }
 
@@ -50,7 +52,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         holder.from.setText(messages.get(position).getFrom());
         holder.subject.setText(messages.get(position).getSubject());
         holder.shortContent.setText(messages.get(position).getContent());
-
+        // ovde make attachment icon visible ako ima attachmenta poruka
         if (messages.get(position).isUnread()) {
             holder.cardView.setBackgroundColor(0xFFF6A8A8);
         }
@@ -106,11 +108,11 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
         public EmailsViewHolder(@NonNull View itemView) {
             super(itemView);
-            from = itemView.findViewById(R.id.fromText);
-            subject = itemView.findViewById(R.id.subjectText);
-            date = itemView.findViewById(R.id.dateText);
-            shortContent = itemView.findViewById(R.id.shortContentText);
-            cardView = itemView.findViewById(R.id.cardViewEmailRow);//test za unread
+            from = itemView.findViewById(R.id.fromText1);
+            subject = itemView.findViewById(R.id.subjectText1);
+            date = itemView.findViewById(R.id.dateText1);
+            shortContent = itemView.findViewById(R.id.shortContentText1);
+            cardView = itemView.findViewById(R.id.cardViewEmailRow1);//test za unread
 
         }
 

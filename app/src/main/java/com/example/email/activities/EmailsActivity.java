@@ -90,7 +90,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         tags1 = new ArrayList<Tag>();
         tags2 = new ArrayList<Tag>();
         /////
-        m1.setFrom("m1From");
+        m1.setFrom("m1Frasdsdasdadsadsasdaasdom");
         m2.setFrom("m2From");
         m3.setFrom("m2From");
         m1.setSubject("m1Subject");
