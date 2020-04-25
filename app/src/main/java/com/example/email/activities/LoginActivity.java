@@ -25,9 +25,14 @@ public class LoginActivity extends AppCompatActivity {
             //start EmailsActivity ili onu sa listom svih activitija za sada
             //treba da dodje provera podataka itd itd...
             startActivity(goToEmailsIntent);
+
+            // ovo ako su neispravni podaci
+            //Toast.makeText(getApplicationContext(), "Neispravni podaci", Toast.LENGTH_SHORT).show();
+
         });
         Register =(Button) findViewById(R.id.registerButton);
         Register.setOnClickListener(v -> {
+
             startActivity(registerIntent);
 
         });

@@ -97,7 +97,7 @@
             android:layout_height="45dp"
             android:layout_marginBottom="10dp"
             android:background="#7A8AE3"
-            android:text="Confirm"
+            android:text="Register"
             android:textColor="#4B2391"
             android:textSize="18sp"
             android:textStyle="bold" />
