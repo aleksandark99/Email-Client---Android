@@ -22,6 +22,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
     <style name="ToolBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>

@@ -1,6 +1,7 @@
 package com.example.email.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Icon;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
 import com.example.email.model.Message;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipDrawable;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +39,6 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
     }
 
-
     @NonNull
     @Override
     public EmailsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,6 +59,16 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         if (messages.get(position).isUnread()) {
             holder.cardView.setBackgroundColor(0xFFF6A8A8);
         }
+        Chip chip = new Chip(holder.chipGroup.getContext());
+        chip.setText("test bravo 1");
+        Integer img = R.drawable.ic_lens_black_24dp;
+
+        chip.setChipIconResource(img);
+
+
+        holder.chipGroup.addView(chip);
+
+
     }
 
     @Override
@@ -105,7 +118,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
         TextView from, subject, shortContent, date;
         CardView cardView;
-
+        ChipGroup chipGroup;
         public EmailsViewHolder(@NonNull View itemView) {
             super(itemView);
             from = itemView.findViewById(R.id.fromText1);
@@ -113,7 +126,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             date = itemView.findViewById(R.id.dateText1);
             shortContent = itemView.findViewById(R.id.shortContentText1);
             cardView = itemView.findViewById(R.id.cardViewEmailRow1);//test za unread
-
+            chipGroup = itemView.findViewById(R.id.ChipGroupRow);
         }
 
 

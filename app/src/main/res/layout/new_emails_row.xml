@@ -117,12 +117,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/shortContentText1" />
 
             <com.google.android.material.chip.ChipGroup
+                android:id="@+id/ChipGroupRow"
                 android:layout_width="357dp"
                 android:layout_height="22dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:theme="@style/AppTheme.chipTheme"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView12"
                 app:layout_constraintTop_toBottomOf="@+id/shortContentText1">
 
@@ -134,12 +136,6 @@
                     android:text="sadasdasdasd"
                     app:chipIcon="@drawable/ic_lens_black_24dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="sadasdasdasd"
-                    app:chipIcon="@drawable/ic_lens_black_24dp" />
             </com.google.android.material.chip.ChipGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

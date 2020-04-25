@@ -4,21 +4,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/tagInflate">
 
-    <com.google.android.material.chip.ChipGroup
-        android:theme="@style/AppTheme.chipTheme"
-        android:layout_width="281dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="65dp"
-        android:layout_marginTop="50dp"
+<!--    <com.google.android.material.chip.ChipGroup-->
+<!--        android:theme="@style/AppTheme.chipTheme"-->
+<!--        android:layout_width="281dp"-->
+<!--        android:layout_height="73dp"-->
+<!--        android:layout_marginStart="65dp"-->
+<!--        android:layout_marginTop="50dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chipIcon="@drawable/ic_lens_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:chipIcon="@drawable/ic_lens_black_24dp" />
-    </com.google.android.material.chip.ChipGroup>
+        app:layout_constraintTop_toTopOf="parent" />
+<!--    </com.google.android.material.chip.ChipGroup>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
