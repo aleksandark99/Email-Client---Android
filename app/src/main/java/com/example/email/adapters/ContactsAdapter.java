@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,12 +32,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     private ArrayList<Contact> mContacts;
     private Context mContext;
     private Contact currentContact;
-    private int width, height;
+
 
     public ContactsAdapter(ArrayList<Contact> mContacts, Context mContext){
+
+        Log.i("TAG: ", "POZVAN ContactsAdapter konstruktor");
         this.mContacts = mContacts;
         this.mContext = mContext;
-        Log.i("mContacts size: ", String.valueOf(mContacts.size()));
+
     }
 
     //Provide a reference to the views used in the recycler view
@@ -48,6 +52,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
             super(v);
             cardView = v;
             mLinearLayout = cardView.findViewById(R.id.linear_layout);
+            Log.i("TAG: ", "POZVAN ViewHolder konstruktor");
         }
 
     }
@@ -55,7 +60,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     @Override
     public ContactsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         //Create a new view
+        Log.i("TAG: ", "POZVANA onCreateViewHolder iz ViewHoldera");
         CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_card_item, parent, false);
+        //ImageView imageView = cv.findViewById(R.id.image_profile);
 
 
         return new ViewHolder(cv);
@@ -63,67 +70,36 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position){
         //Set the values inside the given view
+        Log.i("TAG: ", "POZVANA onBindViewHolder()");
         CardView cardView = holder.cardView;
+
         currentContact = mContacts.get(position);
-
+        //Log.i("Tag objekat: ", currentContact.toString());
+        Log.i("pozicija: ", String.valueOf(position));
         ImageView imageView = (ImageView)cardView.findViewById(R.id.image_profile);
-        //Drawable drawable = cardView.getResources().getDrawable(mContacts.get(position).getAvatar());
-        //imageView.setImageDrawable(drawable);
-
-        //Contact contact = mContacts.get(position);
-        Repository repository = Repository.get(mContext);
-
-        ViewTreeObserver observer = imageView.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            /* Interface definition for a callback to be invoked when the global layout state
-             or the visibility of views within the view tree changes.
-             Therefore it's a good idea to de-register the observer after the first "pass" happens.
-             It would be interesting, though, to know why we see the following logged lines TWICE.
 
 
-            FROM THE BOOK
-            In this chapter, you had to use a crude estimate of the size you should scale down to. This is not ideal,
-            but it works and is quick to implement.
-            With the out-of-the-box APIs you can use a tool called ViewTreeObserver. ViewTreeObserver is an
-            object that you can get from any view in your Activity’s hierarchy:
-            ViewTreeObserver observer = mImageView.getViewTreeObserver();
-            You can register a variety of listeners on a ViewTreeObserver, including OnGlobalLayoutListener.
-            This listener fires an event whenever a layout pass happens.
-            For this challenge, adjust your code so that it uses the dimensions of mPhotoView when they are valid,
-            and waits until a layout pass before initially calling updatePhotoView().
-             */
-            @Override
-            public void onGlobalLayout() {
-                width = imageView.getMeasuredWidth();
-                height = imageView.getMeasuredHeight();
-                Log.d("TAG", "imageWidth: " + width);
-                Log.d("TAG", "imageHeight: " + height);
+        if (currentContact.getCurrentPhotoPath() != null) {
+            Log.i("USAO U", "IF");
+
+            Log.i("Photo path: ", currentContact.getCurrentPhotoPath());
+            //width = getSizeOfView(imageView, "width");
+            //height = getSizeOfView(imageView, "height");
+            Log.i("WIDTH",String.valueOf(imageView.getWidth()));
+            Log.i("HEIGHT",String.valueOf(imageView.getHeight()));
 
 
+            Bitmap bitmap = PictureUtils.getScaledBitmap(currentContact.getCurrentPhotoPath(), 120   , 120);
 
-                if (currentContact.getCurrentPhotoPath() != null) {
-                    Log.i("WIDTH",String.valueOf(imageView.getWidth()));
-                    Log.i("HEIGHT",String.valueOf(imageView.getHeight()));
-                    Log.i("Photo path: ", currentContact.getCurrentPhotoPath());
+            imageView.setImageBitmap(bitmap);
+        } else {
+                //Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.dummy_contact_photo);
+                Drawable drawable = cardView.getResources().getDrawable(currentContact.getAvatar());
+                imageView.setImageDrawable(drawable);
+                //imageView.setImageResource(R.drawable.dummy_contact_photo);
+                //imageView.setImageResource(R.drawable.ic_left_arrow_blue);
 
-                    Bitmap bitmap = PictureUtils.getScaledBitmap(currentContact.getCurrentPhotoPath(), width, height);
-                    Log.i("iz adaptera ",currentContact.getCurrentPhotoPath());
-                    imageView.setImageBitmap(bitmap);
-                } else {
-                    if (currentContact.getAvatar() != 0){
-                        Drawable drawable = cardView.getResources().getDrawable(mContacts.get(position).getAvatar());
-                        imageView.setImageDrawable(drawable);
-                    }
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-            }
-        });
-
-
-
+        }
 
 
         imageView.setContentDescription(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
@@ -148,6 +124,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         //Return the number of items in the data set
         return mContacts.size();
     }
+
 
 
 }

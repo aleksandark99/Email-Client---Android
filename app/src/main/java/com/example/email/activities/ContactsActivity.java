@@ -1,17 +1,21 @@
 package com.example.email.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +27,7 @@ import android.widget.Toast;
 import com.example.email.R;
 import com.example.email.adapters.ContactNavigationAdapter;
 import com.example.email.adapters.ContactsAdapter;
+import com.example.email.model.Contact;
 import com.example.email.model.items.ContactNavItem;
 import com.example.email.repository.Repository;
 
@@ -30,16 +35,21 @@ import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 1;
+    private static final String NEW_CONTACT_KEY = "com.example.email.contacts_activity.NEW_CONTACT_KEY";
+
     private RecyclerView mRecyclerView;
     private DrawerLayout drawerLayout;
     private RelativeLayout drawerPane;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
     private ArrayList<ContactNavItem> mNavItems = new ArrayList<ContactNavItem>();
+    private Repository mRepository = Repository.get(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_contacts);
 
         prepareDrawerItems();
@@ -83,7 +93,7 @@ public class ContactsActivity extends AppCompatActivity {
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
-        ContactsAdapter adapter = new ContactsAdapter(Repository.get(this).getContacts(),this);
+        ContactsAdapter adapter = new ContactsAdapter(mRepository.getContacts(),this);
         mRecyclerView.setAdapter(adapter);
         //StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -102,11 +112,27 @@ public class ContactsActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_new:
                 Toast.makeText(this, "Creats new contact", Toast.LENGTH_SHORT).show();
-                Intent createNewContactIntent = new Intent(ContactsActivity.this, CreateContactActivity.class);
-                startActivity(createNewContactIntent);
+                Intent createNewContactIntent = CreateContactActivity.newIntent(this, mRepository.newId());
+                startActivityForResult(createNewContactIntent, REQUEST_CODE);
                 return false;
 
             default: return true;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            //Contact newContact = (Contact) data.getParcelableExtra(NEW_CONTACT_KEY);
+            boolean photoTaken = data.getBooleanExtra("photoTaken", false);
+            if (photoTaken){
+                mRecyclerView.setAdapter( new ContactsAdapter(mRepository.getContacts(),this));
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            Log.i("Tag", "vratio");
+            return;
         }
     }
 

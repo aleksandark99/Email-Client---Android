@@ -53,7 +53,7 @@ public class Repository {
             return null;
         }
         File f = new File(externalFilesDir, contact.getPhotoFilename());
-        Log.i("IZ rEPOZITORIJA: ", f.getAbsolutePath());
+        //Log.i("IZ rEPOZITORIJA: ", f.getAbsolutePath());
         return f;
     }
 

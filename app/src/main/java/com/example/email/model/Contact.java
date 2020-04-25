@@ -2,13 +2,15 @@ package com.example.email.model;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Contact {
+public class Contact   {
 
 
     private int id, mAvatar;
@@ -77,8 +79,11 @@ public class Contact {
     }
 
     public String getPhotoFilename() {
-        return "IMG_" + getId() + ".jpg";
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return "IMG_" + getId() + "_" + timeStamp + ".jpg";
     }
+
+
 
 
     /*public File createImageFile(File storageDir) throws IOException {

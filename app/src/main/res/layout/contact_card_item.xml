@@ -23,6 +23,7 @@
             android:layout_height="120dp"
             android:layout_marginLeft="25dp"
 
+
             />
 
         <TextView
