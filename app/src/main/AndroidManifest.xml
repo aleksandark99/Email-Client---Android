@@ -12,10 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.EmailActivity"></activity>
         <activity
             android:name=".activities.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.CreateFolderActivity"
             android:theme="@style/PopUpTheme" />
@@ -31,9 +32,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ContactActivity"
             android:label="Contacts"
