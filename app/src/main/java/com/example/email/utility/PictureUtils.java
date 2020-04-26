@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class PictureUtils {
@@ -25,6 +26,7 @@ public class PictureUtils {
                 inSampleSize = Math.round(srcWidth / destWidth);
             }
         }
+        Log.i("scaled down", String.valueOf(inSampleSize));
         options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
 // Read in and create final bitmap
@@ -46,8 +48,9 @@ public class PictureUtils {
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        Log.i("scaled down", String.valueOf(scaleFactor));
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;

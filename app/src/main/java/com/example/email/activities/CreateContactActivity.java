@@ -29,8 +29,11 @@ import com.example.email.repository.Repository;
 import com.example.email.utility.PictureUtils;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class CreateContactActivity extends AppCompatActivity {
 
@@ -62,7 +65,7 @@ public class CreateContactActivity extends AppCompatActivity {
         editTextBoxInfo = findViewById(R.id.info_input_box_edit_box);
 
         mPhotoView = findViewById(R.id.image_profile);
-        cameraButton = findViewById(R.id.camera);
+        cameraButton = findViewById(R.id.camera); galleryButton = findViewById(R.id.gallery);
 
         if(savedInstanceState == null){
             mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
@@ -82,6 +85,9 @@ public class CreateContactActivity extends AppCompatActivity {
 
         }
 
+        final Intent pickImage = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+       //Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
 
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         boolean canTakePhoto = captureImage.resolveActivity(getPackageManager()) != null;
@@ -96,6 +102,10 @@ public class CreateContactActivity extends AppCompatActivity {
 
         cameraButton.setOnClickListener((View v) -> {
             startActivityForResult(captureImage, REQUEST_TAKE_PHOTO);
+        });
+
+        galleryButton.setOnClickListener((View v) -> {
+            startActivityForResult(pickImage, REQUEST_GALLERY_PHOTO);
         });
 
 
@@ -142,12 +152,25 @@ public class CreateContactActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             updatePhotoView();
             photoTaken = true;
             //galleryAddPic();
 
-        } else if (resultCode == RESULT_CANCELED){
+        } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED){
+            photoTaken = false;
+        } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK){
+            photoTaken = true;
+
+                Uri imgUri = data.getData();
+
+                try (InputStream inputStream = this.getContentResolver().openInputStream(imgUri);
+                     FileOutputStream stream = new FileOutputStream(mPhotoFile)) {
+                    stream.write(getBytes(inputStream));
+                } catch (IOException e){e.printStackTrace();};
+
+                updatePhotoView();
+        } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_CANCELED){
             photoTaken = false;
         }
     }
@@ -187,9 +210,17 @@ public class CreateContactActivity extends AppCompatActivity {
     }
 
 
+    private byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
 
-
-
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
 
 
 }

@@ -24,6 +24,7 @@ import com.example.email.activities.ContactActivity;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
 import com.example.email.utility.PictureUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -90,7 +91,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
             //prvi komit na gallery_brnchu
             Bitmap bitmap = PictureUtils.getScaledBitmap(currentContact.getCurrentPhotoPath(), 120   , 120);
-
+            //Picasso.get().load(currentContact.getCurrentPhotoPath()).into(imageView);
             imageView.setImageBitmap(bitmap);
         } else {
                 //Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.dummy_contact_photo);
