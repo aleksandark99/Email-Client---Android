@@ -99,7 +99,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
                 //imageView.setImageResource(R.drawable.dummy_contact_photo);
                 //imageView.setImageResource(R.drawable.ic_left_arrow_blue);
 
-        }
+        } //kom na photo_cam_branchu
 
 
         imageView.setContentDescription(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
