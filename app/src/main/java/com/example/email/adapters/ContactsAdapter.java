@@ -88,7 +88,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
             Log.i("WIDTH",String.valueOf(imageView.getWidth()));
             Log.i("HEIGHT",String.valueOf(imageView.getHeight()));
 
-
+            //prvi komit na gallery_brnchu
             Bitmap bitmap = PictureUtils.getScaledBitmap(currentContact.getCurrentPhotoPath(), 120   , 120);
 
             imageView.setImageBitmap(bitmap);
