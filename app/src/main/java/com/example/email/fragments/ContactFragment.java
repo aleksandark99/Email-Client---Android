@@ -82,13 +82,13 @@ public class ContactFragment extends Fragment {
 
             if (this.photoTaken){
                 mPhotoFile = new File(savedInstanceState.getString("photoPath"));
-                updatePhotoView(120, 120);
+                //updatePhotoView(120, 120);
             } else{
                 //mPhotoFile = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
                 if (mContact.getCurrentPhotoPath() != null){
                     Log.i("tag", "ovsaaffsaasfsss");
                     mPhotoFile = new File(mContact.getCurrentPhotoPath());
-                }
+                }else mPhotoFile = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
             }
 
 
@@ -139,22 +139,25 @@ public class ContactFragment extends Fragment {
         boolean canTakePhoto = captureImage.resolveActivity(getActivity().getPackageManager()) != null;
         mCameraButton.setEnabled(canTakePhoto);
         if (canTakePhoto && mPhotoFile != null) {
-           /* if (mPhotoFile == null) {
-                Log.i("TAAH", "NULL");
-            } else Log.i("TAAH", "not null");*/
+
+          /*  Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                    "com.example.email.fileprovider",
+                    mPhotoFile);
+            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);*/
+        }
+        mCameraButton.setOnClickListener((View v) -> {
+            if (mPhotoFile == null) mPhotoFile =  Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
             Uri photoURI = FileProvider.getUriForFile(getActivity(),
                     "com.example.email.fileprovider",
                     mPhotoFile);
             captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-        }
-        mCameraButton.setOnClickListener((View v) -> {
             startActivityForResult(captureImage, REQUEST_TAKE_PHOTO);
         });
 
 
 
-        updatePhotoView(120, 120);
-
+        if(photoTaken)updatePhotoView(120, 120);
+        if (mContact.getCurrentPhotoPath() != null) updatePhotoView(120, 120);
         return root;
     }
 
@@ -165,8 +168,8 @@ public class ContactFragment extends Fragment {
         savedInstanceState.putString("firstName", editTextBoxName.getText().toString());
         savedInstanceState.putString("lastName", editTextBoxLastname.getText().toString());
         savedInstanceState.putString("email", editTextBoxEmail.getText().toString());
-
         savedInstanceState.putBoolean("photoTaken", photoTaken);
+
         if (photoTaken && mPhotoFile != null)  savedInstanceState.putString("photoPath", mPhotoFile.getAbsolutePath());
 
 
@@ -177,8 +180,9 @@ public class ContactFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            updatePhotoView(120, 120);
             photoTaken = true;
+            updatePhotoView(120, 120);
+
 
         } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == getActivity().RESULT_CANCELED){
             photoTaken = false;
@@ -191,6 +195,7 @@ public class ContactFragment extends Fragment {
 
     private void updatePhotoView(int imageWidth, int imageHeight) {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
+            //Log.i("test","asraf");
             mPhotoView.setImageResource(mContact.getAvatar());
 
         } else {

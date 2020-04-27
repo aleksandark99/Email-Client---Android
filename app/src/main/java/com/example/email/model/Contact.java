@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,6 +81,7 @@ public class Contact   {
 
     public String getPhotoFilename() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        Log.i("timestampe", timeStamp);
         return "IMG_" + getId() + "_" + timeStamp + ".jpg";
     }
 
