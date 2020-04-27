@@ -38,8 +38,6 @@ public class ContactFragment extends Fragment {
     static final int REQUEST_TAKE_PHOTO = 2;
     static final int REQUEST_GALLERY_PHOTO = 3;
 
-
-
     private static final String CONTACT_KEY_ID = "com.example.email.fragments.contact_id";
 
     private EditText editTextBoxName, editTextBoxLastname, editTextBoxEmail;
@@ -48,7 +46,6 @@ public class ContactFragment extends Fragment {
 
     private Contact mContact;
     private Button mCameraButton, mGalleryButton;
-    //private File mPhotoFile;
     private ImageView mPhotoView;
     private boolean photoTaken;
 
@@ -57,7 +54,6 @@ public class ContactFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,12 +61,7 @@ public class ContactFragment extends Fragment {
         int contactId = getArguments().getInt(CONTACT_KEY_ID);
         mContact = Repository.get(getActivity()).findContactById(contactId);
 
-       // if (mContact.getCurrentPhotoPath() != null ) mPhotoFile = new File(mContact.getCurrentPhotoPath());
-       // else mPhotoFile = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
-
         if(savedInstanceState == null){
-            /*if (mContact.getCurrentPhotoPath() != null ) mPhotoFile = new File(mContact.getCurrentPhotoPath());
-            else mPhotoFile = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());*/
             filePath = mContact.getCurrentPhotoPath();
             first_Name = mContact.getFirstname(); last_Name = mContact.getLastname(); Email = mContact.getEmail();
         } else {
@@ -83,22 +74,14 @@ public class ContactFragment extends Fragment {
             boolean photoTaken = savedInstanceState.getBoolean("photoTaken"); this.photoTaken = photoTaken;
 
             if (this.photoTaken){
-                //mPhotoFile = new File(savedInstanceState.getString("photoPath"));
-                //updatePhotoView(120, 120);
+
                 filePath = savedInstanceState.getString("photoPath");
-//                Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
+
             } else{
                 filePath = savedInstanceState.getString("photoPath");
-                //mPhotoFile = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
-               /* if (mContact.getCurrentPhotoPath() != null){
-                    Log.i("tag", "ovsaaffsaasfsss");
-                    mPhotoFile = new File(mContact.getCurrentPhotoPath());
-                }else mPhotoFile = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());*/
+
             }
-
-
         }
-
     }
 
     @Override
@@ -109,12 +92,9 @@ public class ContactFragment extends Fragment {
 
         mPhotoView = root.findViewById(R.id.image_profile);
 
-
         editTextBoxName = root.findViewById(R.id.first_name_input_box_edit_box); editTextBoxName.setText(first_Name);
         editTextBoxLastname = root.findViewById(R.id.last_name_input_box_edit_box); editTextBoxLastname.setText(last_Name);
         editTextBoxEmail = root.findViewById(R.id.email_input_box_edit_box); editTextBoxEmail.setText(Email);
-
-
 
         int color = ((int)(Math.random()*16777215)) | (0xFF << 24);
 
@@ -127,7 +107,6 @@ public class ContactFragment extends Fragment {
         LinearLayout saveChanges = root.findViewById(R.id.linear_layout_bottom);
         saveChanges.setOnClickListener((View v) -> {
 
-
             mContact.setFirstname(editTextBoxName.getText().toString());
             mContact.setLastname(editTextBoxLastname.getText().toString());
             mContact.setEmail(editTextBoxEmail.getText().toString());
@@ -135,8 +114,6 @@ public class ContactFragment extends Fragment {
             if(photoTaken)  mContact.setCurrentPhotoPath(filePath);
 
             Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
-            //getActivity().finish();
-
         });
 
         mCameraButton = root.findViewById(R.id.camera); mGalleryButton = root.findViewById(R.id.gallery);
@@ -148,7 +125,6 @@ public class ContactFragment extends Fragment {
         mCameraButton.setOnClickListener((View v) -> {
 
             File f = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
-            //filePath = f.getAbsolutePath();
             tempFilePath = f.getAbsolutePath();
             Uri photoURI = FileProvider.getUriForFile(getActivity(),
                     "com.example.email.fileprovider",
@@ -160,16 +136,10 @@ public class ContactFragment extends Fragment {
         final Intent pickImage = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickImage.setType("image/*");
 
-
         mGalleryButton.setOnClickListener((View v) -> {
             startActivityForResult(pickImage, REQUEST_GALLERY_PHOTO);
         });
 
-
-
-        //if(photoTaken || mContact.getCurrentPhotoPath() != null) Helper.displayImageIntoImageView(m);
-        /*if(photoTaken)updatePhotoView(120, 120);
-        if (mContact.getCurrentPhotoPath() != null) updatePhotoView(120, 120);*/
         if (filePath != null) Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
         return root;
     }
@@ -183,13 +153,10 @@ public class ContactFragment extends Fragment {
         savedInstanceState.putString("email", editTextBoxEmail.getText().toString());
         savedInstanceState.putBoolean("photoTaken", photoTaken);
 
-        //if (photoTaken && mPhotoFile != null)  savedInstanceState.putString("photoPath", mPhotoFile.getAbsolutePath());
         if (photoTaken)  savedInstanceState.putString("photoPath", filePath);
         else if (!photoTaken && mContact.getCurrentPhotoPath() != null) savedInstanceState.putString("photoPath", mContact.getCurrentPhotoPath());
 
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -214,27 +181,9 @@ public class ContactFragment extends Fragment {
 
             filePath = picturePath;
 
-
         }
 
     }
-
-
-
-
-/*    private void updatePhotoView(int imageWidth, int imageHeight) {
-        if (mPhotoFile == null || !mPhotoFile.exists()) {
-            //Log.i("test","asraf");
-            mPhotoView.setImageResource(mContact.getAvatar());
-
-        } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), imageWidth, imageHeight);
-            //Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
-            mPhotoView.setImageBitmap(bitmap);
-        }
-    }*/
-
-
 
     public static ContactFragment newInstance(int idContact) {
         Bundle args = new Bundle();

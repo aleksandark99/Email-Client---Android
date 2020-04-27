@@ -38,7 +38,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     private Context mContext;
     private Contact currentContact;
 
-
     public ContactsAdapter(ArrayList<Contact> mContacts, Context mContext){
 
         Log.i("TAG: ", "POZVAN ContactsAdapter konstruktor");
@@ -46,7 +45,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         this.mContext = mContext;
 
     }
-
     //Provide a reference to the views used in the recycler view
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -61,7 +59,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
             imageView = cardView.findViewById(R.id.image_profile);
             Log.i("TAG: ", "POZVAN ViewHolder konstruktor");
         }
-
     }
 
     @Override
@@ -69,8 +66,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         //Create a new view
         Log.i("TAG: ", "POZVANA onCreateViewHolder iz ViewHoldera");
         CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_card_item, parent, false);
-        //ImageView imageView = cv.findViewById(R.id.image_profile);
-
 
         return new ViewHolder(cv);
     }
@@ -81,42 +76,16 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         CardView cardView = holder.cardView;
 
         currentContact = mContacts.get(position);
-        //Log.i("Tag objekat: ", currentContact.toString());
-        //Log.i("pozicija: ", String.valueOf(position));
-       // ImageView imageView = (ImageView)cardView.findViewById(R.id.image_profile);
-
-
         if (currentContact.getCurrentPhotoPath() != null) {
-            Log.i("USAO U", "IF");
-
-            Log.i("Photo path: ", currentContact.getCurrentPhotoPath());
-            //width = getSizeOfView(imageView, "width");
-            //height = getSizeOfView(imageView, "height");
-            //Log.i("WIDTH",String.valueOf(imageView.getWidth()));
-            //Log.i("HEIGHT",String.valueOf(imageView.getHeight()));
-
-            //prvi komit na gallery_brnchu
-            //Bitmap bitmap = PictureUtils.getScaledBitmap(currentContact.getCurrentPhotoPath(), 120   , 120);
-
-            //imageView.setImageBitmap(bitmap);
 
             Helper.displayImageIntoImageView(currentContact.getCurrentPhotoPath(), holder.imageView, mContext);
-            /*Glide.with(mContext)
-                    .load(currentContact.getCurrentPhotoPath())
-                    .apply(new RequestOptions().centerCrop())
-                    .into(holder.imageView);*/
-
-
 
         } else {
-                //Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.dummy_contact_photo);
-                Drawable drawable = cardView.getResources().getDrawable(currentContact.getAvatar());
-                holder.imageView.setImageDrawable(drawable);
-                //imageView.setImageResource(R.drawable.dummy_contact_photo);
-                //imageView.setImageResource(R.drawable.ic_left_arrow_blue);
+
+            Drawable drawable = cardView.getResources().getDrawable(currentContact.getAvatar());
+            holder.imageView.setImageDrawable(drawable);
 
         } //kom na photo_cam_branchu
-
 
         holder.imageView.setContentDescription(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
         TextView textView = (TextView)cardView.findViewById(R.id.contact_name);
@@ -126,21 +95,18 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         int color= ((int)(Math.random()*16777215)) | (0xFF << 24);
         ll.setBackgroundColor(color);
 
-
         ll.setOnClickListener((View v) -> {
 
             Intent intent = ContactActivity.newIntent(mContext, mContacts.get(position).getId());
             mContext.startActivity(intent);
 
         });
-
     }
+
     @Override
     public int getItemCount(){
         //Return the number of items in the data set
         return mContacts.size();
     }
-
-
 
 }

@@ -57,13 +57,11 @@ public class ContactsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_contacts);
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+      /*  if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         //____________________________________________________________________________________
-
-
+*/
         prepareDrawerItems();
-
 
         drawerList = (ListView) findViewById(R.id.drawerList);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);

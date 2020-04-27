@@ -73,7 +73,6 @@ public class CreateContactActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         //____________________________________________________________________________________
 */
-
         newId = getIntent().getIntExtra(EXTRA_NEW_CONTACT_ID, -1);
         newContact.setId(newId);
 
@@ -86,7 +85,7 @@ public class CreateContactActivity extends AppCompatActivity {
         cameraButton = findViewById(R.id.camera); galleryButton = findViewById(R.id.gallery);
 
         if(savedInstanceState == null){
-           // mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
+
         } else {
             String name = savedInstanceState.getString("firstName"); editTextBoxName.setText(name);
             String lastName = savedInstanceState.getString("lastName"); editTextBoxLastname.setText(lastName);
@@ -96,39 +95,23 @@ public class CreateContactActivity extends AppCompatActivity {
             boolean photoTaken = savedInstanceState.getBoolean("photoTaken"); this.photoTaken = photoTaken;
 
             if (this.photoTaken){
-                //mPhotoFile = new File();
-                //updatePhotoView(120, 120);
+
                 filePath = savedInstanceState.getString("photoPath");
-
                 Helper.displayImageIntoImageView(filePath, mPhotoView, this);
+
             } else  {
-                //mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
             }
-
-
         }
-
-
 
         final Intent pickImage = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickImage.setType("image/*");
-
-
 
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         boolean canTakePhoto = captureImage.resolveActivity(getPackageManager()) != null;
         cameraButton.setEnabled(canTakePhoto);
 
-        if (canTakePhoto) {
-          /*  Uri photoURI = FileProvider.getUriForFile(this,
-                    "com.example.email.fileprovider",
-                    mPhotoFile);
-            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);*/
-        }
-
         cameraButton.setOnClickListener((View v) -> {
             File f = Repository.get(this).getPhotoFile(newContact, this);
-            //filePath = f.getAbsolutePath();
             tempFilePath = f.getAbsolutePath();
             Uri photoURI = FileProvider.getUriForFile(this,
                     "com.example.email.fileprovider",
@@ -142,7 +125,6 @@ public class CreateContactActivity extends AppCompatActivity {
             startActivityForResult(pickImage, REQUEST_GALLERY_PHOTO);
         });
 
-
         saveChanges = findViewById(R.id.card_view_bottom);
         saveChanges.setOnClickListener(v -> {
 
@@ -154,7 +136,6 @@ public class CreateContactActivity extends AppCompatActivity {
 
             newContact.setAvatar(R.drawable.dummy_contact_photo);
 
-
             Repository.get(this).getContacts().add(newContact);
 
             Intent data = new Intent();
@@ -162,11 +143,6 @@ public class CreateContactActivity extends AppCompatActivity {
             setResult(RESULT_OK, data);
             finish();
         });
-
-
-
-
-
     }
 
     @Override
@@ -187,61 +163,26 @@ public class CreateContactActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+
             photoTaken = true;
-
             filePath = tempFilePath;
-
             Helper.displayImageIntoImageView(filePath, mPhotoView, this);
 
         } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED){
-            //photoTaken = false;
+
         } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK){
             photoTaken = true;
-
 
             Uri selectedImageUri = data.getData();
             String picturePath = Helper.getPicturePath(selectedImageUri, this);
 
             Helper.displayImageIntoImageView(picturePath, mPhotoView, this);
-
             filePath = picturePath;
 
-            //mPhotoFile = new File(picturePath);
-
-                /*Uri imgUri = data.getData();
-
-                try (InputStream inputStream = this.getContentResolver().openInputStream(imgUri);
-                     FileOutputStream stream = new FileOutputStream(mPhotoFile)) {
-                    stream.write(getBytes(inputStream));
-                } catch (IOException e){e.printStackTrace();};
-
-                updatePhotoView();*/
         } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_CANCELED){
-           // photoTaken = false;
+
         }
     }
-
-   /* private void updatePhotoView() {
-        if (mPhotoFile == null || !mPhotoFile.exists()) {
-            mPhotoView.setImageDrawable(null);
-
-        } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), 120, 120);
-            //Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
-            mPhotoView.setImageBitmap(bitmap);
-        }
-    }*/
-
-/*    private void updatePhotoView(int imageWidth, int imageHeight) {
-        if (mPhotoFile == null || !mPhotoFile.exists()) {
-            mPhotoView.setImageDrawable(null);
-
-        } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), imageWidth, imageHeight);
-            //Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
-            mPhotoView.setImageBitmap(bitmap);
-        }
-    }*/
 
     @Override
     public void onBackPressed() {
@@ -254,19 +195,6 @@ public class CreateContactActivity extends AppCompatActivity {
         i.putExtra(EXTRA_NEW_CONTACT_ID, newContactId);
         return i;
     }
-
-
-/*    private byte[] getBytes(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 8192;
-        byte[] buffer = new byte[bufferSize];
-
-        int len = 0;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
-        return byteBuffer.toByteArray();
-    }*/
 
 
 }
