@@ -86,8 +86,9 @@ public class ContactFragment extends Fragment {
                 //mPhotoFile = new File(savedInstanceState.getString("photoPath"));
                 //updatePhotoView(120, 120);
                 filePath = savedInstanceState.getString("photoPath");
-                Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
+//                Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
             } else{
+                filePath = savedInstanceState.getString("photoPath");
                 //mPhotoFile = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
                /* if (mContact.getCurrentPhotoPath() != null){
                     Log.i("tag", "ovsaaffsaasfsss");
@@ -138,24 +139,14 @@ public class ContactFragment extends Fragment {
 
         });
 
-        mCameraButton = root.findViewById(R.id.camera);
+        mCameraButton = root.findViewById(R.id.camera); mGalleryButton = root.findViewById(R.id.gallery);
+
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         boolean canTakePhoto = captureImage.resolveActivity(getActivity().getPackageManager()) != null;
         mCameraButton.setEnabled(canTakePhoto);
-       // if (canTakePhoto && mPhotoFile != null) {
 
-          /*  Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                    "com.example.email.fileprovider",
-                    mPhotoFile);
-            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);*/
-        //}
         mCameraButton.setOnClickListener((View v) -> {
-            /*if (mPhotoFile == null) mPhotoFile =  Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
-            Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                    "com.example.email.fileprovider",
-                    mPhotoFile);
-            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(captureImage, REQUEST_TAKE_PHOTO);*/
+
             File f = Repository.get(getActivity()).getPhotoFile(mContact, getActivity());
             //filePath = f.getAbsolutePath();
             tempFilePath = f.getAbsolutePath();
@@ -163,8 +154,15 @@ public class ContactFragment extends Fragment {
                     "com.example.email.fileprovider",
                     f);
             captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-
             startActivityForResult(captureImage, REQUEST_TAKE_PHOTO);
+        });
+
+        final Intent pickImage = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickImage.setType("image/*");
+
+
+        mGalleryButton.setOnClickListener((View v) -> {
+            startActivityForResult(pickImage, REQUEST_GALLERY_PHOTO);
         });
 
 
@@ -187,6 +185,7 @@ public class ContactFragment extends Fragment {
 
         //if (photoTaken && mPhotoFile != null)  savedInstanceState.putString("photoPath", mPhotoFile.getAbsolutePath());
         if (photoTaken)  savedInstanceState.putString("photoPath", filePath);
+        else if (!photoTaken && mContact.getCurrentPhotoPath() != null) savedInstanceState.putString("photoPath", mContact.getCurrentPhotoPath());
 
     }
 
