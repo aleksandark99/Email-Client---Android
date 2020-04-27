@@ -26,7 +26,7 @@ public class PictureUtils {
                 inSampleSize = Math.round(srcWidth / destWidth);
             }
         }
-        Log.i("scaled down", String.valueOf(inSampleSize));
+        Log.i("SCALED DOWN", String.valueOf(inSampleSize));
         options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
 // Read in and create final bitmap

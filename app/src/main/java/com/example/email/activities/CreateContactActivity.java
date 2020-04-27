@@ -116,6 +116,7 @@ public class CreateContactActivity extends AppCompatActivity {
             newContact.setLastname(editTextBoxLastname.getText().toString());
             newContact.setEmail(editTextBoxEmail.getText().toString());
 
+            //newContact.setCurrentPhotoPath(mPhotoFile.getAbsolutePath());
             if (photoTaken) newContact.setCurrentPhotoPath(mPhotoFile.getAbsolutePath());
 
             newContact.setAvatar(R.drawable.dummy_contact_photo);
@@ -180,8 +181,8 @@ public class CreateContactActivity extends AppCompatActivity {
             mPhotoView.setImageDrawable(null);
 
         } else {
-            // Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), imageWidth, imageHeight);
-            Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), 120, 120);
+            //Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
             mPhotoView.setImageBitmap(bitmap);
         }
     }
@@ -212,7 +213,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     private byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
+        int bufferSize = 8192;
         byte[] buffer = new byte[bufferSize];
 
         int len = 0;
