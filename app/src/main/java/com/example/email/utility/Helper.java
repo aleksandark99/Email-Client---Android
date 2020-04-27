@@ -1,6 +1,9 @@
 package com.example.email.utility;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
@@ -21,6 +24,30 @@ public class Helper {
                 .apply(new RequestOptions().centerCrop())
                 .override(imageView.getWidth(), imageView.getHeight())
                 .into(imageView);
+    }
+
+    public static String getPicturePath(Uri selectedImageUri, Context context){
+
+
+        // timer = new Thread(() -> {
+           // try {
+
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                //Uri imageUri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                Cursor cursor = context.getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+                return picturePath;
+
+           // } catch (InterruptedException ie) {ie.printStackTrace();} catch (Exception e){e.printStackTrace();}
+        //});
+       // timer.start();
+
+
+
+
     }
 
 }

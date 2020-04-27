@@ -6,13 +6,17 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +41,7 @@ public class ContactsActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 1;
     private static final String NEW_CONTACT_KEY = "com.example.email.contacts_activity.NEW_CONTACT_KEY";
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     private RecyclerView mRecyclerView;
     private DrawerLayout drawerLayout;
@@ -51,6 +56,11 @@ public class ContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_contacts);
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        //____________________________________________________________________________________
+
 
         prepareDrawerItems();
 

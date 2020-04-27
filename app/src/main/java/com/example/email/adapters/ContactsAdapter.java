@@ -20,6 +20,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.email.R;
 import com.example.email.activities.ContactActivity;

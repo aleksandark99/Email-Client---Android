@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.email.R;
 import com.example.email.model.Contact;
@@ -52,7 +53,10 @@ public class CreateContactActivity extends AppCompatActivity {
 
     private EditText editTextBoxName, editTextBoxLastname, editTextBoxEmail, editTextBoxInfo;
 
-    private File mPhotoFile;
+    private String filePath, tempFilePath;
+
+
+    //private File mPhotoFile;
     private Button cameraButton, galleryButton;
     private CardView saveChanges;
     private ImageView mPhotoView;
@@ -65,10 +69,10 @@ public class CreateContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contact);
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        /*if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         //____________________________________________________________________________________
-
+*/
 
         newId = getIntent().getIntExtra(EXTRA_NEW_CONTACT_ID, -1);
         newContact.setId(newId);
@@ -82,7 +86,7 @@ public class CreateContactActivity extends AppCompatActivity {
         cameraButton = findViewById(R.id.camera); galleryButton = findViewById(R.id.gallery);
 
         if(savedInstanceState == null){
-            mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
+           // mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
         } else {
             String name = savedInstanceState.getString("firstName"); editTextBoxName.setText(name);
             String lastName = savedInstanceState.getString("lastName"); editTextBoxLastname.setText(lastName);
@@ -92,9 +96,14 @@ public class CreateContactActivity extends AppCompatActivity {
             boolean photoTaken = savedInstanceState.getBoolean("photoTaken"); this.photoTaken = photoTaken;
 
             if (this.photoTaken){
-                mPhotoFile = new File(savedInstanceState.getString("photoPath"));
+                //mPhotoFile = new File();
                 //updatePhotoView(120, 120);
-            } else  mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
+                filePath = savedInstanceState.getString("photoPath");
+
+                Helper.displayImageIntoImageView(filePath, mPhotoView, this);
+            } else  {
+                //mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
+            }
 
 
         }
@@ -111,13 +120,21 @@ public class CreateContactActivity extends AppCompatActivity {
         cameraButton.setEnabled(canTakePhoto);
 
         if (canTakePhoto) {
-            Uri photoURI = FileProvider.getUriForFile(this,
+          /*  Uri photoURI = FileProvider.getUriForFile(this,
                     "com.example.email.fileprovider",
                     mPhotoFile);
-            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);*/
         }
 
         cameraButton.setOnClickListener((View v) -> {
+            File f = Repository.get(this).getPhotoFile(newContact, this);
+            //filePath = f.getAbsolutePath();
+            tempFilePath = f.getAbsolutePath();
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    "com.example.email.fileprovider",
+                    f);
+            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+
             startActivityForResult(captureImage, REQUEST_TAKE_PHOTO);
         });
 
@@ -133,8 +150,7 @@ public class CreateContactActivity extends AppCompatActivity {
             newContact.setLastname(editTextBoxLastname.getText().toString());
             newContact.setEmail(editTextBoxEmail.getText().toString());
 
-            //newContact.setCurrentPhotoPath(mPhotoFile.getAbsolutePath());
-            if (photoTaken) newContact.setCurrentPhotoPath(mPhotoFile.getAbsolutePath());
+            if (photoTaken) newContact.setCurrentPhotoPath(filePath);
 
             newContact.setAvatar(R.drawable.dummy_contact_photo);
 
@@ -162,7 +178,7 @@ public class CreateContactActivity extends AppCompatActivity {
         savedInstanceState.putString("email", editTextBoxEmail.getText().toString());
         savedInstanceState.putString("info", editTextBoxInfo.getText().toString());
         savedInstanceState.putBoolean("photoTaken", photoTaken);
-        if (photoTaken)  savedInstanceState.putString("photoPath", mPhotoFile.getAbsolutePath());
+        if (photoTaken)  savedInstanceState.putString("photoPath", filePath);
 
 
     }
@@ -172,23 +188,25 @@ public class CreateContactActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             photoTaken = true;
-            Helper.displayImageIntoImageView(mPhotoFile.getAbsolutePath(), mPhotoView, this);
+
+            filePath = tempFilePath;
+
+            Helper.displayImageIntoImageView(filePath, mPhotoView, this);
+
         } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED){
-            photoTaken = false;
+            //photoTaken = false;
         } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK){
             photoTaken = true;
+
+
             Uri selectedImageUri = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            //Uri imageUri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            Cursor cursor = getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
+            String picturePath = Helper.getPicturePath(selectedImageUri, this);
 
             Helper.displayImageIntoImageView(picturePath, mPhotoView, this);
 
-            mPhotoFile = new File(picturePath);
+            filePath = picturePath;
+
+            //mPhotoFile = new File(picturePath);
 
                 /*Uri imgUri = data.getData();
 
@@ -199,11 +217,11 @@ public class CreateContactActivity extends AppCompatActivity {
 
                 updatePhotoView();*/
         } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_CANCELED){
-            photoTaken = false;
+           // photoTaken = false;
         }
     }
 
-    private void updatePhotoView() {
+   /* private void updatePhotoView() {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
 
@@ -212,7 +230,7 @@ public class CreateContactActivity extends AppCompatActivity {
             //Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
             mPhotoView.setImageBitmap(bitmap);
         }
-    }
+    }*/
 
 /*    private void updatePhotoView(int imageWidth, int imageHeight) {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
