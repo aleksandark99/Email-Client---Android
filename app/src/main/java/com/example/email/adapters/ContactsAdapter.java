@@ -19,10 +19,13 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.email.R;
 import com.example.email.activities.ContactActivity;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
+import com.example.email.utility.Helper;
 import com.example.email.utility.PictureUtils;
 import com.squareup.picasso.Picasso;
 
@@ -48,11 +51,13 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         private CardView cardView;
         private LinearLayout mLinearLayout;
+        private ImageView imageView;
 
         public ViewHolder(CardView v) {
             super(v);
             cardView = v;
             mLinearLayout = cardView.findViewById(R.id.linear_layout);
+            imageView = cardView.findViewById(R.id.image_profile);
             Log.i("TAG: ", "POZVAN ViewHolder konstruktor");
         }
 
@@ -76,8 +81,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         currentContact = mContacts.get(position);
         //Log.i("Tag objekat: ", currentContact.toString());
-        Log.i("pozicija: ", String.valueOf(position));
-        ImageView imageView = (ImageView)cardView.findViewById(R.id.image_profile);
+        //Log.i("pozicija: ", String.valueOf(position));
+       // ImageView imageView = (ImageView)cardView.findViewById(R.id.image_profile);
 
 
         if (currentContact.getCurrentPhotoPath() != null) {
@@ -86,24 +91,33 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
             Log.i("Photo path: ", currentContact.getCurrentPhotoPath());
             //width = getSizeOfView(imageView, "width");
             //height = getSizeOfView(imageView, "height");
-            Log.i("WIDTH",String.valueOf(imageView.getWidth()));
-            Log.i("HEIGHT",String.valueOf(imageView.getHeight()));
+            //Log.i("WIDTH",String.valueOf(imageView.getWidth()));
+            //Log.i("HEIGHT",String.valueOf(imageView.getHeight()));
 
             //prvi komit na gallery_brnchu
-            Bitmap bitmap = PictureUtils.getScaledBitmap(currentContact.getCurrentPhotoPath(), 120   , 120);
-            //Picasso.get().load(currentContact.getCurrentPhotoPath()).into(imageView);
-            imageView.setImageBitmap(bitmap);
+            //Bitmap bitmap = PictureUtils.getScaledBitmap(currentContact.getCurrentPhotoPath(), 120   , 120);
+
+            //imageView.setImageBitmap(bitmap);
+
+            Helper.displayImageIntoImageView(currentContact.getCurrentPhotoPath(), holder.imageView, mContext);
+            /*Glide.with(mContext)
+                    .load(currentContact.getCurrentPhotoPath())
+                    .apply(new RequestOptions().centerCrop())
+                    .into(holder.imageView);*/
+
+
+
         } else {
                 //Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.dummy_contact_photo);
                 Drawable drawable = cardView.getResources().getDrawable(currentContact.getAvatar());
-                imageView.setImageDrawable(drawable);
+                holder.imageView.setImageDrawable(drawable);
                 //imageView.setImageResource(R.drawable.dummy_contact_photo);
                 //imageView.setImageResource(R.drawable.ic_left_arrow_blue);
 
         } //kom na photo_cam_branchu
 
 
-        imageView.setContentDescription(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
+        holder.imageView.setContentDescription(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
         TextView textView = (TextView)cardView.findViewById(R.id.contact_name);
         textView.setText(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
 

@@ -3,11 +3,16 @@ package com.example.email.activities;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,11 +28,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
+import com.example.email.utility.Helper;
 import com.example.email.utility.PictureUtils;
 import com.google.android.material.textfield.TextInputLayout;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -36,7 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class CreateContactActivity extends AppCompatActivity {
-
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     static final int REQUEST_TAKE_PHOTO = 2;
     static final int REQUEST_GALLERY_PHOTO = 3;
     private static final String EXTRA_NEW_CONTACT_ID = "com.example.email.create_contact_activity.NEW_CONTACT_ID";
@@ -55,6 +64,11 @@ public class CreateContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contact);
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        //____________________________________________________________________________________
+
 
         newId = getIntent().getIntExtra(EXTRA_NEW_CONTACT_ID, -1);
         newContact.setId(newId);
@@ -79,14 +93,17 @@ public class CreateContactActivity extends AppCompatActivity {
 
             if (this.photoTaken){
                 mPhotoFile = new File(savedInstanceState.getString("photoPath"));
-                updatePhotoView(120, 120);
+                //updatePhotoView(120, 120);
             } else  mPhotoFile = Repository.get(this).getPhotoFile(newContact, this);
 
 
         }
 
+
+
         final Intent pickImage = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-       //Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        pickImage.setType("image/*");
+
 
 
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -154,23 +171,33 @@ public class CreateContactActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            updatePhotoView();
             photoTaken = true;
-            //galleryAddPic();
-
+            Helper.displayImageIntoImageView(mPhotoFile.getAbsolutePath(), mPhotoView, this);
         } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED){
             photoTaken = false;
         } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK){
             photoTaken = true;
+            Uri selectedImageUri = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            //Uri imageUri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Cursor cursor = getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
 
-                Uri imgUri = data.getData();
+            Helper.displayImageIntoImageView(picturePath, mPhotoView, this);
+
+            mPhotoFile = new File(picturePath);
+
+                /*Uri imgUri = data.getData();
 
                 try (InputStream inputStream = this.getContentResolver().openInputStream(imgUri);
                      FileOutputStream stream = new FileOutputStream(mPhotoFile)) {
                     stream.write(getBytes(inputStream));
                 } catch (IOException e){e.printStackTrace();};
 
-                updatePhotoView();
+                updatePhotoView();*/
         } else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_CANCELED){
             photoTaken = false;
         }
@@ -187,7 +214,7 @@ public class CreateContactActivity extends AppCompatActivity {
         }
     }
 
-    private void updatePhotoView(int imageWidth, int imageHeight) {
+/*    private void updatePhotoView(int imageWidth, int imageHeight) {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
 
@@ -196,7 +223,7 @@ public class CreateContactActivity extends AppCompatActivity {
             //Bitmap bitmap =  PictureUtils.getScaledBitmap(mPhotoView, mPhotoFile.getAbsolutePath());
             mPhotoView.setImageBitmap(bitmap);
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -211,7 +238,7 @@ public class CreateContactActivity extends AppCompatActivity {
     }
 
 
-    private byte[] getBytes(InputStream inputStream) throws IOException {
+/*    private byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         int bufferSize = 8192;
         byte[] buffer = new byte[bufferSize];
@@ -221,7 +248,7 @@ public class CreateContactActivity extends AppCompatActivity {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
-    }
+    }*/
 
 
 }
