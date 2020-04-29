@@ -151,8 +151,12 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
     }
 
+    /* Later adjust this method, now it is react on each item click */
     @Override
     public void onNoteClick(int position) {
 
+        Intent intent = new Intent(this, FolderActivity.class);
+
+        startActivity(intent);
     }
 }

@@ -7,15 +7,16 @@ public class Folder {
     private int id;
     private String name;
     private ArrayList<Folder> childFolders;
-    //private ArrayList<Message> messages;
+    private ArrayList<Message> messages;
     private Rule destination;
 
 
     public Folder(){}
 
-    public Folder(int id, String name, ArrayList<Folder> childFolders, Rule destination) {
+    public Folder(int id, String name, ArrayList<Message> messages, ArrayList<Folder> childFolders, Rule destination) {
         this.id = id;
         this.name = name;
+        this.messages = messages;
         this.childFolders = childFolders;
         this.destination = destination;
     }
@@ -34,6 +35,14 @@ public class Folder {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(ArrayList<Message> messages) {
+        this.messages = messages;
     }
 
     public ArrayList<Folder> getChildFolders() {
