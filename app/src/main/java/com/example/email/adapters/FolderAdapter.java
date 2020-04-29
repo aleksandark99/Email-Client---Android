@@ -66,19 +66,26 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             case 0:
 
-                if(position < folders.size()) {
+                if(folders != null) {
 
-                    ((FolderViewHolder) holder).setFolderDetails(folders.get(position));
+                    if(position < folders.size()) {
 
+                        ((FolderViewHolder) holder).setFolderDetails(folders.get(position));
+                    }
                 }
                 break;
 
             case 1:
 
-                if(position <= messages.size()) {
+                if(messages != null) {
 
-                    ((EmailViewHolder) holder).setEmailDetails(messages.get(position - folders.size()));
+                    if(position <= messages.size()) {
 
+                        int foldersSize = (folders == null) ? 0 : folders.size();
+
+                        ((EmailViewHolder) holder).setEmailDetails(messages.get(position - foldersSize));
+
+                    }
                 }
                 break;
         }
@@ -87,13 +94,22 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
 
-        if(position == 0){
+        if(folders == null){
+
+            return TYPE_EMAIL;
+
+        }if(messages == null){
+
+            return TYPE_FOLDER;
+
+        }if(position < folders.size()){
 
             return TYPE_FOLDER;
 
         }else{
 
             return TYPE_EMAIL;
+
         }
 
     }
@@ -101,7 +117,11 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemCount() {
 
-        return folders.size() + messages.size();
+        int foldersSize = (folders == null) ? 0 : folders.size();
+
+        int messagesSize = (messages == null) ? 0 : messages.size();
+
+        return foldersSize + messagesSize;
     }
 
 
@@ -122,7 +142,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private void setFolderDetails(Folder folder){
 
             fNameView.setText(folder.getName());
-            mCountView.setText(folder.getChildFolders().size() + "");
+            int childFoldersSize = (folder.getChildFolders() == null) ? 0 : folder.getChildFolders().size();
+            mCountView.setText(childFoldersSize + "");
             folderImage.setImageResource(imageFolder[0]);
         }
     }
