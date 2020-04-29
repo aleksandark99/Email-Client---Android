@@ -141,6 +141,9 @@ public class CreateContactActivity extends AppCompatActivity {
             Intent data = new Intent();
             data.putExtra("photoTaken", photoTaken);
             setResult(RESULT_OK, data);
+
+            Log.i("PUTANJA", filePath);
+
             finish();
         });
     }

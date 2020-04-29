@@ -81,7 +81,7 @@ public class Contact   {
 
     public String getPhotoFilename() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        Log.i("timestampe", timeStamp);
+       // Log.i("timestampe", timeStamp);
         return "IMG_" + getId() + "_" + timeStamp + ".jpg";
     }
 
