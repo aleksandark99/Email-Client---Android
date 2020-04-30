@@ -1,6 +1,7 @@
 package com.example.email.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
+import com.example.email.activities.EmailActivity;
+import com.example.email.activities.EmailsActivity;
 import com.example.email.model.Message;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -64,9 +68,17 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         Integer img = R.drawable.ic_lens_black_24dp;
 
         chip.setChipIconResource(img);
-
-
         holder.chipGroup.addView(chip);
+
+        holder.layoutRow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ctx, EmailActivity.class);
+                intent.putExtra("message",messages.get(position));//Message.class je seriazable
+                ctx.startActivity(intent);
+
+            }
+        });
 
 
     }
@@ -119,6 +131,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         TextView from, subject, shortContent, date;
         CardView cardView;
         ChipGroup chipGroup;
+        ConstraintLayout layoutRow;
         public EmailsViewHolder(@NonNull View itemView) {
             super(itemView);
             from = itemView.findViewById(R.id.fromText1);
@@ -128,6 +141,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             cardView = itemView.findViewById(R.id.cardViewEmailRow1);//test za unread
             chipGroup = itemView.findViewById(R.id.ChipGroupRow);
 
+            layoutRow = itemView.findViewById(R.id.new_email_row_id);
 
         }
 

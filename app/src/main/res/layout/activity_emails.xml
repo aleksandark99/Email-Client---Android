@@ -29,12 +29,16 @@
         <include layout="@layout/custom_toolbar_emails">
 
         </include>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/emailsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="624dp" />
+</ScrollView>
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/emailsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="624dp" />
 
     </LinearLayout>
 

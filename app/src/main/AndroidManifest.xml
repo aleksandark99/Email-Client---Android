@@ -15,7 +15,13 @@
         <activity android:name=".activities.FolderActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".activities.EmailActivity" />
+        <activity android:name=".activities.EmailActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+
+            android:parentActivityName=".activities.EmailsActivity"
+
+
+            />
         <activity
             android:name=".activities.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"

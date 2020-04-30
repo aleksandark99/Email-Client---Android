@@ -2,10 +2,11 @@ package com.example.email.model;
 
 import com.example.email.model.items.Tag;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Message {
+public class Message implements Serializable {
 
     private long id;
     private String from;
