@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.email.R;
 import com.example.email.model.Folder;
 import com.example.email.model.Message;
+import com.example.email.model.interfaces.RecyclerClickListener;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -28,13 +29,16 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     ArrayList<Folder> folders;
     ArrayList<Message> messages;
 
+    private RecyclerClickListener recyclerClickListener;
 
-    public FolderAdapter(Context ctx, int[] idImage, ArrayList<Folder> childFolders, ArrayList<Message> folderMessages) {
+
+    public FolderAdapter(Context ctx, int[] idImage, ArrayList<Folder> childFolders, ArrayList<Message> folderMessages, RecyclerClickListener listener) {
 
         context = ctx;
         imageFolder = idImage;
         folders = childFolders;
         messages = folderMessages;
+        recyclerClickListener = listener;
 
     }
 
@@ -49,13 +53,13 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             view = LayoutInflater.from(context).inflate(R.layout.folder_row, parent, false);
 
-            return new FolderViewHolder(view);
+            return new FolderViewHolder(view, recyclerClickListener);
 
         }else{
 
             view = LayoutInflater.from(context).inflate(R.layout.new_emails_row, parent, false);
 
-            return new EmailViewHolder(view);
+            return new EmailViewHolder(view, recyclerClickListener);
         }
     }
 
@@ -125,18 +129,25 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-    class FolderViewHolder extends RecyclerView.ViewHolder{
+    class FolderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         TextView fNameView, mCountView;
 
         ImageView folderImage;
 
-        public FolderViewHolder(@NonNull View itemView) {
+        RecyclerClickListener recyclerClickListener;
+
+        public FolderViewHolder(@NonNull View itemView, RecyclerClickListener listener) {
 
             super(itemView);
             fNameView = itemView.findViewById(R.id.tv_folder_name);
             mCountView = itemView.findViewById(R.id.tv_mCount);
             folderImage = itemView.findViewById(R.id.imageFolder);
+
+            recyclerClickListener = listener;
+
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         private void setFolderDetails(Folder folder){
@@ -146,16 +157,33 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             mCountView.setText(childFoldersSize + "");
             folderImage.setImageResource(imageFolder[0]);
         }
+
+        @Override
+        public void onClick(View v) {
+
+            this.recyclerClickListener.OnItemClick(v, getLayoutPosition());
+
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            this.recyclerClickListener.OnLongItemClick(v, getLayoutPosition());
+
+            return false;
+        }
     }
 
 
-    public class EmailViewHolder extends RecyclerView.ViewHolder{
+    public class EmailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         TextView from, subject, shortContent, date;
         CardView cardView;
         ChipGroup chipGroup;
 
-        public EmailViewHolder(@NonNull View itemView) {
+        RecyclerClickListener recyclerClickListener;
+
+        public EmailViewHolder(@NonNull View itemView, RecyclerClickListener listener) {
             super(itemView);
             from = itemView.findViewById(R.id.fromText1);
             subject = itemView.findViewById(R.id.subjectText1);
@@ -163,6 +191,11 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             shortContent = itemView.findViewById(R.id.shortContentText1);
             cardView = itemView.findViewById(R.id.cardViewEmailRow1);//test za unread
             chipGroup = itemView.findViewById(R.id.ChipGroupRow);
+
+            recyclerClickListener = listener;
+
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
 
         }
 
@@ -173,6 +206,20 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             date.setText("Api problem");
             shortContent.setText(message.getContent());
 
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            this.recyclerClickListener.OnItemClick(v, getLayoutPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            this.recyclerClickListener.OnLongItemClick(v, getLayoutPosition());
+
+            return false;
         }
     }
 }

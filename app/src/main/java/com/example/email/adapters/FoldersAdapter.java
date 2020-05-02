@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
+import com.example.email.model.interfaces.RecyclerClickListener;
 
 public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersViewAdapter> {
 
@@ -19,15 +20,15 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
     int[] messageCount;
     int[] images;
 
-    private OnNoteListener mOnNoteListener;
+    private RecyclerClickListener recyclerClickListener;
 
-    public FoldersAdapter(Context ctx, String[] names, int[] messages, int[] idImage, OnNoteListener mListener){
+    public FoldersAdapter(Context ctx, String[] names, int[] messages, int[] idImage, RecyclerClickListener listener){
 
         context = ctx;
         folderNames = names;
         messageCount = messages;
         images = idImage;
-        mOnNoteListener = mListener;
+        recyclerClickListener = listener;
 
     }
 
@@ -39,7 +40,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
 
         View view = inflater.inflate(R.layout.folder_row, parent, false);
 
-        return new FoldersViewAdapter(view, mOnNoteListener);
+        return new FoldersViewAdapter(view, recyclerClickListener);
     }
 
     @Override
@@ -56,36 +57,42 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
         return folderNames.length;
     }
 
-    public class FoldersViewAdapter extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class FoldersViewAdapter extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         TextView fNameView, mCountView;
 
         ImageView folderImage;
 
-        OnNoteListener onNoteListener;
+        RecyclerClickListener recyclerClickListener;
 
-        public FoldersViewAdapter(@NonNull View itemview, OnNoteListener listener) {
+        public FoldersViewAdapter(@NonNull View itemview, RecyclerClickListener listener) {
 
             super(itemview);
 
             fNameView = itemview.findViewById(R.id.tv_folder_name);
             mCountView = itemview.findViewById(R.id.tv_mCount);
             folderImage = itemview.findViewById(R.id.imageFolder);
-            onNoteListener = listener;
+            recyclerClickListener = listener;
 
             itemview.setOnClickListener(this);
+            itemview.setOnLongClickListener(this);
         }
+
 
         @Override
         public void onClick(View v) {
 
-            onNoteListener.onNoteClick(getLayoutPosition());
+            this.recyclerClickListener.OnItemClick(v, getLayoutPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            this.recyclerClickListener.OnLongItemClick(v, getLayoutPosition());
+
+            return false;
         }
     }
 
-    public interface OnNoteListener{
-
-        void onNoteClick(int position);
-    }
 
 }

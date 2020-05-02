@@ -18,10 +18,11 @@ import android.widget.TextView;
 import com.example.email.MainActivity;
 import com.example.email.R;
 import com.example.email.adapters.FoldersAdapter;
+import com.example.email.model.interfaces.RecyclerClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FoldersAdapter.OnNoteListener {
+public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RecyclerClickListener {
 
     String[] foldersName;
 
@@ -89,7 +90,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         /*  Adapters for RecycleView */
 
-        FoldersAdapter foldersAdapter = new FoldersAdapter(this, foldersName, messageCount, images, this::onNoteClick);
+        FoldersAdapter foldersAdapter = new FoldersAdapter(this, foldersName, messageCount, images, this);
         recyclerView.setAdapter(foldersAdapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -152,11 +153,26 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     }
 
     /* Later adjust this method, now it is react on each item click */
+
     @Override
-    public void onNoteClick(int position) {
+    public void OnItemClick(View view, int position) {
 
         Intent intent = new Intent(this, FolderActivity.class);
 
         startActivity(intent);
+
+    }
+
+    @Override
+    public void OnLongItemClick(View view, int position) {
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+
+                return false;
+            }
+        });
     }
 }

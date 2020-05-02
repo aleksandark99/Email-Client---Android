@@ -1,28 +1,36 @@
 package com.example.email.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.FolderAdapter;
 import com.example.email.model.Folder;
 import com.example.email.model.Message;
 import com.example.email.model.Rule;
+import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.model.items.Tag;
 
 import java.util.ArrayList;
 
-public class FolderActivity extends AppCompatActivity {
+public class FolderActivity extends AppCompatActivity implements RecyclerClickListener {
 
     int[] images = {R.drawable.ic_folder_purple};
 
     Toolbar toolbar;
 
     RecyclerView recyclerView;
+
+    ActionMode mActionMode;
 
 
     @Override
@@ -93,7 +101,7 @@ public class FolderActivity extends AppCompatActivity {
         ArrayList<Message> folderMessages = folder.getMessages();
 
 
-        FolderAdapter folderAdapter = new FolderAdapter(this, images, childFolders, folderMessages);
+        FolderAdapter folderAdapter = new FolderAdapter(this, images, childFolders, folderMessages, this);
 
         recyclerView.setAdapter(folderAdapter);
 
@@ -101,4 +109,89 @@ public class FolderActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void OnItemClick(View view, int position) {
+
+    }
+
+    @Override
+    public void OnLongItemClick(View view, int position) {
+
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+
+                if(mActionMode != null){
+
+                    return false;
+                }
+
+                mActionMode = startSupportActionMode(mActionModeCallback);
+
+                return true;
+            }
+
+        });
+
+    }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+            mode.getMenuInflater().inflate(R.menu.action_mode_menu, menu);
+            mode.setTitle("Choose the option");
+
+            return true;
+
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            switch(item.getItemId()){
+
+                case R.id.action_mode_copy:
+
+                    Toast.makeText(FolderActivity.this, "Copy option selected", Toast.LENGTH_SHORT).show();
+
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_mode_move:
+
+                    Toast.makeText(FolderActivity.this, "Move option selected", Toast.LENGTH_SHORT).show();
+
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_mode_del:
+
+                    Toast.makeText(FolderActivity.this, "Delete option selected", Toast.LENGTH_SHORT).show();
+
+                    mode.finish();
+
+                    return true;
+
+                default: return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+
+            mActionMode = null;
+        }
+    };
 }
