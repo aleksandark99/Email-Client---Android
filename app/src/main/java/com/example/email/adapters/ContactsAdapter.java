@@ -2,35 +2,31 @@ package com.example.email.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.email.R;
 import com.example.email.activities.ContactActivity;
 import com.example.email.model.Contact;
-import com.example.email.repository.Repository;
+import com.example.email.retrofit.contacts.ContactService;
+import com.example.email.retrofit.contacts.RetrofitContactClient;
 import com.example.email.utility.Helper;
-import com.example.email.utility.PictureUtils;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHolder>  {
 
@@ -43,7 +39,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         Log.i("TAG: ", "POZVAN ContactsAdapter konstruktor");
         this.mContacts = mContacts;
         this.mContext = mContext;
-
     }
     //Provide a reference to the views used in the recycler view
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -6,6 +6,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.example.email.R;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -14,18 +17,29 @@ import java.util.Date;
 public class Contact   {
 
 
-    private int id, mAvatar;
+
+    private Integer id;
+
+    private int mAvatar;
+
+    @SerializedName("lastName")
     private String mFirstname;
+
+    @SerializedName("firstName")
     private String mLastname;
+
+    @SerializedName("email")
     private String mEmail;
+
+    @SerializedName("photoPath")
     private String mCurrentPhotoPath;
 
-    public Contact(int id, String firstname, String lastname, String email, int avatar) {
-        this.id = id;
+    public Contact(String firstname, String lastname, String email) {
+        //this.id = id;
         mFirstname = firstname;
         mLastname = lastname;
         mEmail = email;
-        mAvatar = avatar;
+        mAvatar = R.drawable.dummy_contact_photo;
 
     }
 

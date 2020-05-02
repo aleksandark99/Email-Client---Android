@@ -34,6 +34,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
+import com.example.email.retrofit.contacts.ContactService;
+import com.example.email.retrofit.contacts.RetrofitContactClient;
 import com.example.email.utility.Helper;
 import com.example.email.utility.PictureUtils;
 import com.google.android.material.textfield.TextInputLayout;
@@ -45,6 +47,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class CreateContactActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     static final int REQUEST_TAKE_PHOTO = 2;
@@ -54,7 +61,8 @@ public class CreateContactActivity extends AppCompatActivity {
     private EditText editTextBoxName, editTextBoxLastname, editTextBoxEmail, editTextBoxInfo;
 
     private String filePath, tempFilePath;
-
+    private Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
+    private ContactService mContactService = mRetrofit.create(ContactService.class);
 
     //private File mPhotoFile;
     private Button cameraButton, galleryButton;
@@ -134,9 +142,29 @@ public class CreateContactActivity extends AppCompatActivity {
 
             if (photoTaken) newContact.setCurrentPhotoPath(filePath);
 
-            newContact.setAvatar(R.drawable.dummy_contact_photo);
+            //newContact.setAvatar(R.drawable.dummy_contact_photo);
 
-            Repository.get(this).getContacts().add(newContact);
+            //Repository.get(this).getContacts().add(newContact);
+
+            Call<Integer> call = mContactService.addContact(newContact);
+
+            call.enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (!response.isSuccessful()){
+                        Log.i("ERROR", String.valueOf(response.code()));
+                        return;
+                    }
+
+                    newContact.setId(response.body());
+                }
+
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
+                    Log.i("ERROR", t.toString());
+                }
+            });
+
 
             Intent data = new Intent();
             data.putExtra("photoTaken", photoTaken);

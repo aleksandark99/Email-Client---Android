@@ -34,8 +34,16 @@ import com.example.email.adapters.ContactsAdapter;
 import com.example.email.model.Contact;
 import com.example.email.model.items.ContactNavItem;
 import com.example.email.repository.Repository;
+import com.example.email.retrofit.contacts.ContactService;
+import com.example.email.retrofit.contacts.RetrofitContactClient;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ContactsActivity extends AppCompatActivity {
 
@@ -50,6 +58,8 @@ public class ContactsActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private ArrayList<ContactNavItem> mNavItems = new ArrayList<ContactNavItem>();
     private Repository mRepository = Repository.get(this);
+
+    private ArrayList<Contact> mContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +109,17 @@ public class ContactsActivity extends AppCompatActivity {
         };
         drawerLayout.addDrawerListener(drawerToggle);
 
+        fetchAllContacts();
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
-        ContactsAdapter adapter = new ContactsAdapter(mRepository.getContacts(),this);
+
+/*        mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
+
+       // if (mContacts == null) //fetchAllContacts();
+        ContactsAdapter adapter = new ContactsAdapter(mContacts,this);
         mRecyclerView.setAdapter(adapter);
         //StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);*/
     }
 
     @Override
@@ -178,7 +192,8 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        mRecyclerView.setAdapter(new ContactsAdapter(mRepository.getContacts(),this));
+        if (mContacts == null) //fetchAllContacts();
+        mRecyclerView.setAdapter(new ContactsAdapter(mContacts,this));
 
     }
 
@@ -228,4 +243,52 @@ public class ContactsActivity extends AppCompatActivity {
 
         }
     };
+
+    private void fetchAllContacts(){
+        //final ArrayList<Contact> contacts;
+        Log.i("Dosao u", "fetchAllContacts");
+        Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
+        ContactService mContactService = mRetrofit.create(ContactService.class);
+
+        Call<ArrayList<Contact>> call = mContactService.getAllContacts();
+
+        call.enqueue(new Callback<ArrayList<Contact>>() {
+
+            @Override
+            public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
+                //ArrayList<Contact> contacts;
+                if (!response.isSuccessful()){
+                    Log.i("ERROR", String.valueOf(response.code()));
+                    return;
+                }
+                Log.i("Kod", "liste, trebao bi da vrati");
+
+                setAdapter(response.body());
+
+                //mContacts = response.body();
+               // setList(response.body());
+                //contacts =  response.body();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+    private void setAdapter(ArrayList<Contact> contacts){
+        mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
+
+        // if (mContacts == null) //fetchAllContacts();
+        ContactsAdapter adapter = new ContactsAdapter(mContacts,this);
+        mRecyclerView.setAdapter(adapter);
+        //StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+    }
+
+
 }
