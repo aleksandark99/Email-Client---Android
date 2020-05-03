@@ -38,6 +38,11 @@ public class Contact {
     @Expose
     private String note;
 
+
+    public Contact(){
+
+    }
+
     public Integer getId() {
         return id;
     }

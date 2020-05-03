@@ -98,7 +98,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         ll.setOnClickListener((View v) -> {
 
-            Intent intent = ContactActivity.newIntent(mContext, mContacts.get(position).getId());
+            Intent intent = ContactActivity.newIntent(mContext, currentContact.getId());
             mContext.startActivity(intent);
 
         });

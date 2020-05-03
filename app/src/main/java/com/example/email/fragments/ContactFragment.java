@@ -27,11 +27,20 @@ import androidx.fragment.app.Fragment;
 import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
+import com.example.email.retrofit.contacts.ContactService;
+import com.example.email.retrofit.contacts.RetrofitContactClient;
 import com.example.email.utility.Helper;
 import com.example.email.utility.PictureUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ContactFragment extends Fragment {
 
@@ -59,7 +68,9 @@ public class ContactFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         int contactId = getArguments().getInt(CONTACT_KEY_ID);
-        mContact = Repository.get(getActivity()).findContactById(contactId);
+        fetchContact(contactId);
+        //mContact = Repository.get(getActivity()).findContactById(contactId);
+
 
         if(savedInstanceState == null){
             filePath = mContact.getPhotoPath();
@@ -140,7 +151,8 @@ public class ContactFragment extends Fragment {
             startActivityForResult(pickImage, REQUEST_GALLERY_PHOTO);
         });
 
-        if (filePath != null) Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
+        //if (filePath != null) Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
+        Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
         return root;
     }
 
@@ -182,6 +194,35 @@ public class ContactFragment extends Fragment {
             filePath = picturePath;
 
         }
+
+    }
+
+    private void fetchContact(int idContact){
+        //final ArrayList<Contact> contacts;
+        Log.i("Dosao u", "fetchContact");
+        Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
+        ContactService mContactService = mRetrofit.create(ContactService.class);
+
+        Call<Contact> call = mContactService.getContact(idContact);
+
+        call.enqueue(new Callback<Contact>() {
+            @Override
+            public void onResponse(Call<Contact> call, Response<Contact> response) {
+
+                if (!response.isSuccessful()){
+                    Log.i("GRESKA", String.valueOf(response.code()));
+                }
+                mContact = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<Contact> call, Throwable t) {
+                Log.i("FAILURE", t.toString());
+            }
+        });
+
+
+
 
     }
 
