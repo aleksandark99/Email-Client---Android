@@ -6,6 +6,7 @@ public class Tag implements Serializable {
 
     private int id;
     private String tagName;
+    private boolean active = true;
 
     public Tag(int id, String tagName) {
         this.id = id;
@@ -13,6 +14,8 @@ public class Tag implements Serializable {
     }
 
     public Tag() {
+        this.active=true;
+        this.tagName="";
     }
 
     public int getId() {
@@ -29,5 +32,13 @@ public class Tag implements Serializable {
 
     public void setTagName(String tagName) {
         this.tagName = tagName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

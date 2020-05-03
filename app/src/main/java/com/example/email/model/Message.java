@@ -18,11 +18,23 @@ public class Message implements Serializable {
     private LocalDateTime dateReceived;
     private boolean unread;
     private ArrayList<Tag> tags;
+    private ArrayList<Attachment> attachments;
 
 
 
 
-    public Message(){}
+    public Message(){
+        this.from = "";
+        this.to = "";
+        this.cc = "";
+        this.bcc = "";
+        this.subject = "";
+        this.content = "";
+        this.tags = new ArrayList<Tag>();
+        this.attachments=new ArrayList<Attachment>();
+
+
+    }
 
 
     public Message(long id, String from, String to, String cc, String bcc, String subject, String content, LocalDateTime dateReceived, boolean unread, ArrayList<Tag> tags) {

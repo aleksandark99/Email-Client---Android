@@ -3,6 +3,7 @@ package com.example.email.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.email.R;
 import com.example.email.activities.EmailActivity;
 import com.example.email.activities.EmailsActivity;
 import com.example.email.model.Message;
+import com.example.email.model.items.Tag;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
@@ -59,16 +61,29 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         holder.from.setText(messages.get(position).getFrom());
         holder.subject.setText(messages.get(position).getSubject());
         holder.shortContent.setText(messages.get(position).getContent());
+
         // ovde make attachment icon visible ako ima attachmenta poruka
         if (messages.get(position).isUnread()) {
             holder.cardView.setBackgroundColor(0xFFF6A8A8);
+        }else{
+            holder.cardView.setBackgroundColor(0xFFFFFFF);
         }
-        Chip chip = new Chip(holder.chipGroup.getContext());
-        chip.setText("test bravo 1");
-        Integer img = R.drawable.ic_lens_black_24dp;
+//        Chip chip = new Chip(holder.chipGroup.getContext());
+//       chip.setText("test bravo 1");
+       Integer img = R.drawable.ic_lens_black_24dp;
 
-        chip.setChipIconResource(img);
-        holder.chipGroup.addView(chip);
+//        chip.setChipIconResource(img);
+//        holder.chipGroup.addView(chip);
+        holder.chipGroup.removeAllViews();
+        for (int i =0;i<messages.get(position).getTags().size();i++) {
+
+            Chip chip = new Chip(holder.chipGroup.getContext());
+            chip.setText(messages.get(position).getTags().get(i).getTagName());
+            chip.setChipIconResource(img);
+            holder.chipGroup.addView(chip);
+        }
+
+
 
         holder.layoutRow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +94,10 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
             }
         });
+
+
+
+        Log.i("ODODOSDOOSDDSOOSDOSD",messages.get(position).getTags().get(0).getTagName());
 
 
     }
@@ -103,9 +122,24 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
                 filteredMessages.addAll(messagesAll);
             } else {
                 for (Message message : messagesAll) {
-                    if (message.getContent().toLowerCase().contains(constraint.toString().toLowerCase())) {
+
+                    if (message.getContent().toLowerCase().contains(constraint.toString().toLowerCase())||
+                            message.getSubject().toLowerCase().contains(constraint.toString().toLowerCase())||
+                            message.getFrom().toLowerCase().contains(constraint.toString().toLowerCase())||
+                            message.getTo().toLowerCase().contains(constraint.toString().toLowerCase())
+
+                    ) {
                         filteredMessages.add(message);
                     }
+                    for (Tag tag:message.getTags()) {
+                        if(tag.getTagName().toLowerCase().contains(constraint.toString().toLowerCase())){
+                            if(!filteredMessages.contains(message)){
+                                filteredMessages.add(message);
+                            }
+                        }
+
+                    }// URADITI ISTO I KAD SE CC TO promene na array list ....
+
                 }
             }
             FilterResults filterResults = new FilterResults();
