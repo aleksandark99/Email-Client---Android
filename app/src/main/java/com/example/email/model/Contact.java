@@ -14,108 +14,82 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Contact   {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
+public class Contact {
 
-
+    @SerializedName("id")
+    @Expose
     private Integer id;
-
-    private int mAvatar;
-
-    @SerializedName("lastName")
-    private String mFirstname;
-
     @SerializedName("firstName")
-    private String mLastname;
-
+    @Expose
+    private String firstName;
+    @SerializedName("lastName")
+    @Expose
+    private String lastName;
     @SerializedName("email")
-    private String mEmail;
-
+    @Expose
+    private String email;
     @SerializedName("photoPath")
-    private String mCurrentPhotoPath;
+    @Expose
+    private String photoPath;
+    @SerializedName("note")
+    @Expose
+    private String note;
 
-    public Contact(String firstname, String lastname, String email) {
-        //this.id = id;
-        mFirstname = firstname;
-        mLastname = lastname;
-        mEmail = email;
-        mAvatar = R.drawable.dummy_contact_photo;
-
-    }
-
-    public Contact(){};
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getFirstname() {
-        return mFirstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        mFirstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return mLastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        mLastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
-        return mEmail;
+        return email;
     }
 
     public void setEmail(String email) {
-        mEmail = email;
+        this.email = email;
     }
 
-    public int getAvatar() {
-        return mAvatar;
+    public String getPhotoPath() {
+        return photoPath;
     }
 
-    public void setAvatar(int avatar) {
-        mAvatar = avatar;
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
-    public String getCurrentPhotoPath() {
-        return mCurrentPhotoPath;
+    public String getNote() {
+        return note;
     }
 
-    public void setCurrentPhotoPath(String currentPhotoPath) {
-        mCurrentPhotoPath = currentPhotoPath;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public String getPhotoFilename() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-       // Log.i("timestampe", timeStamp);
+        // Log.i("timestampe", timeStamp);
         return "IMG_" + getId() + "_" + timeStamp + ".jpg";
     }
-
-
-
-
-    /*public File createImageFile(File storageDir) throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  *//* prefix *//*
-                ".jpg",         *//* suffix *//*
-                storageDir      *//* directory *//*
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }*/
 
 }

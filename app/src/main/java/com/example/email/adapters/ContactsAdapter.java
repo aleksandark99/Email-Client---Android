@@ -34,12 +34,18 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     private Context mContext;
     private Contact currentContact;
 
-    public ContactsAdapter(ArrayList<Contact> mContacts, Context mContext){
+    public ContactsAdapter(Context mContext){
 
         Log.i("TAG: ", "POZVAN ContactsAdapter konstruktor");
-        this.mContacts = mContacts;
+
         this.mContext = mContext;
     }
+
+    public void setData(ArrayList<Contact> contacts){
+        this.mContacts = contacts;
+        notifyDataSetChanged();
+    }
+
     //Provide a reference to the views used in the recycler view
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -71,20 +77,20 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         CardView cardView = holder.cardView;
 
         currentContact = mContacts.get(position);
-        if (currentContact.getCurrentPhotoPath() != null) {
+        if (currentContact.getPhotoPath() != null) {
 
-            Helper.displayImageIntoImageView(currentContact.getCurrentPhotoPath(), holder.imageView, mContext);
+            Helper.displayImageIntoImageView(currentContact.getPhotoPath(), holder.imageView, mContext);
 
         } else {
 
-            Drawable drawable = cardView.getResources().getDrawable(currentContact.getAvatar());
+            Drawable drawable = cardView.getResources().getDrawable(R.drawable.dummy_contact_photo);
             holder.imageView.setImageDrawable(drawable);
 
         } //kom na photo_cam_branchu
 
-        holder.imageView.setContentDescription(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
+        holder.imageView.setContentDescription(currentContact.getFirstName() + " " + currentContact.getLastName());
         TextView textView = (TextView)cardView.findViewById(R.id.contact_name);
-        textView.setText(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
+        textView.setText(currentContact.getFirstName() + " " + currentContact.getLastName());
 
         LinearLayout ll = cardView.findViewById(R.id.linear_layout);
         int color= ((int)(Math.random()*16777215)) | (0xFF << 24);

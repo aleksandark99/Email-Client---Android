@@ -12,9 +12,9 @@ import retrofit2.http.POST;
 
 public interface ContactService {
 
-    @POST("contacts")
+    @POST("contacts/")
     Call<Integer> addContact(@Body Contact newContact);
 
-    @GET("contacts")
-    Call<ArrayList<Contact>> getAllContacts();
+    @GET("contacts/")
+    Call<List<Contact>> getAllContacts();
 }

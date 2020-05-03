@@ -51,6 +51,7 @@ public class ContactsActivity extends AppCompatActivity {
     private static final String NEW_CONTACT_KEY = "com.example.email.contacts_activity.NEW_CONTACT_KEY";
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
+
     private RecyclerView mRecyclerView;
     private DrawerLayout drawerLayout;
     private RelativeLayout drawerPane;
@@ -58,6 +59,8 @@ public class ContactsActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private ArrayList<ContactNavItem> mNavItems = new ArrayList<ContactNavItem>();
     private Repository mRepository = Repository.get(this);
+
+    private ContactsAdapter mContactsAdapter;
 
     private ArrayList<Contact> mContacts;
 
@@ -109,9 +112,15 @@ public class ContactsActivity extends AppCompatActivity {
         };
         drawerLayout.addDrawerListener(drawerToggle);
 
+       // fetchAllContacts();
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
+        //LinearLayoutManager layoutManager = ;
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mContactsAdapter = new ContactsAdapter(this);
+
         fetchAllContacts();
-
-
 /*        mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
 
        // if (mContacts == null) //fetchAllContacts();
@@ -134,7 +143,8 @@ public class ContactsActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_new:
                 Toast.makeText(this, "Creats new contact", Toast.LENGTH_SHORT).show();
-                Intent createNewContactIntent = CreateContactActivity.newIntent(this, mRepository.newId());
+                //Intent createNewContactIntent = CreateContactActivity.newIntent(this, mRepository.newId());
+                Intent createNewContactIntent = new Intent(this, CreateContactActivity.class);
                 startActivityForResult(createNewContactIntent, REQUEST_CODE);
                 return false;
 
@@ -149,8 +159,10 @@ public class ContactsActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
 
             //boolean photoTaken = data.getBooleanExtra("photoTaken", false);
-            mRecyclerView.setAdapter( new ContactsAdapter(mRepository.getContacts(),this));
-
+            //mRecyclerView.setAdapter( new ContactsAdapter(mRepository.getContacts(),this));
+            Log.i("onActivityResult", "TEST");
+            if (mContactsAdapter != null) Log.i("adapter", "je inicijalizovan");
+            fetchAllContacts();
         } else if (resultCode == RESULT_CANCELED) {
             Log.i("Tag", "vratio");
             return;
@@ -192,9 +204,10 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (mContacts == null) //fetchAllContacts();
-        mRecyclerView.setAdapter(new ContactsAdapter(mContacts,this));
-
+        //if (mContacts == null) //fetchAllContacts();
+       // mRecyclerView.setAdapter(new ContactsAdapter(mContacts,this));
+        Log.i("ON RESTART", "TEST");
+        //fetchAllContacts();
     }
 
     @Override
@@ -250,45 +263,35 @@ public class ContactsActivity extends AppCompatActivity {
         Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
-        Call<ArrayList<Contact>> call = mContactService.getAllContacts();
+        Call<List<Contact>> call = mContactService.getAllContacts();
 
-        call.enqueue(new Callback<ArrayList<Contact>>() {
+        call.enqueue(new Callback<List<Contact>>() {
 
             @Override
-            public void onResponse(Call<ArrayList<Contact>> call, Response<ArrayList<Contact>> response) {
-                //ArrayList<Contact> contacts;
+            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+
                 if (!response.isSuccessful()){
                     Log.i("ERROR", String.valueOf(response.code()));
                     return;
                 }
                 Log.i("Kod", "liste, trebao bi da vrati");
+                ArrayList<Contact> cnts = (ArrayList<Contact>) response.body();
+                mContactsAdapter.setData(cnts);
 
-                setAdapter(response.body());
+                mRecyclerView.setAdapter(mContactsAdapter);
 
-                //mContacts = response.body();
-               // setList(response.body());
-                //contacts =  response.body();
+
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Contact>> call, Throwable t) {
-
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
+                Log.i("ERROOOOOR", t.toString());
             }
         });
 
 
     }
 
-    private void setAdapter(ArrayList<Contact> contacts){
-        mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
-
-        // if (mContacts == null) //fetchAllContacts();
-        ContactsAdapter adapter = new ContactsAdapter(mContacts,this);
-        mRecyclerView.setAdapter(adapter);
-        //StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-    }
 
 
 }

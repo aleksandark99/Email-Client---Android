@@ -62,8 +62,8 @@ public class ContactFragment extends Fragment {
         mContact = Repository.get(getActivity()).findContactById(contactId);
 
         if(savedInstanceState == null){
-            filePath = mContact.getCurrentPhotoPath();
-            first_Name = mContact.getFirstname(); last_Name = mContact.getLastname(); Email = mContact.getEmail();
+            filePath = mContact.getPhotoPath();
+            first_Name = mContact.getFirstName(); last_Name = mContact.getLastName(); Email = mContact.getEmail();
         } else {
             String name = savedInstanceState.getString("firstName"); //editTextBoxName.setText(name);
             String lastName = savedInstanceState.getString("lastName"); //editTextBoxLastname.setText(lastName);
@@ -107,11 +107,11 @@ public class ContactFragment extends Fragment {
         LinearLayout saveChanges = root.findViewById(R.id.linear_layout_bottom);
         saveChanges.setOnClickListener((View v) -> {
 
-            mContact.setFirstname(editTextBoxName.getText().toString());
-            mContact.setLastname(editTextBoxLastname.getText().toString());
+            mContact.setFirstName(editTextBoxName.getText().toString());
+            mContact.setLastName(editTextBoxLastname.getText().toString());
             mContact.setEmail(editTextBoxEmail.getText().toString());
 
-            if(photoTaken)  mContact.setCurrentPhotoPath(filePath);
+            if(photoTaken)  mContact.setPhotoPath(filePath);
 
             Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
         });
@@ -154,7 +154,7 @@ public class ContactFragment extends Fragment {
         savedInstanceState.putBoolean("photoTaken", photoTaken);
 
         if (photoTaken)  savedInstanceState.putString("photoPath", filePath);
-        else if (!photoTaken && mContact.getCurrentPhotoPath() != null) savedInstanceState.putString("photoPath", mContact.getCurrentPhotoPath());
+        else if (!photoTaken && mContact.getPhotoPath() != null) savedInstanceState.putString("photoPath", mContact.getPhotoPath());
 
     }
 

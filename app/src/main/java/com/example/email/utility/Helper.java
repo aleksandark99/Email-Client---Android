@@ -22,6 +22,7 @@ public class Helper {
         Glide.with(context)
                 .load(imageFilePath)
                 .apply(new RequestOptions().centerCrop())
+                .error(R.drawable.dummy_contact_photo)
                 .override(imageView.getWidth(), imageView.getHeight())
                 .into(imageView);
     }

@@ -68,7 +68,7 @@ public class CreateContactActivity extends AppCompatActivity {
     private Button cameraButton, galleryButton;
     private CardView saveChanges;
     private ImageView mPhotoView;
-    private int newId;
+   // private int newId;
     private Contact newContact = new Contact();
     private boolean photoTaken;
 
@@ -81,8 +81,8 @@ public class CreateContactActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         //____________________________________________________________________________________
 */
-        newId = getIntent().getIntExtra(EXTRA_NEW_CONTACT_ID, -1);
-        newContact.setId(newId);
+        //newId = getIntent().getIntExtra(EXTRA_NEW_CONTACT_ID, -1);
+        //newContact.setId(newId);
 
         editTextBoxName = findViewById(R.id.first_name_input_box_edit_box);
         editTextBoxLastname = findViewById(R.id.last_name_input_box_edit_box);
@@ -136,12 +136,12 @@ public class CreateContactActivity extends AppCompatActivity {
         saveChanges = findViewById(R.id.card_view_bottom);
         saveChanges.setOnClickListener(v -> {
 
-            newContact.setFirstname(editTextBoxName.getText().toString());
-            newContact.setLastname(editTextBoxLastname.getText().toString());
+            newContact.setFirstName(editTextBoxName.getText().toString());
+            newContact.setLastName(editTextBoxLastname.getText().toString());
             newContact.setEmail(editTextBoxEmail.getText().toString());
 
-            if (photoTaken) newContact.setCurrentPhotoPath(filePath);
-
+            if (photoTaken) newContact.setPhotoPath(filePath);
+//            Log.i("Paaaaaath", newContact.getPhotoPath());
             //newContact.setAvatar(R.drawable.dummy_contact_photo);
 
             //Repository.get(this).getContacts().add(newContact);
@@ -157,22 +157,27 @@ public class CreateContactActivity extends AppCompatActivity {
                     }
 
                     newContact.setId(response.body());
+                    Intent data = new Intent();
+                    data.putExtra("photoTaken", photoTaken);
+                    setResult(RESULT_OK, data);
+                    finish();
+                    Log.i("INTEGER ID CONTACT", String.valueOf(response.body()));
                 }
 
                 @Override
                 public void onFailure(Call<Integer> call, Throwable t) {
-                    Log.i("ERROR", t.toString());
+                    Log.i("Error pri dodavanju novog kontakta", t.toString());
                 }
             });
 
 
-            Intent data = new Intent();
+/*            Intent data = new Intent();
             data.putExtra("photoTaken", photoTaken);
             setResult(RESULT_OK, data);
 
-            Log.i("PUTANJA", filePath);
+            //Log.i("PUTANJA", filePath);
 
-            finish();
+            finish();*/
         });
     }
 
@@ -206,7 +211,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
             Uri selectedImageUri = data.getData();
             String picturePath = Helper.getPicturePath(selectedImageUri, this);
-
+            Log.i("Path", picturePath);
             Helper.displayImageIntoImageView(picturePath, mPhotoView, this);
             filePath = picturePath;
 
@@ -219,6 +224,7 @@ public class CreateContactActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         setResult(Activity.RESULT_CANCELED);
+
     }
 
     public static Intent newIntent(Context packageContext, int newContactId) {
