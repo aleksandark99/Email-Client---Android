@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -109,6 +110,8 @@ public class CreateContactActivity extends AppCompatActivity {
 
             newContact.setFirstName(editTextBoxName.getText().toString());
             newContact.setLastName(editTextBoxLastname.getText().toString());
+            newContact.setDisplayName(editTextBoxDisplayName.getText().toString());
+            newContact.setNote(editTextBoxInfo.getText().toString());
             newContact.setEmail(editTextBoxEmail.getText().toString());
 
             if (photoTaken) newContact.setPhotoPath(filePath);
@@ -119,6 +122,7 @@ public class CreateContactActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                     if (!response.isSuccessful()){
+                        Toast.makeText(getApplicationContext(), "Cannot save contact", Toast.LENGTH_SHORT).show();
                         return;
                     }
 

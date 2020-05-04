@@ -208,6 +208,7 @@ public class ContactFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getActivity(), "Changes NOT saved", Toast.LENGTH_SHORT).show();
                 Log.i("FAILURE", t.toString());
             }
         });

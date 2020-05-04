@@ -53,6 +53,7 @@ public class Contact implements Parcelable{
         this.firstName = "";
         this.lastName = "";
         this.displayName = "";
+        this.photoPath = "";
         this.email = "";
         this.note = "";
     }
