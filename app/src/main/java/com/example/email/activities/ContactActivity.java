@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.example.email.R;
 import com.example.email.fragments.ContactFragment;
+import com.example.email.fragments.PagerAdapter;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
@@ -27,14 +28,19 @@ import retrofit2.Retrofit;
 
 public class ContactActivity extends AppCompatActivity {
 
-    private static final String CONTACT_KEY_ID = "ftn.sit.email.activities.contact_id";
+    private static final String CONTACT_KEY = "ftn.sit.email.activities.contact";
+    private static final String CONTACTS_LIST_KEY = "ftn.sit.email.activities.contacts_list";
 
     private ViewPager mViewPager;
     private List<Contact> mContacts;
+    private Contact mContact;
+    //private FragmentStatePagerAdapter mPagerAdapter;
 
-    public static Intent newIntent(Context packageContext, int contact_id){
+    public static Intent newIntent(Context packageContext, int position, ArrayList<Contact> contacts){
         Intent intent = new Intent(packageContext, ContactActivity.class);
-        intent.putExtra(CONTACT_KEY_ID, contact_id);
+        intent.putExtra(CONTACT_KEY, position);
+        //intent.putExtra(CONTACTS_LIST_KEY, contacts);
+        intent.putParcelableArrayListExtra(CONTACTS_LIST_KEY, contacts);
         return intent;
     }
 
@@ -44,22 +50,44 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        int contactId = getIntent().getIntExtra(CONTACT_KEY_ID, -1);
+        //int contactId = getIntent().getIntExtra(CONTACT_KEY_ID, 0);
+        int pos =   getIntent().getIntExtra(CONTACT_KEY, 0);
 
+        mContacts = getIntent().getParcelableArrayListExtra(CONTACTS_LIST_KEY);
+        mContact = mContacts.get(pos);
+
+        if (mContacts.get(0) == null) {
+            Log.i("OVO", "NE RADI NESTO");
+        }else if  ( mContacts.get(0) instanceof Contact && mContacts.get(0).getId() == 1 ){
+            Log.i("OVO", "RADI NESTO");
+        } else {
+            Log.i("e OVO", "stvarno NE RADI NESTO");
+        }
+
+
+
+/*        Log.i("velicina liste je", String.valueOf(mContacts.size()));
+        Log.i("String rep", mContact.toString());
+        if (mContact.getPhotoPath() == null) Log.i("OGROMAN", "BUG");
+        Log.i("PUTAAAANJA u ContactActivity objekta", String.valueOf(mContact.getPhotoPath()));
+
+        if (mContact == null) Log.i("mContact", "is NULL");
+        if (mContacts == null) Log.i("mContacts", "is NULL");*/
         //mContacts = Repository.get(this).getContacts();
 
 
 
         mViewPager = (ViewPager) findViewById(R.id.activity_contact_pager_view_pager);
-
+        //mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        //fetchAllContacts();
         mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
 
             @Override
             public Fragment getItem(int position) {
-                fetchAllContacts();
+                //fetchAllContacts();
                 Contact contact = mContacts.get(position);
 
-                return ContactFragment.newInstance(contact.getId());
+                return ContactFragment.newInstance(contact);
             }
 
             @Override
@@ -69,7 +97,7 @@ public class ContactActivity extends AppCompatActivity {
         });
 
         mContacts.stream()
-                .filter(contact -> contact.getId() == contactId)
+                .filter(contact -> contact.getId() == mContact.getId())
                 .forEach(contact -> mViewPager.setCurrentItem(mContacts.indexOf(contact)));
 
 
@@ -100,7 +128,7 @@ public class ContactActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void fetchAllContacts(){
+    /*private void fetchAllContacts(){
         //final ArrayList<Contact> contacts;
         Log.i("Dosao u", "fetchAllContacts");
         Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
@@ -117,11 +145,14 @@ public class ContactActivity extends AppCompatActivity {
                     Log.i("ERROR", String.valueOf(response.code()));
                     return;
                 }
-                Log.i("Kod", "liste, trebao bi da vrati");
+                Log.i("IZ ContactActivity", "dobio response");
                 ArrayList<Contact> cnts = (ArrayList<Contact>) response.body();
-               //mContactsAdapter.setData(cnts);
+                mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), cnts);
 
-                mContacts = cnts;
+                mViewPager.setAdapter(mPagerAdapter);
+
+
+                //mContacts = cnts;
             }
 
             @Override
@@ -131,7 +162,7 @@ public class ContactActivity extends AppCompatActivity {
         });
 
 
-    }
+    }*/
 
 
 }

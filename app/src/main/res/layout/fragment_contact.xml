@@ -30,6 +30,16 @@
                 android:src="@drawable/dummy_contact_photo"
                 />
 
+<!--
+            <TextView
+                android:id="@+id/display_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="">
+            </TextView>
+-->
+
         </androidx.cardview.widget.CardView>
 
 
@@ -47,6 +57,8 @@
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             card_view:cardCornerRadius="10dp">
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -141,6 +153,28 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/display_name_input_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Display name"
+                        android:layout_marginBottom="10dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/display_name_input_box_edit_box"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/ic_person_black_24dp"
+                            android:drawablePadding="10dp"
+                            android:text="">
+
+                        </com.google.android.material.textfield.TextInputEditText>
+
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/email_input_box_layout"
                         android:layout_width="match_parent"
@@ -170,7 +204,7 @@
                         android:layout_marginBottom="10dp">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/info_input_box_edit_box"
+                            android:id="@+id/notes_input_box_edit_box"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/ic_info_black_24dp"

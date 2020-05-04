@@ -7,8 +7,10 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ContactService {
@@ -21,4 +23,10 @@ public interface ContactService {
 
     @GET("contacts/{id}/")
     Call<Contact> getContact(@Path("id") Integer idContact);
+
+    @PUT("contacts/")
+    Call<Void> updateContact(@Body Contact contact);
+
+    @DELETE("contacts/{id}")
+    Call<Void> deleteContact(@Path("id") int idContact);
 }

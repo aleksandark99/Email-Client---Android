@@ -1,15 +1,12 @@
 package com.example.email.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.provider.MediaStore.Images.Media;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -30,12 +28,8 @@ import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
 import com.example.email.retrofit.contacts.RetrofitContactClient;
 import com.example.email.utility.Helper;
-import com.example.email.utility.PictureUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,11 +41,11 @@ public class ContactFragment extends Fragment {
     static final int REQUEST_TAKE_PHOTO = 2;
     static final int REQUEST_GALLERY_PHOTO = 3;
 
-    private static final String CONTACT_KEY_ID = "com.example.email.fragments.contact_id";
+    private static final String CONTACT_KEY = "com.example.email.fragments.contact";
 
-    private EditText editTextBoxName, editTextBoxLastname, editTextBoxEmail;
+    private EditText editTextBoxName, editTextBoxLastname, editTextBoxDisplayName, editTextBoxEmail, editTextBoxNotes;
     private String filePath, tempFilePath;
-    private String first_Name,last_Name, Email;
+    private String first_Name,last_Name, display_Name, Email, notes;
 
     private Contact mContact;
     private Button mCameraButton, mGalleryButton;
@@ -67,30 +61,40 @@ public class ContactFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int contactId = getArguments().getInt(CONTACT_KEY_ID);
-        fetchContact(contactId);
+        //int contactId = getArguments().getInt(CONTACT_KEY_ID);
+        mContact = getArguments().getParcelable(CONTACT_KEY);
+       // if (mContact instanceof Contact && mContact != null) Log.i("okk", "okk");
+
+        //Log.i("path", mContact.getPhotoPath());
+
+
+        //fetchContact(contactId);
         //mContact = Repository.get(getActivity()).findContactById(contactId);
-
-
+        //if (mContact == null) Log.i("ContactFragment", "mContact je NULL");
+        //else Log.i("ContactFragment", "mContact nije NULL");
         if(savedInstanceState == null){
+
             filePath = mContact.getPhotoPath();
-            first_Name = mContact.getFirstName(); last_Name = mContact.getLastName(); Email = mContact.getEmail();
+            first_Name = mContact.getFirstName(); last_Name = mContact.getLastName(); display_Name = mContact.getDisplayName(); Email = mContact.getEmail(); notes = mContact.getNote();
+
+
         } else {
             String name = savedInstanceState.getString("firstName"); //editTextBoxName.setText(name);
             String lastName = savedInstanceState.getString("lastName"); //editTextBoxLastname.setText(lastName);
             String email = savedInstanceState.getString("email"); //editTextBoxEmail.setText(email);
+            String displayName = savedInstanceState.getString("displayName");
+            String note = savedInstanceState.getString("notes");
 
-            first_Name = name; last_Name = lastName; Email = email;
+            first_Name = name; last_Name = lastName; display_Name = displayName; Email = email; notes = note;
 
             boolean photoTaken = savedInstanceState.getBoolean("photoTaken"); this.photoTaken = photoTaken;
 
-            if (this.photoTaken){
+            if (this.photoTaken) {
 
                 filePath = savedInstanceState.getString("photoPath");
 
-            } else{
-                filePath = savedInstanceState.getString("photoPath");
-
+            } else {
+                filePath = mContact.getPhotoPath();
             }
         }
     }
@@ -105,7 +109,9 @@ public class ContactFragment extends Fragment {
 
         editTextBoxName = root.findViewById(R.id.first_name_input_box_edit_box); editTextBoxName.setText(first_Name);
         editTextBoxLastname = root.findViewById(R.id.last_name_input_box_edit_box); editTextBoxLastname.setText(last_Name);
+        editTextBoxDisplayName = root.findViewById(R.id.display_name_input_box_edit_box); editTextBoxDisplayName.setText(display_Name);
         editTextBoxEmail = root.findViewById(R.id.email_input_box_edit_box); editTextBoxEmail.setText(Email);
+        editTextBoxNotes = root.findViewById(R.id.notes_input_box_edit_box); editTextBoxNotes.setText(notes);
 
         int color = ((int)(Math.random()*16777215)) | (0xFF << 24);
 
@@ -120,11 +126,14 @@ public class ContactFragment extends Fragment {
 
             mContact.setFirstName(editTextBoxName.getText().toString());
             mContact.setLastName(editTextBoxLastname.getText().toString());
+            mContact.setDisplayName(editTextBoxDisplayName.getText().toString());
             mContact.setEmail(editTextBoxEmail.getText().toString());
+            mContact.setNote(editTextBoxNotes.getText().toString());
 
             if(photoTaken)  mContact.setPhotoPath(filePath);
 
-            Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
+            updateContact();
+
         });
 
         mCameraButton = root.findViewById(R.id.camera); mGalleryButton = root.findViewById(R.id.gallery);
@@ -144,7 +153,7 @@ public class ContactFragment extends Fragment {
             startActivityForResult(captureImage, REQUEST_TAKE_PHOTO);
         });
 
-        final Intent pickImage = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        final Intent pickImage = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
         pickImage.setType("image/*");
 
         mGalleryButton.setOnClickListener((View v) -> {
@@ -152,6 +161,7 @@ public class ContactFragment extends Fragment {
         });
 
         //if (filePath != null) Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
+
         Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
         return root;
     }
@@ -162,11 +172,14 @@ public class ContactFragment extends Fragment {
 
         savedInstanceState.putString("firstName", editTextBoxName.getText().toString());
         savedInstanceState.putString("lastName", editTextBoxLastname.getText().toString());
+        savedInstanceState.putString("displayName", editTextBoxDisplayName.getText().toString());
         savedInstanceState.putString("email", editTextBoxEmail.getText().toString());
+        savedInstanceState.putString("notes", editTextBoxNotes.getText().toString());
+
         savedInstanceState.putBoolean("photoTaken", photoTaken);
 
         if (photoTaken)  savedInstanceState.putString("photoPath", filePath);
-        else if (!photoTaken && mContact.getPhotoPath() != null) savedInstanceState.putString("photoPath", mContact.getPhotoPath());
+       // else if (!photoTaken && mContact.getPhotoPath() != null) savedInstanceState.putString("photoPath", mContact.getPhotoPath());
 
     }
 
@@ -197,38 +210,35 @@ public class ContactFragment extends Fragment {
 
     }
 
-    private void fetchContact(int idContact){
+    private void updateContact(){
         //final ArrayList<Contact> contacts;
-        Log.i("Dosao u", "fetchContact");
+        Log.i("Dosao u", "updateContact");
         Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
-        Call<Contact> call = mContactService.getContact(idContact);
+        Call<Void> call = mContactService.updateContact(mContact);
 
-        call.enqueue(new Callback<Contact>() {
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Contact> call, Response<Contact> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
 
                 if (!response.isSuccessful()){
                     Log.i("GRESKA", String.valueOf(response.code()));
                 }
-                mContact = response.body();
+                Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(Call<Contact> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Log.i("FAILURE", t.toString());
             }
         });
 
-
-
-
     }
 
-    public static ContactFragment newInstance(int idContact) {
+    public static ContactFragment newInstance(Contact contact) {
         Bundle args = new Bundle();
-        args.putInt(CONTACT_KEY_ID , idContact);
+        args.putParcelable(CONTACT_KEY, contact);
         ContactFragment fragment = new ContactFragment();
         fragment.setArguments(args);
         return fragment;

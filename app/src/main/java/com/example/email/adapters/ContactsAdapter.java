@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
 import com.example.email.activities.ContactActivity;
+import com.example.email.activities.ContactsActivity;
 import com.example.email.model.Contact;
 import com.example.email.retrofit.contacts.ContactService;
 import com.example.email.retrofit.contacts.RetrofitContactClient;
@@ -89,8 +90,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         } //kom na photo_cam_branchu
 
         holder.imageView.setContentDescription(currentContact.getFirstName() + " " + currentContact.getLastName());
-        TextView textView = (TextView)cardView.findViewById(R.id.contact_name);
-        textView.setText(currentContact.getFirstName() + " " + currentContact.getLastName());
+        TextView textView = (TextView)cardView.findViewById(R.id.contact_display_name);
+        textView.setText(currentContact.getDisplayName());
 
         LinearLayout ll = cardView.findViewById(R.id.linear_layout);
         int color= ((int)(Math.random()*16777215)) | (0xFF << 24);
@@ -98,7 +99,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         ll.setOnClickListener((View v) -> {
 
-            Intent intent = ContactActivity.newIntent(mContext, currentContact.getId());
+            Log.i("string rep iz adapter", currentContact.toString());
+
+            Intent intent = ContactActivity.newIntent(mContext,  position, mContacts);
+            //Intent intent = new Intent(mContext, ContactActivity.class);
+            //intent.putExtra("contact", currentContact);
             mContext.startActivity(intent);
 
         });

@@ -17,29 +17,64 @@ import java.util.Date;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Contact {
+public class Contact implements Parcelable{
 
     @SerializedName("id")
     @Expose
     private Integer id;
+
     @SerializedName("firstName")
     @Expose
     private String firstName;
+
     @SerializedName("lastName")
     @Expose
     private String lastName;
+
+    @SerializedName("displayName")
+    @Expose
+    private String displayName;
+
     @SerializedName("email")
     @Expose
     private String email;
+
     @SerializedName("photoPath")
     @Expose
     private String photoPath;
+
     @SerializedName("note")
     @Expose
     private String note;
 
 
     public Contact(){
+        //photoPath = "";
+        this.firstName = "";
+        this.lastName = "";
+        this.displayName = "";
+        this.email = "";
+        this.note = "";
+    }
+
+    public Contact(Integer id, String firstName, String lastName, String displayName, String email, String photoPath, String note) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.displayName = displayName;
+        this.email = email;
+        this.photoPath = photoPath;
+        this.note = note;
+    }
+
+    protected Contact(Parcel in) {
+        id = in.readInt();
+        firstName = in.readString();
+        lastName = in.readString();
+        displayName = in.readString();
+        email = in.readString();
+        photoPath = in.readString();
+        note = in.readString();
 
     }
 
@@ -61,6 +96,14 @@ public class Contact {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public void setLastName(String lastName) {
@@ -97,4 +140,49 @@ public class Contact {
         return "IMG_" + getId() + "_" + timeStamp + ".jpg";
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        //dest.writeStringArray(new String[]{this.id.toString(), this.firstName, this.lastName, this.email, this.photoPath, this.note});
+
+        dest.writeInt(this.id);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.displayName);
+        dest.writeString(this.email);
+        dest.writeString(this.photoPath);
+        dest.writeString(this.note);
+    }
+
+    public static final Parcelable.Creator<Contact> CREATOR= new Parcelable.Creator<Contact>() {
+        @Override
+        public Contact createFromParcel(Parcel source) {
+             // TODO Auto-generated method stub
+            return new Contact(source);  //using parcelable constructor
+        }
+
+        @Override
+        public Contact[] newArray(int size) {
+            // TODO Auto-generated method stub
+            return new Contact[size];
+        }
+
+    };
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", photoPath='" + photoPath + '\'' +
+                ", note='" + note + '\'' +
+                '}';
+    }
 }

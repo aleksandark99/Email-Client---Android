@@ -30,13 +30,7 @@
                 android:src="@drawable/dummy_contact_photo"
                 />
 
-            <TextView
-                android:layout_gravity="center"
-                android:id="@+id/email_display"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
 
-            </TextView>
 
         </androidx.cardview.widget.CardView>
 
@@ -129,6 +123,11 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+
+
+
+
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/last_name_input_box"
                         android:layout_width="match_parent"
@@ -148,6 +147,28 @@
 
 
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/display_name_input_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Display name"
+                        android:layout_marginBottom="10dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/display_name_input_box_edit_box"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/ic_person_black_24dp"
+                            android:drawablePadding="10dp"
+                            android:text="">
+
+                        </com.google.android.material.textfield.TextInputEditText>
+
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/email_input_box_layout"

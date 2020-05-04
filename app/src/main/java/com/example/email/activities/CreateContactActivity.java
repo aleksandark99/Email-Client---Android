@@ -58,9 +58,9 @@ public class CreateContactActivity extends AppCompatActivity {
     static final int REQUEST_GALLERY_PHOTO = 3;
     private static final String EXTRA_NEW_CONTACT_ID = "com.example.email.create_contact_activity.NEW_CONTACT_ID";
 
-    private EditText editTextBoxName, editTextBoxLastname, editTextBoxEmail, editTextBoxInfo;
+    private EditText editTextBoxName, editTextBoxLastname, editTextBoxDisplayName, editTextBoxEmail, editTextBoxInfo;
 
-    private String filePath, tempFilePath;
+    private String filePath, tempFilePath; //name, lastName, displayName, ed
     private Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
     private ContactService mContactService = mRetrofit.create(ContactService.class);
 
@@ -86,6 +86,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
         editTextBoxName = findViewById(R.id.first_name_input_box_edit_box);
         editTextBoxLastname = findViewById(R.id.last_name_input_box_edit_box);
+        editTextBoxDisplayName = findViewById(R.id.display_name_input_box_edit_box);
         editTextBoxEmail = findViewById(R.id.email_input_box_edit_box);
         editTextBoxInfo = findViewById(R.id.info_input_box_edit_box);
 
@@ -97,8 +98,9 @@ public class CreateContactActivity extends AppCompatActivity {
         } else {
             String name = savedInstanceState.getString("firstName"); editTextBoxName.setText(name);
             String lastName = savedInstanceState.getString("lastName"); editTextBoxLastname.setText(lastName);
+            String displayName = savedInstanceState.getString("displayName"); editTextBoxDisplayName.setText(displayName);
             String email = savedInstanceState.getString("email"); editTextBoxEmail.setText(email);
-            String info = savedInstanceState.getString("info"); editTextBoxInfo.setText(info);
+            String info = savedInstanceState.getString("notes"); editTextBoxInfo.setText(info);
 
             boolean photoTaken = savedInstanceState.getBoolean("photoTaken"); this.photoTaken = photoTaken;
 
@@ -107,7 +109,6 @@ public class CreateContactActivity extends AppCompatActivity {
                 filePath = savedInstanceState.getString("photoPath");
                 Helper.displayImageIntoImageView(filePath, mPhotoView, this);
 
-            } else  {
             }
         }
 
@@ -188,7 +189,8 @@ public class CreateContactActivity extends AppCompatActivity {
         savedInstanceState.putString("firstName", editTextBoxName.getText().toString());
         savedInstanceState.putString("lastName", editTextBoxLastname.getText().toString());
         savedInstanceState.putString("email", editTextBoxEmail.getText().toString());
-        savedInstanceState.putString("info", editTextBoxInfo.getText().toString());
+        savedInstanceState.putString("displayName", editTextBoxDisplayName.getText().toString());
+        savedInstanceState.putString("notes", editTextBoxInfo.getText().toString());
         savedInstanceState.putBoolean("photoTaken", photoTaken);
         if (photoTaken)  savedInstanceState.putString("photoPath", filePath);
 

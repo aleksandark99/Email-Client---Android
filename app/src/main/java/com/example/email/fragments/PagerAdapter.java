@@ -15,9 +15,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<Contact> mContacts;
 
-    public PagerAdapter(ArrayList<Contact> contacts, FragmentManager fm){
+    public PagerAdapter(FragmentManager fm, ArrayList<Contact> contacts){
         //BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-        super(fm, this.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        super(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.mContacts = contacts;
     }
 
@@ -26,11 +26,15 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Contact contact = mContacts.get(position);
 
-        return ContactFragment.newInstance(contact.getId());
+        return ContactFragment.newInstance(contact);
     }
 
     @Override
     public int getCount() {
         return mContacts.size();
+    }
+
+    public void setData(ArrayList<Contact> contacts){
+        this.mContacts = contacts;
     }
 }
