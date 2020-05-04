@@ -135,7 +135,9 @@ public class CreateContactActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Integer> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Cannot save contact GRESKA, pogledaj Konzolu", Toast.LENGTH_SHORT).show();
                     Log.i("Error pri dodavanju novog kontakta", t.toString());
+                    return;
                 }
             });
         });

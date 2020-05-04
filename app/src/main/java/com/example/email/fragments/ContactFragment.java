@@ -66,8 +66,7 @@ public class ContactFragment extends Fragment {
 
             filePath = mContact.getPhotoPath();
             first_Name = mContact.getFirstName(); last_Name = mContact.getLastName(); display_Name = mContact.getDisplayName(); Email = mContact.getEmail(); notes = mContact.getNote();
-
-
+            
         } else {
             String name = savedInstanceState.getString("firstName"); //editTextBoxName.setText(name);
             String lastName = savedInstanceState.getString("lastName"); //editTextBoxLastname.setText(lastName);

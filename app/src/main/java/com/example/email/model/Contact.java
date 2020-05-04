@@ -1,21 +1,13 @@
 package com.example.email.model;
 
-import android.content.Context;
-import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import com.example.email.R;
-import com.google.gson.annotations.SerializedName;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Contact implements Parcelable{
 
@@ -49,7 +41,6 @@ public class Contact implements Parcelable{
 
 
     public Contact(){
-        //photoPath = "";
         this.firstName = "";
         this.lastName = "";
         this.displayName = "";
