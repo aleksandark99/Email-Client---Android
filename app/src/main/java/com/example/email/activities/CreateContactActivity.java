@@ -1,51 +1,30 @@
 package com.example.email.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.request.RequestOptions;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
+
 import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
 import com.example.email.retrofit.contacts.RetrofitContactClient;
 import com.example.email.utility.Helper;
-import com.example.email.utility.PictureUtils;
-import com.google.android.material.textfield.TextInputLayout;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,22 +32,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class CreateContactActivity extends AppCompatActivity {
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+
     static final int REQUEST_TAKE_PHOTO = 2;
     static final int REQUEST_GALLERY_PHOTO = 3;
     private static final String EXTRA_NEW_CONTACT_ID = "com.example.email.create_contact_activity.NEW_CONTACT_ID";
 
     private EditText editTextBoxName, editTextBoxLastname, editTextBoxDisplayName, editTextBoxEmail, editTextBoxInfo;
 
-    private String filePath, tempFilePath; //name, lastName, displayName, ed
+    private String filePath, tempFilePath;
     private Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
     private ContactService mContactService = mRetrofit.create(ContactService.class);
 
-    //private File mPhotoFile;
     private Button cameraButton, galleryButton;
     private CardView saveChanges;
     private ImageView mPhotoView;
-   // private int newId;
     private Contact newContact = new Contact();
     private boolean photoTaken;
 
@@ -76,13 +53,6 @@ public class CreateContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contact);
-
-        /*if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        //____________________________________________________________________________________
-*/
-        //newId = getIntent().getIntExtra(EXTRA_NEW_CONTACT_ID, -1);
-        //newContact.setId(newId);
 
         editTextBoxName = findViewById(R.id.first_name_input_box_edit_box);
         editTextBoxLastname = findViewById(R.id.last_name_input_box_edit_box);
@@ -142,10 +112,6 @@ public class CreateContactActivity extends AppCompatActivity {
             newContact.setEmail(editTextBoxEmail.getText().toString());
 
             if (photoTaken) newContact.setPhotoPath(filePath);
-//            Log.i("Paaaaaath", newContact.getPhotoPath());
-            //newContact.setAvatar(R.drawable.dummy_contact_photo);
-
-            //Repository.get(this).getContacts().add(newContact);
 
             Call<Integer> call = mContactService.addContact(newContact);
 
@@ -153,7 +119,6 @@ public class CreateContactActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                     if (!response.isSuccessful()){
-                        Log.i("ERROR", String.valueOf(response.code()));
                         return;
                     }
 
@@ -162,7 +127,6 @@ public class CreateContactActivity extends AppCompatActivity {
                     data.putExtra("photoTaken", photoTaken);
                     setResult(RESULT_OK, data);
                     finish();
-                    Log.i("INTEGER ID CONTACT", String.valueOf(response.body()));
                 }
 
                 @Override
@@ -170,15 +134,6 @@ public class CreateContactActivity extends AppCompatActivity {
                     Log.i("Error pri dodavanju novog kontakta", t.toString());
                 }
             });
-
-
-/*            Intent data = new Intent();
-            data.putExtra("photoTaken", photoTaken);
-            setResult(RESULT_OK, data);
-
-            //Log.i("PUTANJA", filePath);
-
-            finish();*/
         });
     }
 
@@ -193,8 +148,6 @@ public class CreateContactActivity extends AppCompatActivity {
         savedInstanceState.putString("notes", editTextBoxInfo.getText().toString());
         savedInstanceState.putBoolean("photoTaken", photoTaken);
         if (photoTaken)  savedInstanceState.putString("photoPath", filePath);
-
-
     }
 
     @Override
@@ -213,7 +166,6 @@ public class CreateContactActivity extends AppCompatActivity {
 
             Uri selectedImageUri = data.getData();
             String picturePath = Helper.getPicturePath(selectedImageUri, this);
-            Log.i("Path", picturePath);
             Helper.displayImageIntoImageView(picturePath, mPhotoView, this);
             filePath = picturePath;
 
@@ -234,6 +186,5 @@ public class CreateContactActivity extends AppCompatActivity {
         i.putExtra(EXTRA_NEW_CONTACT_ID, newContactId);
         return i;
     }
-
 
 }

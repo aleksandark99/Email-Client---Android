@@ -48,17 +48,15 @@ import retrofit2.Retrofit;
 public class ContactsActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 1;
-    private static final String NEW_CONTACT_KEY = "com.example.email.contacts_activity.NEW_CONTACT_KEY";
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+
 
 
     private RecyclerView mRecyclerView;
     private DrawerLayout drawerLayout;
-    private RelativeLayout drawerPane;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
     private ArrayList<ContactNavItem> mNavItems = new ArrayList<ContactNavItem>();
-    private Repository mRepository = Repository.get(this);
+
 
     private ContactsAdapter mContactsAdapter;
 
@@ -70,15 +68,9 @@ public class ContactsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_contacts);
 
-      /*  if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        //____________________________________________________________________________________
-*/
         prepareDrawerItems();
-
         drawerList = (ListView) findViewById(R.id.drawerList);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        drawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
 
         drawerList.setAdapter(new ContactNavigationAdapter(this, mNavItems));
 
@@ -93,7 +85,7 @@ public class ContactsActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
         }
 
-       drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
+       drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.open_drawer, R.string.close_drawer) {
@@ -112,23 +104,13 @@ public class ContactsActivity extends AppCompatActivity {
         };
         drawerLayout.addDrawerListener(drawerToggle);
 
-       // fetchAllContacts();
-
         mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
-        //LinearLayoutManager layoutManager = ;
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mContactsAdapter = new ContactsAdapter(this);
 
         fetchAllContacts();
-/*        mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
-
-       // if (mContacts == null) //fetchAllContacts();
-        ContactsAdapter adapter = new ContactsAdapter(mContacts,this);
-        mRecyclerView.setAdapter(adapter);
-        //StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);*/
     }
 
     @Override
@@ -142,8 +124,6 @@ public class ContactsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_new:
-                Toast.makeText(this, "Creats new contact", Toast.LENGTH_SHORT).show();
-                //Intent createNewContactIntent = CreateContactActivity.newIntent(this, mRepository.newId());
                 Intent createNewContactIntent = new Intent(this, CreateContactActivity.class);
                 startActivityForResult(createNewContactIntent, REQUEST_CODE);
                 return false;
@@ -157,24 +137,16 @@ public class ContactsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
-
-            //boolean photoTaken = data.getBooleanExtra("photoTaken", false);
-            //mRecyclerView.setAdapter( new ContactsAdapter(mRepository.getContacts(),this));
-            Log.i("onActivityResult", "TEST");
-            if (mContactsAdapter != null) Log.i("adapter", "je inicijalizovan");
             fetchAllContacts();
         } else if (resultCode == RESULT_CANCELED) {
-            Log.i("Tag", "vratio");
             return;
         }
-
-        //mRecyclerView.setAdapter( new ContactsAdapter(mRepository.getContacts(),this));
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-// Sync the toggle state after onRestoreInstanceState has occurred.
+        //Sync the toggle state after onRestoreInstanceState has occurred.
         drawerToggle.syncState();
     }
 
@@ -190,10 +162,7 @@ public class ContactsActivity extends AppCompatActivity {
         mNavItems.add(new ContactNavItem(getString(R.string.search_contacts), getString(R.string.search_contacts_description),  R.drawable.ic_contacts_search));
         mNavItems.add(new ContactNavItem(getString(R.string.folder), getString(R.string.folder_description),  R.drawable.ic_folder_black_24dp));
         mNavItems.add(new ContactNavItem(getString(R.string.settings), getString(R.string.settings_description),  R.drawable.ic_settings_applications_black_24dp));
-        //3 more items...
     }
-
-
 
 
     @Override
@@ -205,10 +174,6 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        //if (mContacts == null) //fetchAllContacts();
-       // mRecyclerView.setAdapter(new ContactsAdapter(mContacts,this));
-        Log.i("ON RESTART", "TEST");
-        //fetchAllContacts();
     }
 
     @Override
@@ -229,10 +194,9 @@ public class ContactsActivity extends AppCompatActivity {
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
-        private Context c;
 
-        public DrawerItemClickListener(Context c){
-            this.c = c;
+        public DrawerItemClickListener(){
+
         }
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -259,8 +223,8 @@ public class ContactsActivity extends AppCompatActivity {
     };
 
     private void fetchAllContacts(){
-        //final ArrayList<Contact> contacts;
-        Log.i("Dosao u", "fetchAllContacts");
+
+
         Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
@@ -275,13 +239,11 @@ public class ContactsActivity extends AppCompatActivity {
                     Log.i("ERROR", String.valueOf(response.code()));
                     return;
                 }
-                Log.i("Kod", "liste, trebao bi da vrati");
+
                 ArrayList<Contact> cnts = (ArrayList<Contact>) response.body();
                 mContactsAdapter.setData(cnts);
 
                 mRecyclerView.setAdapter(mContactsAdapter);
-
-
             }
 
             @Override
@@ -289,10 +251,7 @@ public class ContactsActivity extends AppCompatActivity {
                 Log.i("ERROOOOOR", t.toString());
             }
         });
-
-
     }
-
 
 
 }

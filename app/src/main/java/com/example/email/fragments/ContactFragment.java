@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import android.provider.MediaStore.Images.Media;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -61,17 +60,8 @@ public class ContactFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //int contactId = getArguments().getInt(CONTACT_KEY_ID);
         mContact = getArguments().getParcelable(CONTACT_KEY);
-       // if (mContact instanceof Contact && mContact != null) Log.i("okk", "okk");
 
-        //Log.i("path", mContact.getPhotoPath());
-
-
-        //fetchContact(contactId);
-        //mContact = Repository.get(getActivity()).findContactById(contactId);
-        //if (mContact == null) Log.i("ContactFragment", "mContact je NULL");
-        //else Log.i("ContactFragment", "mContact nije NULL");
         if(savedInstanceState == null){
 
             filePath = mContact.getPhotoPath();
@@ -89,13 +79,9 @@ public class ContactFragment extends Fragment {
 
             boolean photoTaken = savedInstanceState.getBoolean("photoTaken"); this.photoTaken = photoTaken;
 
-            if (this.photoTaken) {
+            if (this.photoTaken) filePath = savedInstanceState.getString("photoPath");
+            else filePath = mContact.getPhotoPath();
 
-                filePath = savedInstanceState.getString("photoPath");
-
-            } else {
-                filePath = mContact.getPhotoPath();
-            }
         }
     }
 
@@ -160,8 +146,6 @@ public class ContactFragment extends Fragment {
             startActivityForResult(pickImage, REQUEST_GALLERY_PHOTO);
         });
 
-        //if (filePath != null) Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
-
         Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
         return root;
     }
@@ -179,18 +163,15 @@ public class ContactFragment extends Fragment {
         savedInstanceState.putBoolean("photoTaken", photoTaken);
 
         if (photoTaken)  savedInstanceState.putString("photoPath", filePath);
-       // else if (!photoTaken && mContact.getPhotoPath() != null) savedInstanceState.putString("photoPath", mContact.getPhotoPath());
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+
             photoTaken = true;
-            //updatePhotoView(120, 120);
             filePath = tempFilePath;
             Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
-
 
         } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_CANCELED){
             //photoTaken = false;
@@ -205,14 +186,11 @@ public class ContactFragment extends Fragment {
             Helper.displayImageIntoImageView(picturePath, mPhotoView, getActivity());
 
             filePath = picturePath;
-
         }
-
     }
 
     private void updateContact(){
         //final ArrayList<Contact> contacts;
-        Log.i("Dosao u", "updateContact");
         Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
@@ -223,7 +201,7 @@ public class ContactFragment extends Fragment {
             public void onResponse(Call<Void> call, Response<Void> response) {
 
                 if (!response.isSuccessful()){
-                    Log.i("GRESKA", String.valueOf(response.code()));
+                    Log.i("GRESKA U ContactFragment", String.valueOf(response.code()));
                 }
                 Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
             }
