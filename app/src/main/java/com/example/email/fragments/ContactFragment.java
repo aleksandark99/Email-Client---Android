@@ -66,11 +66,11 @@ public class ContactFragment extends Fragment {
 
             filePath = mContact.getPhotoPath();
             first_Name = mContact.getFirstName(); last_Name = mContact.getLastName(); display_Name = mContact.getDisplayName(); Email = mContact.getEmail(); notes = mContact.getNote();
-            
+
         } else {
-            String name = savedInstanceState.getString("firstName"); //editTextBoxName.setText(name);
-            String lastName = savedInstanceState.getString("lastName"); //editTextBoxLastname.setText(lastName);
-            String email = savedInstanceState.getString("email"); //editTextBoxEmail.setText(email);
+            String name = savedInstanceState.getString("firstName");
+            String lastName = savedInstanceState.getString("lastName");
+            String email = savedInstanceState.getString("email");
             String displayName = savedInstanceState.getString("displayName");
             String note = savedInstanceState.getString("notes");
 
@@ -80,7 +80,6 @@ public class ContactFragment extends Fragment {
 
             if (this.photoTaken) filePath = savedInstanceState.getString("photoPath");
             else filePath = mContact.getPhotoPath();
-
         }
     }
 
