@@ -86,6 +86,12 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
                 startActivity(new Intent(SettingsActivity.this, FoldersActivity.class));
 
                 break;
+
+            case R.id.profile_item:
+
+                startActivity(new Intent(this, ProfileActivity.class));
+
+                break;
         }
 
         return true;

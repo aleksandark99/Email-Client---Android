@@ -136,6 +136,12 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 startActivity(new Intent(EmailsActivity.this, FoldersActivity.class));
 
                 break;
+
+            case R.id.profile_item:
+
+                startActivity(new Intent(this, ProfileActivity.class));
+
+                break;
         }
 
         return true;
