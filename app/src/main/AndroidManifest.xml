@@ -5,10 +5,31 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <!--
+        Zasto android:required="false" ? Ako naša aplikaciju korisit neku feature (npr. kameru) mi bi trebali da
+        obavestiomo Android o tome.
+
+        Po default-u, ako deklairšemo da naša aplikacija koristi neki feature, u ovom slučaju kameru, to znači da naša applikacija
+        neće pravilno raditi bez tog feature-a. Medjutim, u našoj aplikaciji ovo nije slucaj, jer smo pozvali metodu
+        resolveActivity() kako bi smo proverili ispravnost i dostupnost Camera aplikacije na uredjaju. Ukoliko nije dostupna,
+        disable-ovali smo dugme. Prosledjujuci vrednost "false" znaci da mi govorimo Androidu da nasa aplikacija moze da radi bez
+        kamere, ali kao posledica toga, neke funkcionalsnosti aplikacije nece raditi/biti dostupne. Takodje, da nismo
+        dodali dodatni parmetar android:required="", Google Play bi ogranicio vidljivost nase aplikacije samo na uredjaje koje imaju
+        kameru.
+    -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:required="true"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -22,6 +43,11 @@
             android:name=".activities.EmailActivity"
             android:parentActivityName=".activities.EmailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".activities.CreateContactActivity"></activity>
         <activity
             android:name=".activities.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -71,6 +97,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.email.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>
