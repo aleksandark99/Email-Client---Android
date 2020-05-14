@@ -188,7 +188,7 @@ public class ContactFragment extends Fragment {
     }
 
     private void updateContact(){
-        //final ArrayList<Contact> contacts;
+        //final ArrayList<Contact> contacts;//added text (in photo_for_contact_branch) for divergent for user_branch
         Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
