@@ -25,7 +25,7 @@ import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
-import com.example.email.retrofit.contacts.RetrofitContactClient;
+import com.example.email.retrofit.contacts.RetrofitClient;
 import com.example.email.utility.Helper;
 
 import java.io.File;
@@ -189,7 +189,7 @@ public class ContactFragment extends Fragment {
 
     private void updateContact(){
         //final ArrayList<Contact> contacts;//added text (in photo_for_contact_branch) for divergent for user_branch
-        Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
+        Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
         Call<Void> call = mContactService.updateContact(mContact);

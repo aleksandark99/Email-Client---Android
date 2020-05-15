@@ -22,7 +22,7 @@ import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
-import com.example.email.retrofit.contacts.RetrofitContactClient;
+import com.example.email.retrofit.contacts.RetrofitClient;
 import com.example.email.utility.Helper;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class CreateContactActivity extends AppCompatActivity {
     private EditText editTextBoxName, editTextBoxLastname, editTextBoxDisplayName, editTextBoxEmail, editTextBoxInfo;
 
     private String filePath, tempFilePath;
-    private Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
+    private Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private ContactService mContactService = mRetrofit.create(ContactService.class);
 
     private Button cameraButton, galleryButton;

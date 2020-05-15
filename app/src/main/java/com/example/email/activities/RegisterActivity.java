@@ -1,12 +1,10 @@
 package com.example.email.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +12,7 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.model.User;
-import com.example.email.retrofit.contacts.ContactService;
-import com.example.email.retrofit.contacts.RetrofitContactClient;
+import com.example.email.retrofit.contacts.RetrofitClient;
 import com.example.email.retrofit.register.RegisterService;
 
 import retrofit2.Call;
@@ -36,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button LoginButton, RegisterConfirmButton;
     private EditText firstnameText, lastnameText, usernameText, passwordText, passwordConfirmText;
 
-    private Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
+    private Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private RegisterService mRegisteService = mRetrofit.create(RegisterService.class);
 
 

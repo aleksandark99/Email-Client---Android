@@ -4,19 +4,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.email.R;
@@ -33,9 +26,8 @@ import com.example.email.adapters.ContactNavigationAdapter;
 import com.example.email.adapters.ContactsAdapter;
 import com.example.email.model.Contact;
 import com.example.email.model.items.ContactNavItem;
-import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
-import com.example.email.retrofit.contacts.RetrofitContactClient;
+import com.example.email.retrofit.contacts.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +217,7 @@ public class ContactsActivity extends AppCompatActivity {
     private void fetchAllContacts(){
 
 
-        Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
+        Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
         Call<List<Contact>> call = mContactService.getAllContacts();

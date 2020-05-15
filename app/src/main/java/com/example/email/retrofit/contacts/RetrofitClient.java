@@ -5,7 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitContactClient {
+public class RetrofitClient {
 //26.192.233.126
     private static Retrofit retrofit;
     /*BASE_URL (kada pokrecete preko uredjaja) - 192.168.0.101 -> uneti IPV4 adresu (u cmd-u kucati ipconfig)*/
