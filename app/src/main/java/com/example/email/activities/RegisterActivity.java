@@ -7,11 +7,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.model.User;
+import com.example.email.retrofit.contacts.ContactService;
+import com.example.email.retrofit.contacts.RetrofitContactClient;
+import com.example.email.retrofit.register.RegisterService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -25,6 +35,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Button LoginButton, RegisterConfirmButton;
     private EditText firstnameText, lastnameText, usernameText, passwordText, passwordConfirmText;
+
+    private Retrofit mRetrofit = RetrofitContactClient.getRetrofitInstance();
+    private RegisterService mRegisteService = mRetrofit.create(RegisterService.class);
 
 
     @Override
@@ -49,7 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         LoginButton.setOnClickListener(v -> {
-           // startActivity(loginIntent);
             finish();
         });
 
@@ -63,24 +75,40 @@ public class RegisterActivity extends AppCompatActivity {
             confirmedPassword = passwordConfirmText.getText().toString();
 
 
-
-
-            // ako su username i password ispunjavaju uslove pozovi metodu za kreiranje acc-a
-            // i prebaci ga na login activity
-            //usernameText.setError("Zauzeto korisnicko ime"); // ovako se raise errors sa podacima
-            //startActivity(loginIntent);
-
             if (isWhitespacesOnly(firstname) || isWhitespacesOnly(lastname) || isWhitespacesOnly(username) || isWhitespacesOnly(password)){
                 Toast.makeText(this,"Credentials cannot be whitespaces!", Toast.LENGTH_SHORT).show();
             } else if (!Equals(password, confirmedPassword)){
                 Toast.makeText(this,"Passwords must be equal!", Toast.LENGTH_SHORT).show();
             } else {
                 //call backend
-                finish();
+
+                Call<Boolean> call = mRegisteService.registerUser(new User(firstname, lastname, username, password));
+
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (!response.isSuccessful()){
+                            Toast.makeText(getApplicationContext(), "Cannot save user didn't hit API", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        boolean isUserAdded = response.body();
+
+                        if(isUserAdded) {
+                          Toast.makeText(getApplicationContext(), "User "+ username +" registered", Toast.LENGTH_SHORT).show();
+                          finish();
+                        } else Toast.makeText(getApplicationContext(), "User already exists with chosen username or password", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), "Cannot save user GRESKA, pogledaj Konzolu", Toast.LENGTH_SHORT).show();
+                        Log.i("Error pri dodavanju novog user", t.toString());
+                        return;
+                    }
+                });
+
             }
-
-
-
         });
     }
 

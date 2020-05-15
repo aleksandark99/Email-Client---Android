@@ -28,13 +28,14 @@ public class User {
 
     @SerializedName("roles")
     @Expose
-    private final String roles = "ROLE_USER";
+    private String roles; //ROLE_USER
 
     public User(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+        this.roles = "ROLE_USER";
     }
 
     public User(int id, String firstName, String lastName, String username, String password) {
@@ -43,9 +44,11 @@ public class User {
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+        this.roles = "ROLE_USER";
     }
 
     public User() {
+        this.roles = "ROLE_USER";
     }
 
     public int getId() {

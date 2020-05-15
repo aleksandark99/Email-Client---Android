@@ -15,16 +15,16 @@ import retrofit2.http.Path;
 
 public interface ContactService {
 
-    @POST("contacts/")
+    @POST("contacts")
     Call<Integer> addContact(@Body Contact newContact);
 
-    @GET("contacts/")
+    @GET("contacts")
     Call<List<Contact>> getAllContacts();
 
-    @GET("contacts/{id}/")
+    @GET("contacts/{id}")
     Call<Contact> getContact(@Path("id") Integer idContact);
 
-    @PUT("contacts/")
+    @PUT("contacts")
     Call<Void> updateContact(@Body Contact contact);
 
     @DELETE("contacts/{id}")
