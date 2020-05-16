@@ -10,17 +10,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.model.Login;
+import com.example.email.model.LoginResponse;
+import com.example.email.model.User;
 import com.example.email.retrofit.contacts.RetrofitClient;
 import com.example.email.retrofit.login.LoginService;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
@@ -66,15 +77,33 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Credentials cannot be whitespaces", Toast.LENGTH_SHORT).show();
             } else {
                 //call backend
+
+                Call<LoginResponse> call = mLoginService.testLogin(new Login(username, password));
+
+                call.enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        if (!response.isSuccessful()){
+                            Toast.makeText(getApplicationContext(), "Wrong credentials!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        //extract user & token
+                        LoginResponse r = response.body();
+
+                        Toast.makeText(getApplicationContext(), "Welcome " + r.getUser().getUsername()   + "!", Toast.LENGTH_SHORT).show();
+                        /*For now start emails intent*/
+                        startActivity(goToEmailsIntent);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), "Cannot login, pogledaj Konzolu", Toast.LENGTH_SHORT).show();
+                        Log.i("ERRROOOOOOR prilikom login-a", t.toString());
+                        return;
+                    }
+                });
             }
-
-            //Call<ResponseBody> call = mLoginService.testLogin(new Login(us))
-
-
-            //startActivity(goToEmailsIntent);
-
-            // ovo ako su neispravni podaci
-            //
 
         });
         Register =(Button) findViewById(R.id.registerButton);

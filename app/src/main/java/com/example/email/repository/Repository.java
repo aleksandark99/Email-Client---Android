@@ -19,6 +19,8 @@ import java.util.stream.IntStream;
 /*Dummy repository Singleton class for storing different objects*/
 public class Repository {
 
+
+
     private final int[] avatars = {R.drawable.kotur,R.drawable.dejan, R.drawable.brboric, R.drawable.ziga};
     private final int NUMBER_OF_CONTACTS = avatars.length;
 
