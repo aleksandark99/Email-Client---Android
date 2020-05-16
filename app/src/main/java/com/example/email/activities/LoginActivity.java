@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Call<LoginResponse> call = mLoginService.testLogin(new Login(username, password));
 
-                call.enqueue(new Callback<LoginResponse>() {
+                /*call.enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         if (!response.isSuccessful()){
@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         Repository.loggedUser = r.getUser();
                         //welcome toast
                         Toast.makeText(getApplicationContext(), "Welcome " + r.getUser().getUsername()   + "!", Toast.LENGTH_LONG).show();
-                        /*For now start emails intent*/
+                        *//*For now start emails intent*//*
 
                         startActivity(goToEmailsIntent);
 
@@ -106,7 +106,9 @@ public class LoginActivity extends AppCompatActivity {
                         Log.i("ERRROOOOOOR prilikom login-a", t.toString());
                         return;
                     }
-                });
+                })*/;
+
+                startActivity(goToEmailsIntent);
             }
 
         });
