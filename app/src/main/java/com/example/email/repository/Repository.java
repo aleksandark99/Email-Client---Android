@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.model.Message;
+import com.example.email.model.User;
 import com.example.email.model.items.Tag;
 
 import java.io.File;
@@ -19,7 +20,8 @@ import java.util.stream.IntStream;
 /*Dummy repository Singleton class for storing different objects*/
 public class Repository {
 
-
+    public static User loggedUser = null;
+    public static String jwt = null;
 
     private final int[] avatars = {R.drawable.kotur,R.drawable.dejan, R.drawable.brboric, R.drawable.ziga};
     private final int NUMBER_OF_CONTACTS = avatars.length;

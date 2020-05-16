@@ -19,6 +19,7 @@ import com.example.email.R;
 import com.example.email.model.Login;
 import com.example.email.model.LoginResponse;
 import com.example.email.model.User;
+import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.RetrofitClient;
 import com.example.email.retrofit.login.LoginService;
 import com.google.gson.Gson;
@@ -89,9 +90,12 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         //extract user & token
                         LoginResponse r = response.body();
-
-                        Toast.makeText(getApplicationContext(), "Welcome " + r.getUser().getUsername()   + "!", Toast.LENGTH_SHORT).show();
+                        //setujemo ulogovanog user-a
+                        Repository.loggedUser = r.getUser();
+                        //welcome toast
+                        Toast.makeText(getApplicationContext(), "Welcome " + r.getUser().getUsername()   + "!", Toast.LENGTH_LONG).show();
                         /*For now start emails intent*/
+
                         startActivity(goToEmailsIntent);
 
                     }
