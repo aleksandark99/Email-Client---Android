@@ -30,4 +30,5 @@ public interface ContactService {
 
     @DELETE("contacts/{id}")
     Call<Void> deleteContact(@Path("id") int idContact);
+
 }

@@ -42,12 +42,15 @@ public class ContactFragment extends Fragment {
 
     private static final String CONTACT_KEY = "com.example.email.fragments.contact";
 
+    private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
+    private final ContactService mContactService = mRetrofit.create(ContactService.class);
+
     private EditText editTextBoxName, editTextBoxLastname, editTextBoxDisplayName, editTextBoxEmail, editTextBoxNotes;
     private String filePath, tempFilePath;
     private String first_Name,last_Name, display_Name, Email, notes;
 
     private Contact mContact;
-    private Button mCameraButton, mGalleryButton;
+    private Button mCameraButton, mGalleryButton, mDeleteContact;
     private ImageView mPhotoView;
     private boolean photoTaken;
 
@@ -120,7 +123,7 @@ public class ContactFragment extends Fragment {
 
         });
 
-        mCameraButton = root.findViewById(R.id.camera); mGalleryButton = root.findViewById(R.id.gallery);
+        mCameraButton = root.findViewById(R.id.camera); mGalleryButton = root.findViewById(R.id.gallery); mDeleteContact = root.findViewById(R.id.delete);
 
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         boolean canTakePhoto = captureImage.resolveActivity(getActivity().getPackageManager()) != null;
@@ -142,6 +145,33 @@ public class ContactFragment extends Fragment {
 
         mGalleryButton.setOnClickListener((View v) -> {
             startActivityForResult(pickImage, REQUEST_GALLERY_PHOTO);
+        });
+
+        mDeleteContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<Void> call = mContactService.deleteContact(mContact.getId());
+
+                call.enqueue(new Callback<Void>() {
+
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+
+                        if (!response.isSuccessful()){
+                            Log.i("ERROR KOD BRISANJA KONTAKTA POGLEDAJ KONZOLU", String.valueOf(response.code()));
+                            return;
+                        }
+
+                        getActivity().finish();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.i("ERROOOOOR PRILIKOM BRISANJA KONTAKTA POGLEDAJ KONZOLU", t.toString());
+                    }
+                });
+            }
         });
 
         Helper.displayImageIntoImageView(filePath, mPhotoView, getActivity());
@@ -189,8 +219,8 @@ public class ContactFragment extends Fragment {
 
     private void updateContact(){
         //final ArrayList<Contact> contacts;//added text (in photo_for_contact_branch) for divergent for user_branch
-        Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
-        ContactService mContactService = mRetrofit.create(ContactService.class);
+        /*Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
+        ContactService mContactService = mRetrofit.create(ContactService.class);*/
 
         Call<Void> call = mContactService.updateContact(mContact);
 

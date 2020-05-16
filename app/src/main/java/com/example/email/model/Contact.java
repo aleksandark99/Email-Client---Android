@@ -3,6 +3,7 @@ package com.example.email.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.email.repository.Repository;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -39,6 +40,10 @@ public class Contact implements Parcelable{
     @Expose
     private String note;
 
+    @SerializedName("user")
+    @Expose
+    private User user;
+
 
     public Contact(){
         this.firstName = "";
@@ -47,6 +52,7 @@ public class Contact implements Parcelable{
         this.photoPath = "";
         this.email = "";
         this.note = "";
+        this.user = Repository.loggedUser;
     }
 
     public Contact(Integer id, String firstName, String lastName, String displayName, String email, String photoPath, String note) {

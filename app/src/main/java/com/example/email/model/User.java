@@ -4,6 +4,8 @@ package com.example.email.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class User {
 
     @SerializedName("id")
@@ -30,12 +32,17 @@ public class User {
     @Expose
     private String roles; //ROLE_USER
 
+    @SerializedName("contacts")
+    @Expose
+    private ArrayList<Contact> contacts;
+
     public User(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.roles = "ROLE_USER";
+        this.contacts = new ArrayList<Contact>();
     }
 
     public User(int id, String firstName, String lastName, String username, String password) {
@@ -105,6 +112,18 @@ public class User {
                 ", password='" + password + '\'' +
                 ", roles='" + roles + '\'' +
                 '}';
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
+
+    public ArrayList<Contact> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(ArrayList<Contact> contacts) {
+        this.contacts = contacts;
     }
 }
 
