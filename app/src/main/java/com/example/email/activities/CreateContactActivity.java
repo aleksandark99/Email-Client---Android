@@ -116,7 +116,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
             if (photoTaken) newContact.setPhotoPath(filePath);
 
-            Call<Integer> call = mContactService.addContact(newContact);
+            Call<Integer> call = mContactService.addContact(newContact, Repository.jwt);
 
             call.enqueue(new Callback<Integer>() {
                 @Override

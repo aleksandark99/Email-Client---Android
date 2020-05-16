@@ -26,6 +26,7 @@ import com.example.email.adapters.ContactNavigationAdapter;
 import com.example.email.adapters.ContactsAdapter;
 import com.example.email.model.Contact;
 import com.example.email.model.items.ContactNavItem;
+import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
 import com.example.email.retrofit.RetrofitClient;
 
@@ -220,7 +221,7 @@ public class ContactsActivity extends AppCompatActivity {
         Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
-        Call<List<Contact>> call = mContactService.getAllContacts();
+        Call<List<Contact>> call = mContactService.getAllContactsForUser(Repository.loggedUser.getId(), Repository.jwt);
 
         call.enqueue(new Callback<List<Contact>>() {
 

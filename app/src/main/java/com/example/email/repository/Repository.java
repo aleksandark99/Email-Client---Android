@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 public class Repository {
 
     public static User loggedUser = null;
-    public static String jwt = null;
+    public static String jwt = "Bearer ";
 
     private final int[] avatars = {R.drawable.kotur,R.drawable.dejan, R.drawable.brboric, R.drawable.ziga};
     private final int NUMBER_OF_CONTACTS = avatars.length;

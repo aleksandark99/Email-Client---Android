@@ -1,6 +1,7 @@
 package com.example.email.retrofit.contacts;
 
 import com.example.email.model.Contact;
+import com.example.email.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +18,16 @@ import retrofit2.http.Path;
 public interface ContactService {
 
     @POST("contacts")
-    Call<Integer> addContact(@Body Contact newContact);
+    Call<Integer> addContact(@Body Contact newContact, @Header("Authorization") String authToken);
 
-    @GET("contacts")
-    Call<List<Contact>> getAllContacts();
+    @GET("user_contacts/{id}")
+    Call<List<Contact>> getAllContactsForUser(@Path("id") Integer idUser, @Header("Authorization") String authToken);
 
     @GET("contacts/{id}")
     Call<Contact> getContact(@Path("id") Integer idContact);
 
     @PUT("contacts")
-    Call<Void> updateContact(@Body Contact contact);
+    Call<Void> updateContact(@Body Contact contact, @Header("Authorization") String authToken);
 
     @DELETE("contacts/{id}")
     Call<Void> deleteContact(@Path("id") int idContact);

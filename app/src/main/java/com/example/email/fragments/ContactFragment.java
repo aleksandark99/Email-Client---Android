@@ -222,7 +222,7 @@ public class ContactFragment extends Fragment {
         /*Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);*/
 
-        Call<Void> call = mContactService.updateContact(mContact);
+        Call<Void> call = mContactService.updateContact(mContact, Repository.jwt);
 
         call.enqueue(new Callback<Void>() {
             @Override

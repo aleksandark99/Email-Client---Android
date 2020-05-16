@@ -74,6 +74,7 @@ public class Contact implements Parcelable{
         photoPath = in.readString();
         note = in.readString();
 
+
     }
 
     public Integer getId() {
@@ -132,6 +133,18 @@ public class Contact implements Parcelable{
         this.note = note;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public static Creator<Contact> getCREATOR() {
+        return CREATOR;
+    }
+
     public String getPhotoFilename() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         // Log.i("timestampe", timeStamp);
@@ -155,6 +168,7 @@ public class Contact implements Parcelable{
         dest.writeString(this.email);
         dest.writeString(this.photoPath);
         dest.writeString(this.note);
+        //dest.writeString(t);
     }
 
     public static final Parcelable.Creator<Contact> CREATOR= new Parcelable.Creator<Contact>() {
