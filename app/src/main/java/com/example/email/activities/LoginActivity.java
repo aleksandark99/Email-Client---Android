@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
             password = passwordEditText.getText().toString();
 
 
-
+            /////test ovo ne
             /*if (isWhitespacesOnly(username) || isWhitespacesOnly(password)){
                 Toast.makeText(getApplicationContext(), "Credentials cannot be whitespaces", Toast.LENGTH_SHORT).show();
             } else {
