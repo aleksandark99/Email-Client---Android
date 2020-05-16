@@ -61,6 +61,12 @@
 
     <include layout="@layout/content_profile"/>
 
+    <FrameLayout
+        android:id="@+id/add_account_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="50dp"/>
 
 
 

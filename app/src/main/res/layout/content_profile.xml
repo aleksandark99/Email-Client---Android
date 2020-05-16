@@ -119,7 +119,7 @@
                     android:layout_height="match_parent"
                     android:paddingTop="20dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_more_vertical"/>
+                    android:src="@drawable/ic_add_circle"/>
 
 
             </LinearLayout>
