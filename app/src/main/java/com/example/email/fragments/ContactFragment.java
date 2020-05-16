@@ -25,7 +25,7 @@ import com.example.email.R;
 import com.example.email.model.Contact;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
-import com.example.email.retrofit.contacts.RetrofitClient;
+import com.example.email.retrofit.RetrofitClient;
 import com.example.email.utility.Helper;
 
 import java.io.File;

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.model.User;
-import com.example.email.retrofit.contacts.RetrofitClient;
+import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.register.RegisterService;
 
 import retrofit2.Call;

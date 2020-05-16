@@ -27,7 +27,7 @@ import com.example.email.adapters.ContactsAdapter;
 import com.example.email.model.Contact;
 import com.example.email.model.items.ContactNavItem;
 import com.example.email.retrofit.contacts.ContactService;
-import com.example.email.retrofit.contacts.RetrofitClient;
+import com.example.email.retrofit.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
