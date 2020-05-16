@@ -74,14 +74,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-            if (isWhitespacesOnly(username) || isWhitespacesOnly(password)){
+            /*if (isWhitespacesOnly(username) || isWhitespacesOnly(password)){
                 Toast.makeText(getApplicationContext(), "Credentials cannot be whitespaces", Toast.LENGTH_SHORT).show();
             } else {
                 //call backend
 
                 Call<LoginResponse> call = mLoginService.testLogin(new Login(username, password));
 
-                /*call.enqueue(new Callback<LoginResponse>() {
+                call.enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         if (!response.isSuccessful()){
@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         Repository.loggedUser = r.getUser();
                         //welcome toast
                         Toast.makeText(getApplicationContext(), "Welcome " + r.getUser().getUsername()   + "!", Toast.LENGTH_LONG).show();
-                        *//*For now start emails intent*//*
+
 
                         startActivity(goToEmailsIntent);
 
@@ -106,10 +106,11 @@ public class LoginActivity extends AppCompatActivity {
                         Log.i("ERRROOOOOOR prilikom login-a", t.toString());
                         return;
                     }
-                })*/;
+                });
 
-                startActivity(goToEmailsIntent);
-            }
+
+            }*/
+            startActivity(goToEmailsIntent);
 
         });
         Register =(Button) findViewById(R.id.registerButton);
