@@ -14,3 +14,4 @@
 .cxx
 *.class
 /LoginActivity.java
+/EmailMeApp/app/src/main/java/com/example/email/activities
