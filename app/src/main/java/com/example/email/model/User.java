@@ -5,6 +5,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class User {
 
@@ -34,7 +36,7 @@ public class User {
 
     @SerializedName("contacts")
     @Expose
-    private ArrayList<Contact> contacts;
+    private Set<Contact> contacts;
 
     public User(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
@@ -42,7 +44,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.roles = "ROLE_USER";
-        this.contacts = new ArrayList<Contact>();
+        this.contacts = new HashSet<Contact>() {};
     }
 
     public User(int id, String firstName, String lastName, String username, String password) {
@@ -53,6 +55,14 @@ public class User {
         this.password = password;
         this.roles = "ROLE_USER";
     }
+
+/*    public void add(Contact contact){
+        if (contact.getUser() != null){
+            contact.getUser().getContacts().remove(contact);
+        }
+        getContacts().add(contact);
+        contact.setUser(this);
+    }*/
 
     public User() {
         this.roles = "ROLE_USER";
@@ -118,11 +128,11 @@ public class User {
         this.roles = roles;
     }
 
-    public ArrayList<Contact> getContacts() {
+    public Set<Contact> getContacts() {
         return contacts;
     }
 
-    public void setContacts(ArrayList<Contact> contacts) {
+    public void setContacts(Set<Contact> contacts) {
         this.contacts = contacts;
     }
 }

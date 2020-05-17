@@ -40,9 +40,9 @@ public class Contact implements Parcelable{
     @Expose
     private String note;
 
-    @SerializedName("user")
-    @Expose
-    private User user;
+/*    @SerializedName("user")
+    @Expose()
+    private User user;*/
 
 
     public Contact(){
@@ -52,7 +52,6 @@ public class Contact implements Parcelable{
         this.photoPath = "";
         this.email = "";
         this.note = "";
-        this.user = Repository.loggedUser;
     }
 
     public Contact(Integer id, String firstName, String lastName, String displayName, String email, String photoPath, String note) {
@@ -133,13 +132,13 @@ public class Contact implements Parcelable{
         this.note = note;
     }
 
-    public User getUser() {
+/*    public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
+    }*/
 
     public static Creator<Contact> getCREATOR() {
         return CREATOR;

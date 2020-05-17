@@ -17,8 +17,8 @@ import retrofit2.http.Path;
 
 public interface ContactService {
 
-    @POST("contacts")
-    Call<Integer> addContact(@Body Contact newContact, @Header("Authorization") String authToken);
+    @POST("contacts/{userId}")
+    Call<Integer> addContact(@Body Contact newContact, @Path("userId") Integer userId, @Header("Authorization") String authToken);
 
     @GET("user_contacts/{id}")
     Call<List<Contact>> getAllContactsForUser(@Path("id") Integer idUser, @Header("Authorization") String authToken);
