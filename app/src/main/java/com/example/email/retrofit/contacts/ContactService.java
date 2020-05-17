@@ -26,10 +26,10 @@ public interface ContactService {
     @GET("contacts/{id}")
     Call<Contact> getContact(@Path("id") Integer idContact);
 
-    @PUT("contacts")
-    Call<Void> updateContact(@Body Contact contact, @Header("Authorization") String authToken);
+    @PUT("contacts/{userId}")
+    Call<Void> updateContact(@Body Contact contact, @Path("userId") Integer userId, @Header("Authorization") String authToken);
 
     @DELETE("contacts/{id}")
-    Call<Void> deleteContact(@Path("id") int idContact);
+    Call<Void> deleteContact(@Path("id") int idContact, @Header("Authorization") String authToken);
 
 }

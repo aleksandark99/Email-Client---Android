@@ -150,7 +150,7 @@ public class ContactFragment extends Fragment {
         mDeleteContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<Void> call = mContactService.deleteContact(mContact.getId());
+                Call<Void> call = mContactService.deleteContact(mContact.getId(), Repository.jwt);
 
                 call.enqueue(new Callback<Void>() {
 
@@ -159,9 +159,10 @@ public class ContactFragment extends Fragment {
 
                         if (!response.isSuccessful()){
                             Log.i("ERROR KOD BRISANJA KONTAKTA POGLEDAJ KONZOLU", String.valueOf(response.code()));
+
                             return;
                         }
-
+                        Toast.makeText(getActivity(), "Contact deleted!", Toast.LENGTH_SHORT).show();
                         getActivity().finish();
 
                     }
@@ -222,13 +223,14 @@ public class ContactFragment extends Fragment {
         /*Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);*/
 
-        Call<Void> call = mContactService.updateContact(mContact, Repository.jwt);
+        Call<Void> call = mContactService.updateContact(mContact, Repository.loggedUser.getId(), Repository.jwt);
 
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
 
                 if (!response.isSuccessful()){
+                    Toast.makeText(getActivity(), "Response not successful", Toast.LENGTH_SHORT).show();
                     Log.i("GRESKA U ContactFragment", String.valueOf(response.code()));
                 }
                 Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
@@ -236,7 +238,7 @@ public class ContactFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(getActivity(), "Changes NOT saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Changes NOT saved, look at the console", Toast.LENGTH_SHORT).show();
                 Log.i("FAILURE", t.toString());
             }
         });

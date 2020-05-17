@@ -122,7 +122,7 @@ public class CreateContactActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                     if (!response.isSuccessful()){
-                        Toast.makeText(getApplicationContext(), "Cannot save contact", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Email address already exists!", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
