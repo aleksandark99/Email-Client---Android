@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -29,7 +30,8 @@ public interface ContactService {
     @PUT("contacts/{userId}")
     Call<Void> updateContact(@Body Contact contact, @Path("userId") Integer userId, @Header("Authorization") String authToken);
 
-    @DELETE("contacts/{id}")
-    Call<Void> deleteContact(@Path("id") int idContact, @Header("Authorization") String authToken);
+    //@HTTP(method = "DELETE", path = "{login}", hasBody = true)
+    @DELETE("contacts/{userId}/{contactId}")
+    Call<Void> deleteContact(@Path("userId") Integer userId,@Path("contactId") Integer contactId, @Header("Authorization") String authToken);
 
 }

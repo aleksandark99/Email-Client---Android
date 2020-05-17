@@ -150,7 +150,7 @@ public class ContactFragment extends Fragment {
         mDeleteContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<Void> call = mContactService.deleteContact(mContact.getId(), Repository.jwt);
+                Call<Void> call = mContactService.deleteContact(Repository.loggedUser.getId(), mContact.getId(), Repository.jwt);
 
                 call.enqueue(new Callback<Void>() {
 
@@ -162,6 +162,7 @@ public class ContactFragment extends Fragment {
 
                             return;
                         }
+                        Repository.loggedUser.getContacts().remove(mContact);
                         Toast.makeText(getActivity(), "Contact deleted!", Toast.LENGTH_SHORT).show();
                         getActivity().finish();
 
