@@ -45,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         //____________________________________________________________________________________
 
+        Repository.loggedUser = null;
+        Repository.jwt = null;
+
         usernameEditText = findViewById(R.id.usernameFiled); passwordEditText = findViewById(R.id.passwordField);
 
 
@@ -85,10 +88,8 @@ public class LoginActivity extends AppCompatActivity {
                         Repository.loggedUser = r.getUser();
                         Repository.jwt = Repository.jwt.concat(r.getJwt());
                         //welcome toast
-
-                        //Log.i("user contacts size", String.valueOf(Repository.loggedUser.getContacts().size()));
-
-                        //Toast.makeText(getApplicationContext(), "Welcome " + r.getUser().getUsername()   + "!", Toast.LENGTH_LONG).show();
+                        
+                        usernameEditText.setText(""); passwordEditText.setText("");
 
                         startActivity(goToEmailsIntent);
 

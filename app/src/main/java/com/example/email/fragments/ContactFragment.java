@@ -170,6 +170,7 @@ public class ContactFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(getActivity(), "ERROOOOOR PRILIKOM BRISANJA KONTAKTA POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
                         Log.i("ERROOOOOR PRILIKOM BRISANJA KONTAKTA POGLEDAJ KONZOLU", t.toString());
                     }
                 });
