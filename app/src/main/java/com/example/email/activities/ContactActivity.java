@@ -1,31 +1,34 @@
 package com.example.email.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-
 import com.example.email.R;
 import com.example.email.fragments.ContactFragment;
 import com.example.email.model.Contact;
-import com.example.email.repository.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactActivity extends AppCompatActivity {
 
-    private static final String CONTACT_KEY_ID = "ftn.sit.email.activities.contact_id";
+    private static final String CONTACT_KEY = "ftn.sit.email.activities.contact";
+    private static final String CONTACTS_LIST_KEY = "ftn.sit.email.activities.contacts_list";
 
     private ViewPager mViewPager;
     private List<Contact> mContacts;
+    private Contact mContact;
 
-    public static Intent newIntent(Context packageContext, int contact_id){
+    public static Intent newIntent(Context packageContext, int position, ArrayList<Contact> contacts){
         Intent intent = new Intent(packageContext, ContactActivity.class);
-        intent.putExtra(CONTACT_KEY_ID, contact_id);
+        intent.putExtra(CONTACT_KEY, position);
+        intent.putParcelableArrayListExtra(CONTACTS_LIST_KEY, contacts);
         return intent;
     }
 
@@ -35,9 +38,10 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        int contactId = getIntent().getIntExtra(CONTACT_KEY_ID, -1);
+        int pos =   getIntent().getIntExtra(CONTACT_KEY, 0);
 
-        mContacts = Repository.get(this).getContacts();
+        mContacts = getIntent().getParcelableArrayListExtra(CONTACTS_LIST_KEY);
+        mContact = mContacts.get(pos);
 
         mViewPager = (ViewPager) findViewById(R.id.activity_contact_pager_view_pager);
 
@@ -46,8 +50,7 @@ public class ContactActivity extends AppCompatActivity {
             @Override
             public Fragment getItem(int position) {
                 Contact contact = mContacts.get(position);
-
-                return ContactFragment.newInstance(contact.getId());
+                return ContactFragment.newInstance(contact);
             }
 
             @Override
@@ -57,10 +60,8 @@ public class ContactActivity extends AppCompatActivity {
         });
 
         mContacts.stream()
-                .filter(contact -> contact.getId() == contactId)
+                .filter(contact -> contact.getId() == mContact.getId())
                 .forEach(contact -> mViewPager.setCurrentItem(mContacts.indexOf(contact)));
-
-
     }
 
     @Override
@@ -87,4 +88,6 @@ public class ContactActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+
 }

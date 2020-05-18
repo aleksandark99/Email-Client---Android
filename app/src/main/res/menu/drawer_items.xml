@@ -3,6 +3,9 @@
 
     <group android:checkableBehavior="single">
 
+        <item android:id="@+id/profile_item"
+            android:icon="@drawable/ic_person"
+            android:title="Profile"/>
 
         <item android:id="@+id/messages_item"
             android:icon="@drawable/ic_inbox_black_24dp"

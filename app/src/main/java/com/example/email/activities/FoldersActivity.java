@@ -146,6 +146,12 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                 startActivity(new Intent(FoldersActivity.this, SettingsActivity.class));
 
                 break;
+
+            case R.id.profile_item:
+
+                startActivity(new Intent(this, ProfileActivity.class));
+
+                break;
         }
 
         return true;

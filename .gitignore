@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 *.class
+/LoginActivity.java
+!/app/src/main/java/com/example/email/activities

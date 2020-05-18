@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.email.R;
 import com.example.email.activities.ContactActivity;
 import com.example.email.model.Contact;
+import com.example.email.utility.Helper;
 
 import java.util.ArrayList;
 
@@ -23,10 +24,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
     private ArrayList<Contact> mContacts;
     private Context mContext;
+    private Contact currentContact;
 
-    public ContactsAdapter(ArrayList<Contact> mContacts, Context mContext){
-        this.mContacts = mContacts;
+    public ContactsAdapter(Context mContext){
         this.mContext = mContext;
+    }
+
+    public void setData(ArrayList<Contact> contacts){
+        this.mContacts = contacts;
+        notifyDataSetChanged();
     }
 
     //Provide a reference to the views used in the recycler view
@@ -34,13 +40,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         private CardView cardView;
         private LinearLayout mLinearLayout;
+        private ImageView imageView;
 
         public ViewHolder(CardView v) {
             super(v);
             cardView = v;
             mLinearLayout = cardView.findViewById(R.id.linear_layout);
+            imageView = cardView.findViewById(R.id.image_profile);
         }
-
     }
 
     @Override
@@ -53,33 +60,36 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position){
         //Set the values inside the given view
         CardView cardView = holder.cardView;
+        currentContact = mContacts.get(position);
 
-        ImageView imageView = (ImageView)cardView.findViewById(R.id.image_profile);
-        Drawable drawable = cardView.getResources().getDrawable(mContacts.get(position).getAvatar());
-        imageView.setImageDrawable(drawable);
+        if (currentContact.getPhotoPath() != null) Helper.displayImageIntoImageView(currentContact.getPhotoPath(), holder.imageView, mContext);
+        else {
 
-        imageView.setContentDescription(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
-        TextView textView = (TextView)cardView.findViewById(R.id.contact_name);
-        textView.setText(mContacts.get(position).getFirstname() + " " + mContacts.get(position).getLastname());
+            Drawable drawable = cardView.getResources().getDrawable(R.drawable.dummy_contact_photo);
+            holder.imageView.setImageDrawable(drawable);
+
+        }
+
+        holder.imageView.setContentDescription(currentContact.getFirstName() + " " + currentContact.getLastName());
+        TextView textView = (TextView)cardView.findViewById(R.id.contact_display_name);
+        textView.setText(currentContact.getDisplayName());
 
         LinearLayout ll = cardView.findViewById(R.id.linear_layout);
         int color= ((int)(Math.random()*16777215)) | (0xFF << 24);
         ll.setBackgroundColor(color);
 
-
         ll.setOnClickListener((View v) -> {
 
-            Intent intent = ContactActivity.newIntent(mContext, mContacts.get(position).getId());
+            Intent intent = ContactActivity.newIntent(mContext,  position, mContacts);
             mContext.startActivity(intent);
 
         });
-
     }
+
     @Override
     public int getItemCount(){
         //Return the number of items in the data set
         return mContacts.size();
     }
-
 
 }
