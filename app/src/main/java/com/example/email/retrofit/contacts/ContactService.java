@@ -33,7 +33,7 @@ public interface ContactService {
     Call<Contact> updateContact(@Body Contact contact, @Path("idUser") Integer idUser, @Header("Authorization") String authToken);
 
     //@HTTP(method = "DELETE", path = "{login}", hasBody = true)
-    @DELETE("contacts/{userId}/{contactId}")
-    Call<HTTP> deleteContact(@Path("userId") Integer userId, @Path("contactId") Integer contactId, @Header("Authorization") String authToken);
+    @DELETE("users/{idUser}/{contactId}")
+    Call<ResponseBody> deleteContact(@Path("idUser") Integer userId, @Path("contactId") Integer contactId, @Header("Authorization") String authToken);
 
 }

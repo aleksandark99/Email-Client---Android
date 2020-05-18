@@ -152,27 +152,30 @@ public class ContactFragment extends Fragment {
         mDeleteContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<HTTP> call = mContactService.deleteContact(Repository.loggedUser.getId(), mContact.getId(), Repository.jwt);
+                Call<ResponseBody> call = mContactService.deleteContact(Repository.loggedUser.getId(), mContact.getId(), Repository.jwt);
 
-                call.enqueue(new Callback<HTTP>() {
+                call.enqueue(new Callback<ResponseBody>() {
 
                     @Override
-                    public void onResponse(Call<HTTP> call, Response<HTTP> response) {
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                         if (!response.isSuccessful()){
                             Log.i("ERROR KOD BRISANJA KONTAKTA POGLEDAJ KONZOLU", String.valueOf(response.code()));
 
                             return;
                         }
-                      
-                        Repository.loggedUser.getContacts().remove(mContact);
-                        Toast.makeText(getActivity(), "Contact deleted!", Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
+                        if (response.code() == 200){
+                            Repository.loggedUser.getContacts().remove(mContact);
+                            Toast.makeText(getActivity(), "Contact deleted!", Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
+                        }else Toast.makeText(getActivity(), "Contact is not deleted, error on server!", Toast.LENGTH_SHORT).show();
+
+
 
                     }
 
                     @Override
-                    public void onFailure(Call<HTTP> call, Throwable t) {
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(getActivity(), "ERROOOOOR PRILIKOM BRISANJA KONTAKTA POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
                         Log.i("ERROOOOOR PRILIKOM BRISANJA KONTAKTA POGLEDAJ KONZOLU", t.toString());
                     }
