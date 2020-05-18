@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.example.email.activities.EmailActivity;
 import com.example.email.activities.EmailsActivity;
 import com.example.email.model.Message;
 import com.example.email.model.items.Tag;
+import com.example.email.utility.Helper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
@@ -82,7 +84,10 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             chip.setChipIconResource(img);
             holder.chipGroup.addView(chip);
         }
-
+        holder.attachment.setVisibility(View.INVISIBLE);
+        if(messages.get(position).getAttachments().size()>0){
+            holder.attachment.setVisibility(View.VISIBLE);
+        }
 
 
         holder.layoutRow.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +131,9 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
                     if (message.getContent().toLowerCase().contains(constraint.toString().toLowerCase())||
                             message.getSubject().toLowerCase().contains(constraint.toString().toLowerCase())||
                             message.getFrom().toLowerCase().contains(constraint.toString().toLowerCase())||
-                            message.getTo().toLowerCase().contains(constraint.toString().toLowerCase())
+                            Helper.DoesItContainString(message.getTo(),constraint.toString().toLowerCase())||
+                            Helper.DoesItContainTag(message.getTags(),constraint.toString().toLowerCase())
+                        //    message.getTo().toLowerCase().contains(constraint.toString().toLowerCase())
 
                     ) {
                         filteredMessages.add(message);
@@ -166,6 +173,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         CardView cardView;
         ChipGroup chipGroup;
         ConstraintLayout layoutRow;
+        ImageView attachment;
         public EmailsViewHolder(@NonNull View itemView) {
             super(itemView);
             from = itemView.findViewById(R.id.fromText1);
@@ -177,6 +185,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
             layoutRow = itemView.findViewById(R.id.new_email_row_id);
 
+            attachment = itemView.findViewById(R.id.hasAttachmentIcon);
         }
 
 

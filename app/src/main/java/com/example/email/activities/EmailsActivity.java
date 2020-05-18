@@ -17,7 +17,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.EmailsAdapter;
@@ -28,13 +30,16 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     RecyclerView recyclerView;
     private Toolbar toolbar;
     DrawerLayout emailsDrawerLayour;
     NavigationView navEmail;
-    MenuItem search;
+    MenuItem search, sort;
+    ArrayList<Message> messages;
+
     SearchView searchView;
     EmailsAdapter emailsAdapter;
 
@@ -69,17 +74,41 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
 ///ADAPTER
 
-
-        emailsAdapter = new EmailsAdapter(this, Repository.get(this).getMessages());
+        messages = Repository.get(this).getMessages();
+        emailsAdapter = new EmailsAdapter(this, messages);
         recyclerView.setAdapter(emailsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration); // ove dve linije samo za dekoraciju nista vise
+
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sortByDate:
+                Toast.makeText(EmailsActivity.this, "SortByDate", Toast.LENGTH_SHORT).show();
+                messages.sort(Comparator.comparing(Message::getDateReceived));
+                emailsAdapter.notifyDataSetChanged();
+
+                return true;
+            case R.id.sortBySender:
+                Toast.makeText(EmailsActivity.this, "sortBySender", Toast.LENGTH_SHORT).show();
+                messages.sort(Comparator.comparing(Message::getFrom));
+                emailsAdapter.notifyDataSetChanged();
+
+                return true;
+
+            case R.id.sortBySubject:
+                Toast.makeText(EmailsActivity.this, "sortBySubject", Toast.LENGTH_SHORT).show();
+                messages.sort(Comparator.comparing(Message::getSubject));
+                emailsAdapter.notifyDataSetChanged();
+
+                return true;
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
