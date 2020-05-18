@@ -86,9 +86,11 @@ public class LoginActivity extends AppCompatActivity {
                         LoginResponse r = response.body();
                         //setujemo ulogovanog user-a i token za njega
                         Repository.loggedUser = r.getUser();
-                        Repository.jwt = Repository.jwt.concat(r.getJwt());
+                        String authToken =  "Bearer " + r.getJwt();
+                        Repository.jwt = authToken;
+
                         //welcome toast
-                        
+
                         usernameEditText.setText(""); passwordEditText.setText("");
 
                         startActivity(goToEmailsIntent);
