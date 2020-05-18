@@ -27,10 +27,12 @@ public class EmailActivity extends AppCompatActivity {
 
     TextView subjectText,fromText,toText,dateText,contentText,toLongText,fromLongText,ccLongText;
 
-    String subjectString,fromString,toString,dateString,contentString,toLongString,fromLongString,ccLongString;
+    String subjectString,fromString,dateString,contentString,fromLongString;
+
+    ArrayList<String> toLongString,ccLongString;
 
     ArrayList<Tag> tags;
-    LinearLayout detailToTexts;
+    LinearLayout detailToTexts,toLongLinearLayout,ccLongLinearLayout;
 
     ImageView arrowIcon;
 
@@ -53,6 +55,8 @@ public class EmailActivity extends AppCompatActivity {
         detailToTexts = findViewById(R.id.detailToTexts);
         arrowIcon = findViewById(R.id.arrowPicture);
         chipGroup =findViewById(R.id.ChipGroupSingleEmail);
+        toLongLinearLayout =findViewById(R.id.toLongLinearLayout);
+        ccLongLinearLayout = findViewById(R.id.ccLongLinearLayout);
         getData();
         setData();
 
@@ -97,12 +101,10 @@ public class EmailActivity extends AppCompatActivity {
             subjectString=m.getSubject();
             tags = m.getTags();
             fromString=m.getFrom();
-            toString=m.getTo();
+            toLongString=m.getTo();
+            ccLongString=m.getCc();
             //dateString=
             contentString=m.getContent();
-            // toLongString
-            // fromLongString
-            // ccLongString;
 
         }else{
             Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();
@@ -111,10 +113,26 @@ public class EmailActivity extends AppCompatActivity {
     private void setData(){
         subjectText.setText(subjectString);
         fromText.setText(fromString);
-        toText.setText(toString);
         contentText.setText(contentString);
+        if (toLongString.size()>0){
+            toText.setText(toLongString.get(0));
 
-        if(tags!=null){
+            for (String s:toLongString) {
+                TextView t = new TextView(this);
+                t.setText(s);
+                toLongLinearLayout.addView(t);
+            }
+        }
+        if (ccLongString.size()>0){
+
+            for (String s:ccLongString) {
+                TextView t = new TextView(this);
+                t.setText(s);
+                ccLongLinearLayout.addView(t);
+            }
+        }
+
+        if(tags!=null){// ovde verovatno treba tags.size()>0 al me mrzi da proverim
             for (Tag tag:tags) {
                 Chip chip = new Chip(chipGroup.getContext());
                 chip.setText(tag.getTagName());

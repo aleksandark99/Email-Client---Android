@@ -5,14 +5,19 @@ import com.example.email.model.items.Tag;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public class Message implements Serializable {
 
     private long id;
     private String from;
-    private String to;
-    private String cc;
-    private String bcc;
+//    private String to;
+//    private String cc;
+//    private String bcc;
+    ArrayList<String> to;
+    ArrayList<String> cc;
+    ArrayList<String> bcc;
+
     private String subject;
     private String content;
     private LocalDateTime dateReceived;
@@ -25,9 +30,9 @@ public class Message implements Serializable {
 
     public Message(){
         this.from = "";
-        this.to = "";
-        this.cc = "";
-        this.bcc = "";
+        this.to = new ArrayList<String> ();
+        this.cc = new ArrayList<String> ();
+        this.bcc = new ArrayList<String> ();
         this.subject = "";
         this.content = "";
         this.tags = new ArrayList<Tag>();
@@ -37,7 +42,7 @@ public class Message implements Serializable {
     }
 
 
-    public Message(long id, String from, String to, String cc, String bcc, String subject, String content, LocalDateTime dateReceived, boolean unread, ArrayList<Tag> tags) {
+    public Message(long id, String from, ArrayList<String> to, ArrayList<String> cc, ArrayList<String> bcc, String subject, String content, LocalDateTime dateReceived, boolean unread, ArrayList<Tag> tags) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -66,27 +71,27 @@ public class Message implements Serializable {
         this.from = from;
     }
 
-    public String getTo() {
+    public ArrayList<String> getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(ArrayList<String> to) {
         this.to = to;
     }
 
-    public String getCc() {
+    public ArrayList<String> getCc() {
         return cc;
     }
 
-    public void setCc(String cc) {
+    public void setCc(ArrayList<String> cc) {
         this.cc = cc;
     }
 
-    public String getBcc() {
+    public ArrayList<String> getBcc() {
         return bcc;
     }
 
-    public void setBcc(String bcc) {
+    public void setBcc(ArrayList<String> bcc) {
         this.bcc = bcc;
     }
 
@@ -128,4 +133,14 @@ public class Message implements Serializable {
     public void setTags(ArrayList<Tag> tags) {
         this.tags = tags;
     }
+
+    public ArrayList<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(ArrayList<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+
 }

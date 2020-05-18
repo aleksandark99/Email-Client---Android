@@ -18,6 +18,26 @@
         app:showAsAction="always|collapseActionView"></item>
 
     <item
+        android:id="@+id/sortIconId"
+        android:icon="@drawable/ic_sort_black_24dp"
+        app:showAsAction="always"
+        android:title="Sort"
+        >
+<menu>
+    <item
+        android:id="@+id/sortBySubject"
+        android:title="sort by subject"></item>
+    <item
+        android:id="@+id/sortByDate"
+        android:title="sort by date"></item>
+    <item
+        android:id="@+id/sortBySender"
+        android:title="sort by sender"></item>
+</menu>
+
+    </item>
+
+    <item
         android:id="@+id/sendNewMailId"
         android:icon="@drawable/ic_send_icon"
         android:title="New"
