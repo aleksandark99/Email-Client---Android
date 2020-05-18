@@ -5,7 +5,9 @@ import com.example.email.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -18,20 +20,20 @@ import retrofit2.http.Path;
 
 public interface ContactService {
 
-    @POST("contacts/{userId}")
-    Call<Integer> addContact(@Body Contact newContact, @Path("userId") Integer userId, @Header("Authorization") String authToken);
+    @POST("contacts/{idUser}")
+    Call<Contact> addContact(@Body Contact newContact, @Path("idUser") Integer userId, @Header("Authorization") String authToken);
 
-    @GET("user_contacts/{id}")
-    Call<List<Contact>> getAllContactsForUser(@Path("id") Integer idUser, @Header("Authorization") String authToken);
+    @GET("users/{idUser}/contacts")
+    Call<Set<Contact>> getAllContactsForUser(@Path("idUser") Integer idUser, @Header("Authorization") String authToken);
 
     @GET("contacts/{id}")
     Call<Contact> getContact(@Path("id") Integer idContact);
 
-    @PUT("contacts/{userId}")
-    Call<Void> updateContact(@Body Contact contact, @Path("userId") Integer userId, @Header("Authorization") String authToken);
+    @PUT("users/{idUser}/contacts")
+    Call<Contact> updateContact(@Body Contact contact, @Path("idUser") Integer idUser, @Header("Authorization") String authToken);
 
     //@HTTP(method = "DELETE", path = "{login}", hasBody = true)
     @DELETE("contacts/{userId}/{contactId}")
-    Call<Void> deleteContact(@Path("userId") Integer userId,@Path("contactId") Integer contactId, @Header("Authorization") String authToken);
+    Call<HTTP> deleteContact(@Path("userId") Integer userId, @Path("contactId") Integer contactId, @Header("Authorization") String authToken);
 
 }

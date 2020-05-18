@@ -116,17 +116,18 @@ public class CreateContactActivity extends AppCompatActivity {
 
             if (photoTaken) newContact.setPhotoPath(filePath);
 
-            Call<Integer> call = mContactService.addContact(newContact, Repository.loggedUser.getId(), Repository.jwt);
+            Call<Contact> call = mContactService.addContact(newContact, Repository.loggedUser.getId(), Repository.jwt);
 
-            call.enqueue(new Callback<Integer>() {
+            call.enqueue(new Callback<Contact>() {
                 @Override
-                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                public void onResponse(Call<Contact> call, Response<Contact> response) {
                     if (!response.isSuccessful()){
-                        Toast.makeText(getApplicationContext(), "Email address already exists!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Didn't hit API for creating contact, some error ocured", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    newContact.setId(response.body());
+                    //newContact.setId(response.body());
+                    newContact = response.body();
                     Repository.loggedUser.getContacts().add(newContact);
                     Intent data = new Intent();
                     data.putExtra("photoTaken", photoTaken);
@@ -135,7 +136,7 @@ public class CreateContactActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<Integer> call, Throwable t) {
+                public void onFailure(Call<Contact> call, Throwable t) {
                     Toast.makeText(getApplicationContext(), "Cannot save contact GRESKA, pogledaj Konzolu", Toast.LENGTH_SHORT).show();
                     Log.i("Error pri dodavanju novog kontakta", t.toString());
                     return;

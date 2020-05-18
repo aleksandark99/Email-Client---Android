@@ -32,6 +32,7 @@ import com.example.email.retrofit.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -221,26 +222,25 @@ public class ContactsActivity extends AppCompatActivity {
         Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);
 
-        Call<List<Contact>> call = mContactService.getAllContactsForUser(Repository.loggedUser.getId(), Repository.jwt);
+        Call<Set<Contact>> call = mContactService.getAllContactsForUser(Repository.loggedUser.getId(), Repository.jwt);
 
-        call.enqueue(new Callback<List<Contact>>() {
+        call.enqueue(new Callback<Set<Contact>>() {
 
             @Override
-            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+            public void onResponse(Call<Set<Contact>> call, Response<Set<Contact>> response) {
 
                 if (!response.isSuccessful()){
                     Log.i("ERROR", String.valueOf(response.code()));
                     return;
                 }
 
-                ArrayList<Contact> cnts = (ArrayList<Contact>) response.body();
-                mContactsAdapter.setData(cnts);
+                mContactsAdapter.setData(new ArrayList<>((Set<Contact>) response.body()));
 
                 mRecyclerView.setAdapter(mContactsAdapter);
             }
 
             @Override
-            public void onFailure(Call<List<Contact>> call, Throwable t) {
+            public void onFailure(Call<Set<Contact>> call, Throwable t) {
                 Log.i("ERROOOOOR", t.toString());
             }
         });

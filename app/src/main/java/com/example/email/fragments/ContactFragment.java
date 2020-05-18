@@ -30,10 +30,12 @@ import com.example.email.utility.Helper;
 
 import java.io.File;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.http.HTTP;
 
 public class ContactFragment extends Fragment {
 
@@ -150,18 +152,19 @@ public class ContactFragment extends Fragment {
         mDeleteContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<Void> call = mContactService.deleteContact(Repository.loggedUser.getId(), mContact.getId(), Repository.jwt);
+                Call<HTTP> call = mContactService.deleteContact(Repository.loggedUser.getId(), mContact.getId(), Repository.jwt);
 
-                call.enqueue(new Callback<Void>() {
+                call.enqueue(new Callback<HTTP>() {
 
                     @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    public void onResponse(Call<HTTP> call, Response<HTTP> response) {
 
                         if (!response.isSuccessful()){
                             Log.i("ERROR KOD BRISANJA KONTAKTA POGLEDAJ KONZOLU", String.valueOf(response.code()));
 
                             return;
                         }
+                      
                         Repository.loggedUser.getContacts().remove(mContact);
                         Toast.makeText(getActivity(), "Contact deleted!", Toast.LENGTH_SHORT).show();
                         getActivity().finish();
@@ -169,7 +172,7 @@ public class ContactFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
+                    public void onFailure(Call<HTTP> call, Throwable t) {
                         Toast.makeText(getActivity(), "ERROOOOOR PRILIKOM BRISANJA KONTAKTA POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
                         Log.i("ERROOOOOR PRILIKOM BRISANJA KONTAKTA POGLEDAJ KONZOLU", t.toString());
                     }
@@ -225,21 +228,22 @@ public class ContactFragment extends Fragment {
         /*Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         ContactService mContactService = mRetrofit.create(ContactService.class);*/
 
-        Call<Void> call = mContactService.updateContact(mContact, Repository.loggedUser.getId(), Repository.jwt);
+        Call<Contact> call = mContactService.updateContact(mContact, Repository.loggedUser.getId(), Repository.jwt);
 
-        call.enqueue(new Callback<Void>() {
+        call.enqueue(new Callback<Contact>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<Contact> call, Response<Contact> response) {
 
                 if (!response.isSuccessful()){
                     Toast.makeText(getActivity(), "Response not successful", Toast.LENGTH_SHORT).show();
                     Log.i("GRESKA U ContactFragment", String.valueOf(response.code()));
                 }
+                mContact = response.body();
                 Toast.makeText(getActivity(), "Changes saved", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Contact> call, Throwable t) {
                 Toast.makeText(getActivity(), "Changes NOT saved, look at the console", Toast.LENGTH_SHORT).show();
                 Log.i("FAILURE", t.toString());
             }
