@@ -28,7 +28,7 @@ public class AddAccountFragment extends DialogFragment {
     private EditText txtEmail, txtServerAddress, txtPort, txtPassword, txtDisplayName;
     private CheckBox btnYes, btnNo;
 
-    
+
 
     public AddAccountFragment(){}
 
