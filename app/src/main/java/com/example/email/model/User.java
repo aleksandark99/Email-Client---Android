@@ -46,6 +46,15 @@ public class User {
         this.roles = "ROLE_USER";
         this.contacts = new HashSet<Contact>() {};
     }
+    public User(int id, String firstName, String lastName, String username, String password, String roles) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+
+    }
 
     public User(int id, String firstName, String lastName, String username, String password) {
         this.id = id;
@@ -56,7 +65,17 @@ public class User {
         this.roles = "ROLE_USER";
     }
 
-/*    public void add(Contact contact){
+    public User(int id, String firstName, String lastName, String username, String password, String roles, Set<Contact> contacts) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.contacts = contacts;
+    }
+
+    /*    public void add(Contact contact){
         if (contact.getUser() != null){
             contact.getUser().getContacts().remove(contact);
         }

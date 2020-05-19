@@ -19,7 +19,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.email.R;
 
-import java.util.Objects;
 
 public class AddAccountFragment extends DialogFragment {
 
@@ -27,7 +26,6 @@ public class AddAccountFragment extends DialogFragment {
     private Button btnSaveAccount, btnCancel;
     private EditText txtEmail, txtServerAddress, txtPort, txtPassword, txtDisplayName;
     private CheckBox btnYes, btnNo;
-
 
 
     public AddAccountFragment(){}
