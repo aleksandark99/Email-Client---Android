@@ -23,10 +23,12 @@ import java.util.Objects;
 
 public class AddAccountFragment extends DialogFragment {
 
-    ImageView btnClose;
-    Button btnSaveAccount, btnCancel;
-    EditText txtEmail, txtServerAddress, txtPort, txtPassword, txtDisplayName;
-    CheckBox btnYes, btnNo;
+    private ImageView btnClose;
+    private Button btnSaveAccount, btnCancel;
+    private EditText txtEmail, txtServerAddress, txtPort, txtPassword, txtDisplayName;
+    private CheckBox btnYes, btnNo;
+
+    
 
     public AddAccountFragment(){}
 
