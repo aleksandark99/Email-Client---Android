@@ -3,25 +3,75 @@ package com.example.email.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Account implements Parcelable {
 
+    @SerializedName("id")
+    @Expose
     private int id;
-    private String email;
 
-    public Account(int id, String email) {
-        this.id = id;
-        this.email = email;
+    @SerializedName("smtpAddress")
+    @Expose
+    private String smtpAddress;
+
+    @SerializedName("smtpPort")
+    @Expose
+    private int smtpPort;
+
+    @SerializedName("inServerAddress")
+    @Expose
+    private String inServerAddress;
+
+    @SerializedName("inServerPort")
+    @Expose
+    private int inServerPort;
+
+    @SerializedName("username")
+    @Expose
+    private String username;
+
+    @SerializedName("password")
+    @Expose
+    private String password;
+
+    @SerializedName("displayName")
+    @Expose
+    private String displayName;
+
+    @SerializedName("authentication")
+    @Expose
+    private boolean authentication;
+
+
+    public Account(String smtpAddress, int smtpPort,  String inServerAddress, int inServerPort, String username, boolean authentication, String password , String displayName){
+        this.smtpAddress = smtpAddress;
+        this.smtpPort = smtpPort;
+        this.inServerAddress = inServerAddress;
+        this.inServerPort = inServerPort;
+        this.authentication = authentication;
+        this.username = username;
+        this.password = password;
+        this.displayName = displayName;
     }
+
 
     public Account() {
     }
 
     protected Account(Parcel in) {
         id = in.readInt();
-        email = in.readString();
+        smtpAddress = in.readString();
+        smtpPort = in.readInt();
+        inServerAddress = in.readString();
+        inServerPort = in.readInt();
+        authentication = in.readBoolean();
+        username = in.readString();
+        password = in.readString();
+        displayName = in.readString();
+
     }
-
-
     @Override
     public int describeContents() {
         return 0;
@@ -29,12 +79,15 @@ public class Account implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
-        //dest.writeStringArray(new String[]{this.id.toString(), this.firstName, this.lastName, this.email, this.photoPath, this.note});
-
         dest.writeInt(this.id);
-        dest.writeString(this.email);
-
+        dest.writeString(this.smtpAddress);
+        dest.writeInt(this.smtpPort);
+        dest.writeString(this.inServerAddress);
+        dest.writeInt(this.inServerPort);
+        dest.writeBoolean(this.authentication);
+        dest.writeString(username);
+        dest.writeString(password);
+        dest.writeString(displayName);
     }
 
     public static final Parcelable.Creator<Account> CREATOR= new Parcelable.Creator<Account>() {
@@ -49,7 +102,6 @@ public class Account implements Parcelable {
             // TODO Auto-generated method stub
             return new Account[size];
         }
-
     };
 
 
@@ -61,14 +113,86 @@ public class Account implements Parcelable {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getSmtpAddress() {
+        return smtpAddress;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSmtpAddress(String smtpAddress) {
+        this.smtpAddress = smtpAddress;
     }
 
+    public int getSmtpPort() {
+        return smtpPort;
+    }
 
+    public void setSmtpPort(int smtpPort) {
+        this.smtpPort = smtpPort;
+    }
 
+    public String getInServerAddress() {
+        return inServerAddress;
+    }
+
+    public void setInServerAddress(String inServerAddress) {
+        this.inServerAddress = inServerAddress;
+    }
+
+    public int getInServerPort() {
+        return inServerPort;
+    }
+
+    public void setInServerPort(int inServerPort) {
+        this.inServerPort = inServerPort;
+    }
+
+    public boolean isAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(boolean authentication) {
+        this.authentication = authentication;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public static Creator<Account> getCREATOR() {
+        return CREATOR;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", smtpAddress='" + smtpAddress + '\'' +
+                ", smtpPort=" + smtpPort +
+                ", inServerAddress='" + inServerAddress + '\'' +
+                ", inServerPort=" + inServerPort +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", authentication=" + authentication +
+                '}';
+    }
 }

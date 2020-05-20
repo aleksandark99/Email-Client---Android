@@ -102,14 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //opens view pager
 
-/*                ArrayList<Account> l = new ArrayList<Account>(); l.add(new Account()); l.add(new Account());
-                ViewAdapter viewAdapter = new ViewAdapter(getApplicationContext(), l);
-                ViewPager viewPager = findViewById(R.id.view_pager);
-
-                viewPager.setAdapter(viewAdapter);
-                mDotsIndicator.setViewPager(viewPager);*/
-                ArrayList<Account> l = new ArrayList<Account>(); l.add(new Account(1, "aaaa")); l.add(new Account(2, "bbb"));
-                startActivity(AccountActivity.newIntent(c, 0, l));
+                startActivity(AccountActivity.newIntent(c, 0, new ArrayList<Account>(Repository.loggedUser.getAccounts())));
             }
         });
 
@@ -140,8 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
                             Repository.loggedUser = lr.getUser();
                             String token = lr.getJwt();
                             Repository.jwt = "Bearer " + token;
-                            Toast.makeText(getApplicationContext(), "User credentials saved!", Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(getApplicationContext(), "User credentials saved!", Toast.LENGTH_SHORT).show();;
                         }
 
 

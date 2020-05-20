@@ -52,8 +52,8 @@ public class AccountFragment extends Fragment {
         btnClose = rootView.findViewById(R.id.btnCloseAddAccount);
         btnSaveAccount = rootView.findViewById(R.id.btnAddNewAccount);
         btnCancel = rootView.findViewById(R.id.btnCancelAccount);
-        txtServerAddress = rootView.findViewById(R.id.text_serverAddress);
-        txtEmail = rootView.findViewById(R.id.text_email); txtServerAddress.setText(mAccount.getEmail());
+        txtServerAddress = rootView.findViewById(R.id.text_serverAddress); txtServerAddress.setText(mAccount.getUsername());
+        txtEmail = rootView.findViewById(R.id.text_email); txtServerAddress.setText(mAccount.getUsername());
         txtPort = rootView.findViewById(R.id.text_port);
         txtPassword = rootView.findViewById(R.id.text_password);
         txtDisplayName = rootView.findViewById(R.id.text_displayName);

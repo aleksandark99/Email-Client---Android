@@ -47,7 +47,6 @@ public class AccountActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.activity_account_pager_view_pager);
 
 
-
         mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
 
 
