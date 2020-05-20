@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +15,14 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.fragments.AddAccountFragment;
+import com.example.email.model.Account;
 import com.example.email.model.LoginResponse;
 import com.example.email.model.User;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.user.UserService;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,7 +40,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private String firstname, lastname, username, password;
 
-    private Button saveChanges;
+    private Button saveChanges, editAccounts;
+
+
+    private Context c = this;
 
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final UserService mUserService = mRetrofit.create(UserService.class);
@@ -50,6 +57,9 @@ public class ProfileActivity extends AppCompatActivity {
         mLastnameEditText = findViewById(R.id.lastname);
         mUsernameEditText = findViewById(R.id.username);
         mPasswordEditText = findViewById(R.id.password);
+
+
+
 
         if (savedInstanceState != null){
             firstname = savedInstanceState.getString("firstname");
@@ -83,6 +93,23 @@ public class ProfileActivity extends AppCompatActivity {
                 transaction.replace(R.id.add_account_fragment, addAccount).addToBackStack(null);
                 transaction.commit();
 
+            }
+        });
+
+        editAccounts = findViewById(R.id.edit_account);
+        editAccounts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //opens view pager
+
+/*                ArrayList<Account> l = new ArrayList<Account>(); l.add(new Account()); l.add(new Account());
+                ViewAdapter viewAdapter = new ViewAdapter(getApplicationContext(), l);
+                ViewPager viewPager = findViewById(R.id.view_pager);
+
+                viewPager.setAdapter(viewAdapter);
+                mDotsIndicator.setViewPager(viewPager);*/
+                ArrayList<Account> l = new ArrayList<Account>(); l.add(new Account(1, "aaaa")); l.add(new Account(2, "bbb"));
+                startActivity(AccountActivity.newIntent(c, 0, l));
             }
         });
 
