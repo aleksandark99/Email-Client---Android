@@ -47,7 +47,6 @@ public class AddAccountFragment extends DialogFragment {
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final AccountService mAccountService = mRetrofit.create(AccountService.class);
 
-    private Fragment frag = this;
 
     public AddAccountFragment(){}
 
@@ -146,19 +145,14 @@ public class AddAccountFragment extends DialogFragment {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 closeFragment(AddAccountFragment.this);
-
             }
         });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 closeFragment(AddAccountFragment.this);
-
             }
         });
 
@@ -186,7 +180,7 @@ public class AddAccountFragment extends DialogFragment {
                             } else{
                                 Repository.loggedUser.getAccounts().add(newAcc);
                                 Toast.makeText(getActivity(), "Account saved", Toast.LENGTH_LONG).show();
-                                getActivity().getSupportFragmentManager().beginTransaction().remove(frag).commit();
+                                getActivity().getSupportFragmentManager().beginTransaction().remove(AddAccountFragment.this).commit();
                             }
                         }
 
@@ -302,6 +296,7 @@ public class AddAccountFragment extends DialogFragment {
                 newAccount.setInServerAddress(txtInServerAddress.getText().toString());
             } else {
                 Toast.makeText(getActivity(), "Receiving server address not properly formed!", Toast.LENGTH_SHORT).show();
+                return null;
             }
 
         } else if (btnPop3.isChecked()) {
@@ -311,6 +306,7 @@ public class AddAccountFragment extends DialogFragment {
                 newAccount.setInServerAddress(txtInServerAddress.getText().toString());
             } else {
                 Toast.makeText(getActivity(), "Receiving server address not properly formed!", Toast.LENGTH_SHORT).show();
+                return null;
             }
 
         } else {
