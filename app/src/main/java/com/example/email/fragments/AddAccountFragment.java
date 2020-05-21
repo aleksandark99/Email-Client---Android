@@ -128,7 +128,7 @@ public class AddAccountFragment extends DialogFragment {
         }
 
         txtEmail = rootView.findViewById(R.id.email); txtEmail.setText(email);
-        txtDisplayName = rootView.findViewById(R.id.display_name); txtEmail.setText(displayname);
+        txtDisplayName = rootView.findViewById(R.id.display_name); txtDisplayName.setText(displayname);
         txtPassword = rootView.findViewById(R.id.password); txtPassword.setText(password);
 
         btnYes = rootView.findViewById(R.id.btnYes);

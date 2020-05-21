@@ -42,9 +42,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Button saveChanges, editAccounts;
 
-
-    private Context c = this;
-
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final UserService mUserService = mRetrofit.create(UserService.class);
 
@@ -102,7 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //opens view pager
 
-                startActivity(AccountActivity.newIntent(c, 0, new ArrayList<Account>(Repository.loggedUser.getAccounts())));
+                startActivity(AccountActivity.newIntent(ProfileActivity.this, 0, new ArrayList<Account>(Repository.loggedUser.getAccounts())));
             }
         });
 
