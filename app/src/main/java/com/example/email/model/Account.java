@@ -20,6 +20,10 @@ public class Account implements Parcelable {
     @Expose
     private int smtpPort;
 
+    @SerializedName("inServerType")
+    @Expose
+    private int inServerType;
+
     @SerializedName("inServerAddress")
     @Expose
     private String inServerAddress;
@@ -45,9 +49,10 @@ public class Account implements Parcelable {
     private boolean authentication;
 
 
-    public Account(String smtpAddress, int smtpPort,  String inServerAddress, int inServerPort, String username, boolean authentication, String password , String displayName){
+    public Account(String smtpAddress, int smtpPort, int inServerType, String inServerAddress,  int inServerPort, String username, boolean authentication, String password , String displayName){
         this.smtpAddress = smtpAddress;
         this.smtpPort = smtpPort;
+        this.inServerType = inServerType;
         this.inServerAddress = inServerAddress;
         this.inServerPort = inServerPort;
         this.authentication = authentication;
@@ -57,16 +62,16 @@ public class Account implements Parcelable {
     }
 
 
-    public Account() {
-    }
+
 
     protected Account(Parcel in) {
         id = in.readInt();
         smtpAddress = in.readString();
         smtpPort = in.readInt();
+        inServerType = in.readInt();
         inServerAddress = in.readString();
         inServerPort = in.readInt();
-        authentication = in.readBoolean();
+        authentication = in.readInt() == 1;
         username = in.readString();
         password = in.readString();
         displayName = in.readString();
@@ -82,12 +87,13 @@ public class Account implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.smtpAddress);
         dest.writeInt(this.smtpPort);
+        dest.writeInt(this.inServerType);
         dest.writeString(this.inServerAddress);
         dest.writeInt(this.inServerPort);
-        dest.writeBoolean(this.authentication);
-        dest.writeString(username);
-        dest.writeString(password);
-        dest.writeString(displayName);
+        dest.writeInt(this.isAuthentication() ? 1 :0);
+        dest.writeString(this.username);
+        dest.writeString(this.password);
+        dest.writeString(this.displayName);
     }
 
     public static final Parcelable.Creator<Account> CREATOR= new Parcelable.Creator<Account>() {
@@ -127,6 +133,14 @@ public class Account implements Parcelable {
 
     public void setSmtpPort(int smtpPort) {
         this.smtpPort = smtpPort;
+    }
+
+    public int getInServerType() {
+        return inServerType;
+    }
+
+    public void setInServerType(int inServerType) {
+        this.inServerType = inServerType;
     }
 
     public String getInServerAddress() {
@@ -187,6 +201,7 @@ public class Account implements Parcelable {
                 "id=" + id +
                 ", smtpAddress='" + smtpAddress + '\'' +
                 ", smtpPort=" + smtpPort +
+                ", inServerType=" + inServerType +
                 ", inServerAddress='" + inServerAddress + '\'' +
                 ", inServerPort=" + inServerPort +
                 ", username='" + username + '\'' +

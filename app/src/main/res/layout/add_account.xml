@@ -8,7 +8,6 @@
 
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -35,17 +34,18 @@
             android:src="@drawable/ic_close" />
 
         <TextView
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Server address"
+            android:text="SMTP address"
             android:textSize="20dp" />
 
         <EditText
-            android:id="@+id/text_serverAddress"
+            android:id="@+id/smtpServerAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
-            android:text="server address example" />
+            android:hint="smtp.gmail.com" />
 
 
 
@@ -54,15 +54,75 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Port"
+            android:text="SMTP port"
             android:textSize="20dp" />
 
         <EditText
-            android:id="@+id/text_port"
+            android:id="@+id/smtpPort"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
-            android:text="port example" />
+            android:hint="567" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Receiving server type"
+            android:textSize="20dp"
+            android:layout_marginTop="20dp"/>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/imap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="IMAP"
+                />
+
+            <CheckBox
+                android:id="@+id/pop3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="POP3"
+                />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Receiving server address"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/inServerAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:hint="imap.gmail.com" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Receiving server port"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/inServerPort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:hint="993" />
 
 
         <TextView
@@ -73,27 +133,11 @@
             android:textSize="20dp" />
 
         <EditText
-            android:id="@+id/text_email"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
-            android:text="examplemail@gmail.com" />
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Password"
-            android:textSize="20dp" />
-
-        <EditText
-            android:id="@+id/text_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:inputType="textPassword"
-            android:text="Password" />
+            android:hint="john_doe@email.com" />
 
 
         <TextView
@@ -104,11 +148,27 @@
             android:textSize="20dp" />
 
         <EditText
-            android:id="@+id/text_displayName"
+            android:id="@+id/display_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
-            android:text="Example Display Name" />
+            android:hint="John Doe" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Password"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:inputType="textPassword"
+            android:text="Password" />
 
 
         <TextView
@@ -130,14 +190,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="Yes"/>
+                android:text="Yes"
+               />
 
             <CheckBox
                 android:id="@+id/btnNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="No"/>
+                android:text="No"
+                />
 
         </LinearLayout>
 

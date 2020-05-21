@@ -24,8 +24,8 @@ public class AccountFragment extends Fragment {
 
     private ImageView btnClose;
     private Button btnSaveAccount, btnCancel;
-    private EditText txtEmail, txtServerAddress, txtPort, txtPassword, txtDisplayName;
-    private CheckBox btnYes, btnNo;
+    private EditText txtSmtpServerAddress,txtSmtpPort, txtInServerAddress, txtInServerPort ,  txtEmail, txtDisplayName, txtPassword;
+    private CheckBox btnImap, btnPop3, btnYes, btnNo;
 
     public AccountFragment(){
 
@@ -38,29 +38,61 @@ public class AccountFragment extends Fragment {
 
         mAccount = getArguments().getParcelable(ACCOUNT_KEY);
 
+
+
     }
 
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView =  inflater.inflate(R.layout.fragment_account, container, false);
-
-
+        final View rootView =  inflater.inflate(R.layout.fragment_account, container, false);
         rootView.setBackgroundColor(Color.WHITE);
 
         btnClose = rootView.findViewById(R.id.btnCloseAddAccount);
         btnSaveAccount = rootView.findViewById(R.id.btnAddNewAccount);
         btnCancel = rootView.findViewById(R.id.btnCancelAccount);
-        txtServerAddress = rootView.findViewById(R.id.text_serverAddress); txtServerAddress.setText(mAccount.getUsername());
-        txtEmail = rootView.findViewById(R.id.text_email); txtServerAddress.setText(mAccount.getUsername());
-        txtPort = rootView.findViewById(R.id.text_port);
-        txtPassword = rootView.findViewById(R.id.text_password);
-        txtDisplayName = rootView.findViewById(R.id.text_displayName);
+
+        txtSmtpServerAddress = rootView.findViewById(R.id.smtpServerAddress);
+        txtSmtpPort = rootView.findViewById(R.id.smtpPort);
+        btnImap = rootView.findViewById(R.id.imap);
+        btnPop3 = rootView.findViewById(R.id.pop3);
+        txtInServerAddress = rootView.findViewById(R.id.inServerAddress);
+        txtInServerPort = rootView.findViewById(R.id.inServerPort);
+        txtEmail = rootView.findViewById(R.id.email);
+        txtDisplayName = rootView.findViewById(R.id.display_name);
+        txtPassword = rootView.findViewById(R.id.password);
         btnYes = rootView.findViewById(R.id.btnYes);
         btnNo = rootView.findViewById(R.id.btnNo);
 
         return  rootView;
+    }
+
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.imap:
+                if(checked) return;
+                btnPop3.setChecked(false);
+                break;
+            case R.id.pop3:
+                if(checked) return;
+                btnImap.setChecked(false);
+                break;
+                // Cheese me
+            case R.id.btnYes:
+                if(checked) return;
+                btnNo.setChecked(false);
+                break;
+            case R.id.btnNo:
+                if(checked) return;
+                btnYes.setChecked(false);
+                break;
+            default: return;
+        }
     }
 
 
