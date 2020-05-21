@@ -1,9 +1,10 @@
 package com.example.email.fragments;
 
-import android.content.Intent;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +22,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.email.R;
+import com.example.email.model.Account;
+import com.example.email.repository.Repository;
+import com.example.email.retrofit.RetrofitClient;
+import com.example.email.retrofit.account.AccountService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class AddAccountFragment extends DialogFragment {
@@ -33,6 +44,10 @@ public class AddAccountFragment extends DialogFragment {
     private int smtpPort, inServerType, inServerPort ;
     private boolean authentication, Imap, Pop3, authNotChoosen;
 
+    private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
+    private final AccountService mAccountService = mRetrofit.create(AccountService.class);
+
+    private Fragment frag = this;
 
     public AddAccountFragment(){}
 
@@ -74,7 +89,6 @@ public class AddAccountFragment extends DialogFragment {
             } else {
                 authentication = auth;
             }
-
         } else {
             smtpServerAddress = "";
             inServerAddress = "";
@@ -82,7 +96,6 @@ public class AddAccountFragment extends DialogFragment {
             displayname = "";
             password = "";
         }
-
     }
 
     @Nullable
@@ -130,11 +143,6 @@ public class AddAccountFragment extends DialogFragment {
             btnNo.setChecked(true);
         }
 
-
-
-
-        //Close the fragment
-
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,7 +153,6 @@ public class AddAccountFragment extends DialogFragment {
             }
         });
 
-
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,13 +162,44 @@ public class AddAccountFragment extends DialogFragment {
             }
         });
 
-
         btnSaveAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //if request status is ok, then close the fragment and set email in #selectedEmail EditText
+                Account newAccount = getAccount();
 
+                if (newAccount != null){
+                    // send to backend;
+                    Call<Account> call = mAccountService.addAccount(newAccount, Repository.loggedUser.getId(), Repository.jwt);
+
+                    call.enqueue(new Callback<Account>() {
+                        @Override
+                        public void onResponse(Call<Account> call, Response<Account> response) {
+
+                            if (!response.isSuccessful()){
+                                Toast.makeText(getActivity(), "Response not successful", Toast.LENGTH_SHORT).show();
+                                Log.i("GRESKA U AddAccountFragment-u", String.valueOf(response.code()));
+                            }
+                            Account newAcc = response.body();
+                            if (newAcc == null){
+                                Toast.makeText(getActivity(), "Please choose different email address!", Toast.LENGTH_SHORT).show();
+                            } else{
+                                Repository.loggedUser.getAccounts().add(newAcc);
+                                Toast.makeText(getActivity(), "Account saved", Toast.LENGTH_LONG).show();
+                                getActivity().getSupportFragmentManager().beginTransaction().remove(frag).commit();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Account> call, Throwable t) {
+                            Toast.makeText(getActivity(), "Please choose different email address!", Toast.LENGTH_SHORT).show();
+                            Log.i("FAILURE", t.toString());
+                            return;
+                        }
+                    });
+                } else {
+                    //nothing
+                }
             }
         });
 
@@ -196,12 +234,9 @@ public class AddAccountFragment extends DialogFragment {
         return rootView;
     }
 
-
-
     private void closeFragment(Fragment fragment){
 
         requireActivity().getSupportFragmentManager().beginTransaction().remove(fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
-
     }
 
     @Override
@@ -216,7 +251,6 @@ public class AddAccountFragment extends DialogFragment {
             outState.putInt("smtpPort",0);
         }
 
-
         if (btnImap.isChecked()) outState.putInt("inServerType", 1);
         else if (btnPop3.isChecked()) outState.putInt("inServerType", 0);
         else  if (!btnImap.isChecked() && !btnPop3.isChecked()) outState.putInt("inServerType", -1);
@@ -229,9 +263,6 @@ public class AddAccountFragment extends DialogFragment {
             outState.putInt("inServerPort", 0);
         }
 
-
-
-
         outState.putString("email", txtEmail.getText().toString());
         outState.putString("displayname", txtDisplayName.getText().toString());
         outState.putString("password", txtPassword.getText().toString());
@@ -239,6 +270,96 @@ public class AddAccountFragment extends DialogFragment {
         if (btnYes.isChecked()) outState.putBoolean("authentication", true);
         else if (btnNo.isChecked()) outState.putBoolean("authentication", false);
         else  if (!btnNo.isChecked() && !btnYes.isChecked()) outState.putInt("authenticationNotChoose", -1);
+    }
 
+
+    private Account getAccount(){
+        Account newAccount = new Account();
+
+        if (txtSmtpServerAddress.getText().toString().length() >= 6 && txtSmtpServerAddress.getText().toString().substring(0, 5).equals("smtp.")){
+            newAccount.setSmtpAddress(txtSmtpServerAddress.getText().toString());
+        }else{
+            Toast.makeText(getActivity(), "SMTP server address not properly formed!", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        try{
+            int x = Integer.valueOf(txtSmtpPort.getText().toString());
+            if ( x <= 0){
+                Toast.makeText(getActivity(), "SMTP server port must be postive integer!", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            newAccount.setSmtpPort(Integer.valueOf(txtSmtpPort.getText().toString()));
+        }catch (Exception e){
+            Toast.makeText(getActivity(), "SMTP server port must be postive integer!", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (btnImap.isChecked()){
+            //newAccount.setInServerType(1); //IMAP
+            if (txtInServerAddress.getText().toString().length() >= 5 && txtInServerAddress.getText().toString().substring(0, 5).equals("imap.")){
+                newAccount.setInServerType(1);
+                newAccount.setInServerAddress(txtInServerAddress.getText().toString());
+            } else {
+                Toast.makeText(getActivity(), "Receiving server address not properly formed!", Toast.LENGTH_SHORT).show();
+            }
+
+        } else if (btnPop3.isChecked()) {
+            //newAccount.setInServerType(0); //POP
+            if(txtInServerAddress.getText().toString().length() >= 4 && txtInServerAddress.getText().toString().substring(0,4).equals("pop.")){
+                newAccount.setInServerType(0);
+                newAccount.setInServerAddress(txtInServerAddress.getText().toString());
+            } else {
+                Toast.makeText(getActivity(), "Receiving server address not properly formed!", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            //nothing is checked
+            Toast.makeText(getActivity(), "Please choose incoming server type!", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        try{
+            int x = Integer.valueOf(txtInServerPort.getText().toString());
+            if ( x <= 0){
+                Toast.makeText(getActivity(), "Receiving server port must be postive integer!", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            newAccount.setInServerPort(Integer.valueOf(txtInServerPort.getText().toString()));
+        }catch (Exception e){
+            Toast.makeText(getActivity(), "Receiving server port must be postive integer!", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (isWhitespacesOnly(txtEmail.getText().toString())){
+            Toast.makeText(getActivity(), "Email address cannot be whitespace!", Toast.LENGTH_SHORT).show();
+            return null;
+        } else newAccount.setUsername(txtEmail.getText().toString());
+
+
+        if (isWhitespacesOnly(txtDisplayName.getText().toString())){
+            Toast.makeText(getActivity(), "Display name cannot be whitespace!", Toast.LENGTH_SHORT).show();
+            return null;
+        } else newAccount.setDisplayName(txtDisplayName.getText().toString());
+
+        if (isWhitespacesOnly(txtPassword.getText().toString())){
+            Toast.makeText(getActivity(), "Password cannot be whitespace!", Toast.LENGTH_SHORT).show();
+            return null;
+        } else newAccount.setPassword(txtPassword.getText().toString());
+
+        if (btnYes.isChecked()){
+            newAccount.setAuthentication(true);
+        } else if (btnNo.isChecked()){
+            newAccount.setAuthentication(false);
+        } else if (!btnNo.isChecked() && !btnYes.isChecked()) {
+            Toast.makeText(getActivity(), "Please set authentication!", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        return newAccount;
+    }
+
+    private boolean isWhitespacesOnly(String text){
+        return text.trim().isEmpty();
     }
 }

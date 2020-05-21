@@ -61,6 +61,10 @@ public class Account implements Parcelable {
         this.displayName = displayName;
     }
 
+    public Account(){
+
+    }
+
 
 
 
