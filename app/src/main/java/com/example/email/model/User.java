@@ -4,7 +4,7 @@ package com.example.email.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +38,10 @@ public class User {
     @Expose
     private Set<Contact> contacts;
 
+    @SerializedName("accounts")
+    @Expose
+    private Set<Account> accounts;
+
     public User(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,6 +49,16 @@ public class User {
         this.password = password;
         this.roles = "ROLE_USER";
         this.contacts = new HashSet<Contact>() {};
+        this.accounts = new HashSet<Account>() {};
+    }
+    public User(int id, String firstName, String lastName, String username, String password, String roles) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+
     }
 
     public User(int id, String firstName, String lastName, String username, String password) {
@@ -56,7 +70,17 @@ public class User {
         this.roles = "ROLE_USER";
     }
 
-/*    public void add(Contact contact){
+    public User(int id, String firstName, String lastName, String username, String password, String roles, Set<Contact> contacts) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.contacts = contacts;
+    }
+
+    /*    public void add(Contact contact){
         if (contact.getUser() != null){
             contact.getUser().getContacts().remove(contact);
         }
@@ -112,6 +136,7 @@ public class User {
         return roles;
     }
 
+
     @Override
     public String toString() {
         return "User{" +
@@ -121,6 +146,8 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", roles='" + roles + '\'' +
+                ", contacts=" + contacts +
+                ", accounts=" + accounts +
                 '}';
     }
 
@@ -134,6 +161,14 @@ public class User {
 
     public void setContacts(Set<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public Set<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
     }
 }
 

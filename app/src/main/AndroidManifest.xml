@@ -75,7 +75,12 @@
         <activity
             android:name=".activities.ContactsActivity"
             android:label="Contact"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".activities.AccountActivity"
+            android:label="Account"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
             <!--
                 <intent-filter>
@@ -83,7 +88,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
-        </activity>
+
         <activity
             android:name=".activities.ActivityZaTest"
             android:theme="@style/Theme.MaterialComponents" />

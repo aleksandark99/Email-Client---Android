@@ -19,13 +19,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add new account"
+            android:text="Edit account"
             android:textSize="20dp"
             android:textColor="@color/colorPrimary"/>
 
 
         <ImageView
-            android:id="@+id/btnCloseAddAccount"
+            android:id="@+id/btnCloseAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -191,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:text="Yes"
-               />
+                />
 
             <CheckBox
                 android:id="@+id/btnNo"
@@ -211,28 +211,27 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="30dp">
 
-
             <Button
-                android:id="@+id/btnCancelAccount"
+                android:id="@+id/btnDeleteAccount"
                 android:layout_width="100dp"
                 android:layout_height="30dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/button_purple_round"
-                android:text="Cancel"
+                android:text="Delete"
                 android:textColor="@android:color/white" />
 
 
             <Button
-                android:id="@+id/btnAddNewAccount"
+                android:id="@+id/btnSaveChanges"
                 android:layout_width="100dp"
                 android:layout_height="30dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/button_purple_round"
-                android:text="Save"
+                android:text="Save changes"
                 android:textColor="@android:color/white" />
 
 

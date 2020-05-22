@@ -1,6 +1,5 @@
 package com.example.email.fragments;
 
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -17,9 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.email.R;
 import com.example.email.model.Account;
@@ -27,16 +24,20 @@ import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.account.AccountService;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+public class AccountFragment extends Fragment {
 
-public class AddAccountFragment extends DialogFragment {
+    private static final String ACCOUNT_KEY = "com.example.email.fragments.account";
+    private Account mAccount;
+
 
     private ImageView btnClose;
-    private Button btnSaveAccount, btnCancel;
+    private Button btnSaveAccount, btnDeleteAccount;
     private EditText txtSmtpServerAddress,txtSmtpPort, txtInServerAddress, txtInServerPort ,  txtEmail, txtDisplayName, txtPassword;
     private CheckBox btnImap, btnPop3, btnYes, btnNo;
 
@@ -47,12 +48,16 @@ public class AddAccountFragment extends DialogFragment {
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final AccountService mAccountService = mRetrofit.create(AccountService.class);
 
+    public AccountFragment(){
 
-    public AddAccountFragment(){}
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mAccount = getArguments().getParcelable(ACCOUNT_KEY);
 
         if (savedInstanceState != null){
             String smtpServerAdr = savedInstanceState.getString("smtpAddress");
@@ -89,25 +94,34 @@ public class AddAccountFragment extends DialogFragment {
                 authentication = auth;
             }
         } else {
-            smtpServerAddress = "";
-            inServerAddress = "";
-            email = "";
-            displayname = "";
-            password = "";
+            smtpServerAddress = mAccount.getSmtpAddress();
+            smtpPort = mAccount.getSmtpPort();
+            inServerType = mAccount.getInServerType(); //1 ILI 0
+
+            if (inServerType == 1) Imap = true;
+            else if (inServerType == 0) Pop3 = true;
+
+            inServerPort = mAccount.getInServerPort();
+            inServerAddress = mAccount.getInServerAddress();
+            email = mAccount.getUsername();
+            displayname = mAccount.getDisplayName();
+            password = mAccount.getPassword();
+
+            authentication = mAccount.isAuthentication();
         }
+
     }
 
-    @Nullable
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        final View rootView = inflater.inflate(R.layout.add_account, container, false);
-
+        final View rootView =  inflater.inflate(R.layout.fragment_account, container, false);
         rootView.setBackgroundColor(Color.WHITE);
 
-        btnClose = rootView.findViewById(R.id.btnCloseAddAccount);
-        btnSaveAccount = rootView.findViewById(R.id.btnAddNewAccount);
-        btnCancel = rootView.findViewById(R.id.btnCancelAccount);
+        btnClose = rootView.findViewById(R.id.btnCloseAccount);
+        btnSaveAccount = rootView.findViewById(R.id.btnSaveChanges);
+        btnDeleteAccount = rootView.findViewById(R.id.btnDeleteAccount);
 
         txtSmtpServerAddress = rootView.findViewById(R.id.smtpServerAddress); txtSmtpServerAddress.setText(smtpServerAddress);
 
@@ -117,8 +131,14 @@ public class AddAccountFragment extends DialogFragment {
             txtSmtpPort.setText(String.valueOf(smtpPort));
         }
 
-        btnImap = rootView.findViewById(R.id.imap); btnImap.setChecked(Imap);
-        btnPop3 = rootView.findViewById(R.id.pop3); btnPop3.setChecked(Pop3);
+        btnImap = rootView.findViewById(R.id.imap);
+        btnPop3 = rootView.findViewById(R.id.pop3);
+        if (inServerType == 1){
+             btnImap.setChecked(Imap);
+        } else if (inServerType == 0){
+             btnPop3.setChecked(Pop3);
+        }
+
 
         txtInServerAddress = rootView.findViewById(R.id.inServerAddress); txtInServerAddress.setText(inServerAddress);
         txtInServerPort = rootView.findViewById(R.id.inServerPort);
@@ -142,19 +162,7 @@ public class AddAccountFragment extends DialogFragment {
             btnNo.setChecked(true);
         }
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeFragment(AddAccountFragment.this);
-            }
-        });
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeFragment(AddAccountFragment.this);
-            }
-        });
 
         btnSaveAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +172,8 @@ public class AddAccountFragment extends DialogFragment {
 
                 if (newAccount != null){
                     // send to backend;
-                    Call<Account> call = mAccountService.addAccount(newAccount, Repository.loggedUser.getId(), Repository.jwt);
+                    newAccount.setId(mAccount.getId());
+                    Call<Account> call = mAccountService.updateAccount(newAccount, Repository.loggedUser.getId(), mAccount.getId(),  Repository.jwt);
 
                     call.enqueue(new Callback<Account>() {
                         @Override
@@ -172,15 +181,17 @@ public class AddAccountFragment extends DialogFragment {
 
                             if (!response.isSuccessful()){
                                 Toast.makeText(getActivity(), "Response not successful", Toast.LENGTH_SHORT).show();
-                                Log.i("GRESKA U AddAccountFragment-u", String.valueOf(response.code()));
+                                Log.i("GRESKA U AccountFragment-u", String.valueOf(response.code()));
                             }
-                            Account newAcc = response.body();
-                            if (newAcc == null){
+                            Account updatedAcc = response.body();
+                            if (updatedAcc == null){
                                 Toast.makeText(getActivity(), "Please choose different email address!", Toast.LENGTH_SHORT).show();
                             } else{
-                                Repository.loggedUser.getAccounts().add(newAcc);
-                                Toast.makeText(getActivity(), "Account saved", Toast.LENGTH_LONG).show();
-                                getActivity().getSupportFragmentManager().beginTransaction().remove(AddAccountFragment.this).commit();
+                                Repository.loggedUser.getAccounts().remove(mAccount);
+                                Repository.loggedUser.getAccounts().add(updatedAcc);
+                                Toast.makeText(getActivity(), "Account updated", Toast.LENGTH_LONG).show();
+                                //getActivity().getSupportFragmentManager().beginTransaction().remove(AccountFragment.this).commit();
+                                getActivity().finish();
                             }
                         }
 
@@ -194,6 +205,37 @@ public class AddAccountFragment extends DialogFragment {
                 } else {
                     //nothing
                 }
+            }
+        });
+
+        btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              Call<ResponseBody> call = mAccountService.deleteAccount(Repository.loggedUser.getId(), mAccount.getId(), Repository.jwt);
+
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        if (!response.isSuccessful()){
+                            Log.i("ERROR KOD BRISANJA ACCOUNTA POGLEDAJ KONZOLU", String.valueOf(response.code()));
+                            return;
+                        }
+                        if (response.code() == 200){
+                            Repository.loggedUser.getAccounts().remove(mAccount);
+                            Toast.makeText(getActivity(), "Account deleted!", Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
+                        }else Toast.makeText(getActivity(), "Account is not deleted, error on server!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getActivity(), "ERROOOOOR PRILIKOM BRISANJA account-a POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
+                        Log.i("ERROOOOOR PRILIKOM BRISANJA Accounta POGLEDAJ KONZOLU", t.toString());
+                    }
+                });
             }
         });
 
@@ -225,13 +267,18 @@ public class AddAccountFragment extends DialogFragment {
             }
         });
 
-        return rootView;
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               getActivity().finish();
+            }
+        });
+
+
+        return  rootView;
     }
 
-    private void closeFragment(Fragment fragment){
 
-        requireActivity().getSupportFragmentManager().beginTransaction().remove(fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -247,7 +294,7 @@ public class AddAccountFragment extends DialogFragment {
 
         if (btnImap.isChecked()) outState.putInt("inServerType", 1);
         else if (btnPop3.isChecked()) outState.putInt("inServerType", 0);
-        else  if (!btnImap.isChecked() && !btnPop3.isChecked()) outState.putInt("inServerType", -1);
+        else if (!btnImap.isChecked() && !btnPop3.isChecked()) outState.putInt("inServerType", -1);
 
         outState.putString("inServerAddress", txtInServerAddress.getText().toString());
 
@@ -265,7 +312,6 @@ public class AddAccountFragment extends DialogFragment {
         else if (btnNo.isChecked()) outState.putBoolean("authentication", false);
         else  if (!btnNo.isChecked() && !btnYes.isChecked()) outState.putInt("authenticationNotChoose", -1);
     }
-
 
     private Account getAccount(){
         Account newAccount = new Account();
@@ -357,5 +403,16 @@ public class AddAccountFragment extends DialogFragment {
 
     private boolean isWhitespacesOnly(String text){
         return text.trim().isEmpty();
+    }
+
+
+
+
+    public static AccountFragment newInstance(Account account) {
+        Bundle args = new Bundle();
+        args.putParcelable(ACCOUNT_KEY, account);
+        AccountFragment fragment = new AccountFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

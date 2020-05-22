@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                         //welcome toast
 
                         usernameEditText.setText(""); passwordEditText.setText("");
-
+                        Log.i("USER",Repository.loggedUser.toString());
                         startActivity(goToEmailsIntent);
 
                     }
