@@ -24,6 +24,7 @@ import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.account.AccountService;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,7 +37,7 @@ public class AccountFragment extends Fragment {
 
 
     private ImageView btnClose;
-    private Button btnSaveAccount;
+    private Button btnSaveAccount, btnDeleteAccount;
     private EditText txtSmtpServerAddress,txtSmtpPort, txtInServerAddress, txtInServerPort ,  txtEmail, txtDisplayName, txtPassword;
     private CheckBox btnImap, btnPop3, btnYes, btnNo;
 
@@ -118,9 +119,9 @@ public class AccountFragment extends Fragment {
         final View rootView =  inflater.inflate(R.layout.fragment_account, container, false);
         rootView.setBackgroundColor(Color.WHITE);
 
-        btnClose = rootView.findViewById(R.id.btnCloseAddAccount);
-        btnSaveAccount = rootView.findViewById(R.id.btnAddNewAccount);
-
+        btnClose = rootView.findViewById(R.id.btnCloseAccount);
+        btnSaveAccount = rootView.findViewById(R.id.btnSaveChanges);
+        btnDeleteAccount = rootView.findViewById(R.id.btnDeleteAccount);
 
         txtSmtpServerAddress = rootView.findViewById(R.id.smtpServerAddress); txtSmtpServerAddress.setText(smtpServerAddress);
 
@@ -207,6 +208,37 @@ public class AccountFragment extends Fragment {
             }
         });
 
+        btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              Call<ResponseBody> call = mAccountService.deleteAccount(Repository.loggedUser.getId(), mAccount.getId(), Repository.jwt);
+
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        if (!response.isSuccessful()){
+                            Log.i("ERROR KOD BRISANJA ACCOUNTA POGLEDAJ KONZOLU", String.valueOf(response.code()));
+                            return;
+                        }
+                        if (response.code() == 200){
+                            Repository.loggedUser.getAccounts().remove(mAccount);
+                            Toast.makeText(getActivity(), "Account deleted!", Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
+                        }else Toast.makeText(getActivity(), "Account is not deleted, error on server!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getActivity(), "ERROOOOOR PRILIKOM BRISANJA account-a POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
+                        Log.i("ERROOOOOR PRILIKOM BRISANJA Accounta POGLEDAJ KONZOLU", t.toString());
+                    }
+                });
+            }
+        });
+
         btnImap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -238,7 +270,7 @@ public class AccountFragment extends Fragment {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               getActivity().getSupportFragmentManager().beginTransaction().remove(AccountFragment.this).commit();
+               getActivity().finish();
             }
         });
 
