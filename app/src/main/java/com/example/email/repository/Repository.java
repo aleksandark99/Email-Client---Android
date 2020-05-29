@@ -24,7 +24,7 @@ public class Repository {
     public static User loggedUser = null;
     public static String jwt = null;
 
-    private final int[] avatars = {R.drawable.kotur,R.drawable.dejan, R.drawable.brboric, R.drawable.ziga};
+    private final int[] avatars = {R.drawable.kotur, R.drawable.dejan, R.drawable.brboric, R.drawable.ziga};
     private final int NUMBER_OF_CONTACTS = avatars.length;
 
     private static Repository sRepository;
@@ -33,7 +33,6 @@ public class Repository {
     private ArrayList<Message> messages;
 
     private ArrayList<Tag> tags;
-
 
 
     public static Repository get(Context context) {
@@ -45,6 +44,8 @@ public class Repository {
 
     private Repository(Context context) {
         mContacts = new ArrayList<Contact>();
+//        messages= new ArrayList<Message>();
+//        tags=new ArrayList<Tag>();
        /* mContacts = IntStream.rangeClosed(1, NUMBER_OF_CONTACTS)
                 .boxed()
                 .map(idContact -> new Contact(idContact, "Firstname " + idContact,
@@ -58,6 +59,17 @@ public class Repository {
 
     }
 
+    public void removeTag(String s){
+        for (Tag tag:tags
+             ) {
+            if(tag.getTagName().toLowerCase().equals(s.toLowerCase())){
+                tags.remove(tag);
+                break;
+            }
+
+        }
+    }
+
     public File getPhotoFile(Contact contact, Context context) {
         File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
@@ -69,16 +81,28 @@ public class Repository {
         return f;
     }
 
-    public ArrayList<Contact> getContacts(){
+    public ArrayList<Contact> getContacts() {
         return mContacts;
     }
 
-    public Contact findContactById(int idContact){
+    public Contact findContactById(int idContact) {
         return mContacts.stream().filter(contact -> contact.getId() == idContact).findFirst().orElse(null);
     }
 
-    public ArrayList<Tag> getMyTags(){
+    public Contact findContactByEmail(String email) {
+        return mContacts.stream().filter(contact -> contact.getEmail().toLowerCase().equals(email.toLowerCase())).findFirst().orElse(null);
+    }
+    public void editTag(String tagname,String newTagname){
+        for (Tag t:tags
+        ) {
+            if(t.getTagName().toLowerCase().equals(tagname.toLowerCase())){
+                t.setTagName(newTagname);
+            }
 
+        }
+    }
+    public ArrayList<Tag> getMyTags() {
+        tags=new ArrayList<Tag>();
         Tag t1;
         Tag t2;
         Tag t3;
@@ -86,19 +110,23 @@ public class Repository {
         t2 = new Tag(2, "t2422434242432432");
         t3 = new Tag(3, "t342432432424342");
 
-        tags=new ArrayList<Tag>();
+        //tags = new ArrayList<Tag>();
         tags.add(t1);
         tags.add(t2);
         tags.add(t3);
         return tags;
     }
+    public void addTag(String tagname){
+        Tag t =new Tag();
+        t.setTagName(tagname);
+        tags.add(t);
+    }
+    public ArrayList<Message> getMessages() {
 
-    public ArrayList<Message> getMessages(){
-
-
+        messages=new ArrayList<Message>();
         Message m1;
         Message m2;
-        Message m3,m4,m5,m6;
+        Message m3, m4, m5, m6;
 
         Tag t1;
         Tag t2;
@@ -107,7 +135,7 @@ public class Repository {
         ArrayList<Tag> tags2;
 
 
-        messages = new ArrayList<Message>();
+     //   messages = new ArrayList<Message>();
         m1 = new Message();
         m2 = new Message();
         m3 = new Message();
@@ -127,7 +155,7 @@ public class Repository {
         tags1 = new ArrayList<Tag>();
         tags2 = new ArrayList<Tag>();
         /////
-        m1.setFrom("m1Frasdsdasdadsadsasdaasdom");
+        m1.setFrom("a");
         m2.setFrom("m2From");
         m3.setFrom("m2From");
         m1.setSubject("m1Subject");
@@ -156,11 +184,11 @@ public class Repository {
         m4.setContent("Content za m1");
         m5.setContent("Content za m23");
         m6.setContent("Content za m3");
-        ArrayList<String> as1=new ArrayList<String>();
+        ArrayList<String> as1 = new ArrayList<String>();
         as1.add("To person1");
         as1.add("To person1a");
         as1.add("To person1b");
-        ArrayList<String> as2=new ArrayList<String>();
+        ArrayList<String> as2 = new ArrayList<String>();
         as2.add("To xyz");
         as2.add("To person2a");
         m1.setTo(as2);
@@ -175,21 +203,21 @@ public class Repository {
         m5.setCc(as2);
         m6.setTo(as1);
         m6.setCc(as2);
-        m1.setFrom("From person1");
+        m1.setFrom("a");
         m2.setFrom("From person2");
         m3.setFrom("From person3");
         m4.setFrom("From person4");
         m5.setFrom("From person5");
         m6.setFrom("From person6");
 
-        ArrayList<Attachment> at1=new ArrayList<>();
-        ArrayList<Attachment>at2=new ArrayList<>();
-        ArrayList<Attachment>at3=new ArrayList<>();
-        Attachment a1= new Attachment("attachment1");
-        Attachment a2= new Attachment("attachment3");
-        Attachment a3= new Attachment("attachment2");
-        Attachment a4= new Attachment("at1Slika");
-        Attachment a5= new Attachment("pdfFile");
+        ArrayList<Attachment> at1 = new ArrayList<>();
+        ArrayList<Attachment> at2 = new ArrayList<>();
+        ArrayList<Attachment> at3 = new ArrayList<>();
+        Attachment a1 = new Attachment("attachment1");
+        Attachment a2 = new Attachment("attachment3");
+        Attachment a3 = new Attachment("attachment2");
+        Attachment a4 = new Attachment("at1Slika");
+        Attachment a5 = new Attachment("pdfFile");
         at1.add(a1);
         at1.add(a5);
 
@@ -217,14 +245,14 @@ public class Repository {
         messages.add(m3);
 
 
-        return  messages;
+        return messages;
     }
 
 
-    public boolean DeleteMessage(long id){
-        for (Message m: messages
-             ) {
-            if(m.getId()==id){
+    public boolean DeleteMessage(long id) {
+        for (Message m : messages
+        ) {
+            if (m.getId() == id) {
                 messages.remove(m);
                 return true;
             }
@@ -234,8 +262,8 @@ public class Repository {
         return false;
     }
 
-    public int newId(){
-        if (mContacts.size() > 0){
+    public int newId() {
+        if (mContacts.size() > 0) {
             return mContacts.stream().max(Comparator.comparing(Contact::getId)).get().getId() + 1;
         }
         return 0;

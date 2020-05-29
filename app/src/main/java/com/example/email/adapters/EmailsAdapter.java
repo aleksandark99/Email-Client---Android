@@ -21,8 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.email.R;
 import com.example.email.activities.EmailActivity;
 import com.example.email.activities.EmailsActivity;
+import com.example.email.model.Contact;
 import com.example.email.model.Message;
 import com.example.email.model.items.Tag;
+import com.example.email.repository.Repository;
 import com.example.email.utility.Helper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -92,6 +94,20 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         if(messages.get(position).getAttachments().size()>0){
             holder.attachment.setVisibility(View.VISIBLE);
         }
+        Contact c= Repository.get(ctx).findContactByEmail(messages.get(position).getFrom().toString().toLowerCase());
+        if(c!=null){
+            Log.d("DA LI JE NASOA",c.getDisplayName());
+
+            //   int draw=2;
+           // holder.profilePicture.setImageResource(draw);
+
+            Helper.displayImageIntoImageView(c.getPhotoPath(), holder.profilePicture, ctx);
+            Log.d("myTag", "This is my message");
+
+        }else {
+            Log.d("My tag 2","nije nasao nista");
+        }
+
 
 
         holder.layoutRow.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +193,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         CardView cardView;
         ChipGroup chipGroup;
         ConstraintLayout layoutRow;
-        ImageView attachment;
+        ImageView attachment,profilePicture;
         public EmailsViewHolder(@NonNull View itemView) {
             super(itemView);
             from = itemView.findViewById(R.id.fromText1);
@@ -190,6 +206,8 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             layoutRow = itemView.findViewById(R.id.new_email_row_id);
 
             attachment = itemView.findViewById(R.id.hasAttachmentIcon);
+
+            profilePicture=itemView.findViewById(R.id.emailFromImage);
         }
 
 
