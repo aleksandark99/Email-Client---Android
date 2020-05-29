@@ -106,6 +106,12 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 emailsAdapter.notifyDataSetChanged();
 
                 return true;
+            case R.id.sendNewMailId:
+                Toast.makeText(EmailsActivity.this, "sasadasdsda", Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(this, SendEmailActivity.class));
+                return true;
+
         }
 
 
@@ -163,7 +169,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             case R.id.folders_item:
 
                 startActivity(new Intent(EmailsActivity.this, FoldersActivity.class));
-
                 break;
 
             case R.id.profile_item:
@@ -171,6 +176,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 startActivity(new Intent(this, ProfileActivity.class));
 
                 break;
+            case R.id.tags_item:
+                startActivity(new Intent(this, TagsActivity.class));
+                break;
+
         }
 
         return true;

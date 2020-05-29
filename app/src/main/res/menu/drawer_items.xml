@@ -22,6 +22,10 @@
         <item android:id="@+id/settings_item"
             android:icon="@drawable/ic_settings_applications_black_24dp"
             android:title="Settings"/>
+        <item android:id="@+id/tags_item"
+            android:icon="@drawable/ic_add_circle_outline_black_24dp"
+            android:title="Tags"
+            ></item>
 
     </group>
 

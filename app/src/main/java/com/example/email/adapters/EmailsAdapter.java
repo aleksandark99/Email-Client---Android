@@ -2,6 +2,7 @@ package com.example.email.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Icon;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,7 +67,8 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
         // ovde make attachment icon visible ako ima attachmenta poruka
         if (messages.get(position).isUnread()) {
-            holder.cardView.setBackgroundColor(0xFFF6A8A8);
+          //  holder.cardView.setBackgroundColor(0XFFD8E0E5);
+            holder.cardView.setBackgroundColor(0XFFC5D1D8);
         }else{
             holder.cardView.setBackgroundColor(0xFFFFFFF);
         }
@@ -81,7 +83,9 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
             Chip chip = new Chip(holder.chipGroup.getContext());
             chip.setText(messages.get(position).getTags().get(i).getTagName());
-            chip.setChipIconResource(img);
+           // chip.setChipIconResource(img);
+            int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
+            chip.setChipBackgroundColor(ColorStateList.valueOf(color));
             holder.chipGroup.addView(chip);
         }
         holder.attachment.setVisibility(View.INVISIBLE);

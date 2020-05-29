@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,19 +24,20 @@ import com.example.email.model.items.Tag;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class EmailActivity extends AppCompatActivity {
 
     TextView subjectText,fromText,toText,dateText,contentText,toLongText,fromLongText,ccLongText;
 
-    String subjectString,fromString,dateString,contentString,fromLongString;
+    String subjectString,fromString,dateString,contentString,fromLongString,To;
 
     ArrayList<String> toLongString,ccLongString;
-
+    Message mes;
     ArrayList<Tag> tags;
     LinearLayout detailToTexts,toLongLinearLayout,ccLongLinearLayout;
-
+    Button replyAll,reply,forward;
     ImageView arrowIcon;
 
     ChipGroup chipGroup;
@@ -60,6 +64,59 @@ public class EmailActivity extends AppCompatActivity {
         getData();
         setData();
 
+        reply=findViewById(R.id.replyButton);
+        replyAll=findViewById(R.id.replyAllButton);
+        forward=findViewById(R.id.forwardButton);
+
+
+        reply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(EmailActivity.this,SendEmailActivity.class);
+
+                mes.setTo(null);
+                mes.setCc(null);
+                intent.putExtra("message",mes);
+//                intent.putExtra("from", fromString);
+//                intent.putExtra("subject",subjectString);
+//                intent.putExtra("content",contentString);
+//                intent.putExtra("tags",tags);
+                startActivity(intent);
+
+            }
+        });
+        replyAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(EmailActivity.this,SendEmailActivity.class);
+                intent.putExtra("message",mes);
+//                intent.putExtra("To",toLongString);
+//                intent.putExtra("CC",ccLongString);
+//
+//                intent.putExtra("subject",subjectString);
+//                intent.putExtra("content",contentString);
+//                intent.putExtra("tags",tags);
+                startActivity(intent);
+            }
+        });
+        forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent= new Intent(EmailActivity.this,SendEmailActivity.class);
+                mes.setFrom("");
+                mes.setTo(null);
+                mes.setCc(null);
+                intent.putExtra("message",mes);
+
+                //                intent.putExtra("subject",subjectString);
+//                intent.putExtra("content",contentString);
+//                intent.putExtra("tags",tags);
+                startActivity(intent);
+
+            }
+        });
+
 
         toText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,10 +136,10 @@ public class EmailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(detailToTexts.getVisibility()==View.VISIBLE){
                     detailToTexts.setVisibility(View.GONE);
-                    arrowIcon.setImageResource(R.drawable.ic_arrow_downward_black_24dp);
+                    arrowIcon.setImageResource(R.drawable.arrowdown);
                 }else{
                     detailToTexts.setVisibility(View.VISIBLE);
-                    arrowIcon.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
+                    arrowIcon.setImageResource(R.drawable.arrowup);
                 }
             }
         });
@@ -98,6 +155,7 @@ public class EmailActivity extends AppCompatActivity {
     private void getData(){
         if(getIntent().hasExtra("message")){
             Message m = (Message)getIntent().getSerializableExtra("message");
+            mes=m;
             subjectString=m.getSubject();
             tags = m.getTags();
             fromString=m.getFrom();
@@ -105,6 +163,7 @@ public class EmailActivity extends AppCompatActivity {
             ccLongString=m.getCc();
             //dateString=
             contentString=m.getContent();
+            To=m.getTo().get(0);
 
         }else{
             Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();
@@ -132,10 +191,12 @@ public class EmailActivity extends AppCompatActivity {
             }
         }
 
-        if(tags!=null){// ovde verovatno treba tags.size()>0 al me mrzi da proverim
+        if(tags.size()>0){// ovde verovatno treba tags.size()>0 al me mrzi da proverim
             for (Tag tag:tags) {
                 Chip chip = new Chip(chipGroup.getContext());
                 chip.setText(tag.getTagName());
+                int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
+                chip.setChipBackgroundColor(ColorStateList.valueOf(color));
 //            Integer img = R.drawable.ic_lens_black_24dp;
                 //  chip.setChipIconResource(img);
                 chipGroup.addView(chip);

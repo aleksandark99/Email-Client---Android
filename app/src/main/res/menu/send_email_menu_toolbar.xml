@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <item
+        android:id="@+id/addTagId"
+        android:icon="@drawable/add_tag_icon"
+        android:title="Add new tag"
+
+        app:showAsAction="always">
+
+<menu></menu>
+
+    </item>
+    <item
+        android:id="@+id/addAttachment"
+        android:icon="@drawable/ic_attachment_black_24dp"
+        android:title="Add new tag"
+
+        app:showAsAction="always"></item>
+    <item
+        android:id="@+id/cancelEmail"
+        android:icon="@drawable/exit_icon"
+        android:title="Cancel"
+        app:showAsAction="always"
+        ></item>
+    <item
+        android:id="@+id/sendEmailConfirm"
+        android:icon="@drawable/send_black"
+        android:title="Send"
+        app:showAsAction="always"
+        ></item>
+
+
+</menu>

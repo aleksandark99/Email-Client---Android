@@ -24,6 +24,7 @@
                 android:layout_width="396dp"
                 android:layout_height="24dp"
                 android:layout_margin="5dp"
+                android:singleLine="true"
 
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
@@ -39,16 +40,16 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_person_black_24dp" />
 
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_margin="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                app:layout_constraintStart_toEndOf="@+id/imageView5"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_person_black_24dp" />
+<!--            <ImageView-->
+<!--                android:id="@+id/imageView7"-->
+<!--                android:layout_width="22dp"-->
+<!--                android:layout_height="22dp"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:layout_marginStart="5dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/imageView5"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:srcCompat="@drawable/ic_person_black_24dp" />-->
 
             <ImageView
                 android:id="@+id/hasAttachmentIcon"
@@ -69,7 +70,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:autoSizeMaxTextSize="194dp"
-                app:layout_constraintStart_toEndOf="@+id/imageView7"
+                app:layout_constraintStart_toEndOf="@+id/imageView5"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -82,14 +83,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="314dp"
-                android:layout_height="22dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="6dp"
-                app:layout_constraintStart_toEndOf="@+id/imageView5"
-                app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+<!--            <TextView-->
+<!--                android:id="@+id/textView6"-->
+<!--                android:layout_width="314dp"-->
+<!--                android:layout_height="22dp"-->
+<!--                android:layout_marginStart="5dp"-->
+<!--                android:layout_marginTop="6dp"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/imageView5"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/dateText1" />-->
 
             <TextView
                 android:id="@+id/subjectText1"
@@ -98,7 +99,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="6dp"
                 app:layout_constraintStart_toEndOf="@+id/imageView5"
-                app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+                app:layout_constraintTop_toBottomOf="@+id/fromText1" />
 
             <TextView
                 android:id="@+id/textView12"

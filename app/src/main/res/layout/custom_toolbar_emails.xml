@@ -5,7 +5,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="#F33A79"
+    android:background="@color/colorPrimary"
     android:id="@+id/customEmailsToolbar"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     app:title=""

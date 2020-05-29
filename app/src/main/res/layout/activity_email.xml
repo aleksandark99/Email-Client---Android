@@ -72,9 +72,12 @@
                 android:layout_height="22dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="32dp"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.932"
                 app:layout_constraintStart_toEndOf="@+id/emailToText"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_downward_black_24dp" />
+                app:srcCompat="@drawable/arrowdown" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -182,7 +185,7 @@
             android:layout_margin="5dp">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/replyButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -190,7 +193,7 @@
                 android:text="REPLY" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/replyAllButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -198,7 +201,7 @@
                 android:text="Reply all" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/forwardButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

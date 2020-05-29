@@ -70,6 +70,8 @@ public class LoginActivity extends AppCompatActivity {
             /////test ovo neaaaaffffffffff
             if (isWhitespacesOnly(username) || isWhitespacesOnly(password)){
                 Toast.makeText(getApplicationContext(), "Credentials cannot be whitespaces", Toast.LENGTH_SHORT).show();
+                startActivity(goToEmailsIntent);
+
             } else {
                 //call backend
 

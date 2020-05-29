@@ -32,6 +32,8 @@ public class Repository {
 
     private ArrayList<Message> messages;
 
+    private ArrayList<Tag> tags;
+
 
 
     public static Repository get(Context context) {
@@ -73,6 +75,22 @@ public class Repository {
 
     public Contact findContactById(int idContact){
         return mContacts.stream().filter(contact -> contact.getId() == idContact).findFirst().orElse(null);
+    }
+
+    public ArrayList<Tag> getMyTags(){
+
+        Tag t1;
+        Tag t2;
+        Tag t3;
+        t1 = new Tag(1, "t1433333332");
+        t2 = new Tag(2, "t2422434242432432");
+        t3 = new Tag(3, "t342432432424342");
+
+        tags=new ArrayList<Tag>();
+        tags.add(t1);
+        tags.add(t2);
+        tags.add(t3);
+        return tags;
     }
 
     public ArrayList<Message> getMessages(){
@@ -132,7 +150,7 @@ public class Repository {
         m4.setTags(tags2);
         m5.setTags(tags2);
         m6.setTags(tags1);
-        m1.setContent("Content za m1");
+        m1.setContent("Content za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lorContent za m1 lor");
         m2.setContent("Content za m23");
         m3.setContent("Content za m3");
         m4.setContent("Content za m1");

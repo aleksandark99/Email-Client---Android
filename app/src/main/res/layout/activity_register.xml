@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/login_backround"
+        android:background="@drawable/login_2"
         android:gravity="center"
         android:orientation="vertical"
         tools:context=".activities.RegisterActivity">
@@ -86,9 +86,9 @@
             android:layout_width="123dp"
             android:layout_height="45dp"
             android:layout_marginBottom="10dp"
-            android:background="#7A8AE3"
+            android:background="@drawable/login_button_style"
             android:text="Register"
-            android:textColor="#4B2391"
+            android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -106,9 +106,9 @@
             android:id="@+id/loginButtonReg"
             android:layout_width="123dp"
             android:layout_height="45dp"
-            android:background="#7A8AE3"
+            android:background="@drawable/login_button_style"
             android:text="Login"
-            android:textColor="#4B2391"
+            android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold" />
 
