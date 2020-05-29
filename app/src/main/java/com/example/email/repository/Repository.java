@@ -90,7 +90,7 @@ public class Repository {
     }
 
     public Contact findContactByEmail(String email) {
-        return mContacts.stream().filter(contact -> contact.getEmail().toLowerCase().equals(email.toLowerCase())).findFirst().orElse(null);
+        return loggedUser.getContacts().stream().filter(contact -> contact.getEmail().toLowerCase().equals(email.toLowerCase())).findFirst().orElse(null);
     }
     public void editTag(String tagname,String newTagname){
         for (Tag t:tags

@@ -10,6 +10,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +44,9 @@ public class SendEmailActivity extends AppCompatActivity {
     private ArrayList<String> toArrayString,ccArayString;
     private String contentString,subjectString,fromMessageString;
     private ArrayList<Tag> tags;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

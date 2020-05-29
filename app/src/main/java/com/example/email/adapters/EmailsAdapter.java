@@ -94,7 +94,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         if(messages.get(position).getAttachments().size()>0){
             holder.attachment.setVisibility(View.VISIBLE);
         }
-        Contact c= Repository.get(ctx).findContactByEmail(messages.get(position).getFrom().toString().toLowerCase());
+        Contact c= Repository.get(ctx).findContactByEmail(messages.get(position).getFrom().toLowerCase());
         if(c!=null){
             Log.d("DA LI JE NASOA",c.getDisplayName());
 
@@ -102,6 +102,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
            // holder.profilePicture.setImageResource(draw);
 
             Helper.displayImageIntoImageView(c.getPhotoPath(), holder.profilePicture, ctx);
+//            holder.profilePicture.setImageResource(R.drawable.dummy_contact_photo);
             Log.d("myTag", "This is my message");
 
         }else {
@@ -207,7 +208,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
             attachment = itemView.findViewById(R.id.hasAttachmentIcon);
 
-            profilePicture=itemView.findViewById(R.id.emailFromImage);
+            profilePicture=itemView.findViewById(R.id.imageView5);
         }
 
 

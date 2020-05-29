@@ -11,7 +11,9 @@
 
         app:showAsAction="always">
 
-<menu></menu>
+<menu>
+
+</menu>
 
     </item>
     <item
