@@ -159,4 +159,10 @@ public class ProfileActivity extends AppCompatActivity {
         savedInstanceState.putString("password", mPasswordEditText.getText().toString());
 
     }
+
+    @Override
+    public void onBackPressed() {
+        
+        super.onBackPressed();
+    }
 }
