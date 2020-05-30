@@ -1,109 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/contactsDrawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ContactsActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".activities.EmailsActivity"
+    tools:openDrawer="start">
 
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navViewContacts"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/drawer_items" />
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <!-- Add this, so AppBarLayout has a bug, which causes ViewPager not to show listview entirely on the screen
-        Adding this view fixes (workaround) the problem -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorPrimary" />
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:layout_scrollFlags="scroll|enterAlways">
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawerLayout"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        tools:context=".activities.ContactsActivity">
 
-        <LinearLayout
-            android:id="@+id/main_content"
+        <include layout="@layout/custom_toolbar_emails"></include>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/contacts_recycler"
+            android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center|top"
-            android:background="@android:color/white"
-            >
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/contacts_recycler"
-                android:scrollbars="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-
-        </LinearLayout>
-
-        <!--Navigation drawer-->
-        <RelativeLayout
-            android:layout_width="280dp"
-            android:layout_height="match_parent"
-            android:id="@+id/drawerPane"
-            android:layout_gravity="start">
-
-            <!--Profile box here-->
-            <LinearLayout
-                android:id="@+id/imageContainer"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="vertical"
-                android:layout_gravity="start">
-
-                <ImageView
-                    android:layout_gravity="start"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:src="@drawable/welcome_logo_horizontal"
-                    android:layout_above="@+id/drawerList"
-                    android:scaleType="centerCrop">
-
-                </ImageView>
-            </LinearLayout>
+            android:layout_height="match_parent" />
 
 
 
-            <!-- List of Actions (pages) -->
-            <ListView
-                android:layout_below="@+id/imageContainer"
-                android:id="@+id/drawerList"
-                android:layout_width="280dp"
-                android:layout_height="match_parent"
-                android:choiceMode="singleChoice"
-                android:background="#ffffffff" />
+
+    </LinearLayout>
 
 
-        </RelativeLayout>
-
-
-
-    </androidx.drawerlayout.widget.DrawerLayout>
-
-
-</LinearLayout>
-
-
+</androidx.drawerlayout.widget.DrawerLayout>

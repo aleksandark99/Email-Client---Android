@@ -408,4 +408,8 @@ public class Repository {
         messages.add(m2);
         messages.add(m3);
     }
+
+    public static boolean loggedUserHaveAccount(){
+        return loggedUser.getAccounts().isEmpty();
+    }
 }
