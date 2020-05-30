@@ -99,7 +99,10 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //opens view pager
 
-                startActivity(AccountActivity.newIntent(ProfileActivity.this, 0, new ArrayList<Account>(Repository.loggedUser.getAccounts())));
+                if (Repository.loggedUserHaveAccount()) {
+                    startActivity(AccountActivity.newIntent(ProfileActivity.this, 0, new ArrayList<Account>(Repository.loggedUser.getAccounts())));
+                } else Toast.makeText(ProfileActivity.this, "Please create an account", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -162,7 +165,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        
+
         super.onBackPressed();
     }
 }

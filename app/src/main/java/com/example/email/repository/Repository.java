@@ -410,6 +410,6 @@ public class Repository {
     }
 
     public static boolean loggedUserHaveAccount(){
-        return loggedUser.getAccounts().isEmpty();
+        return !loggedUser.getAccounts().isEmpty();
     }
 }
