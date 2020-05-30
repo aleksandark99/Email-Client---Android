@@ -35,13 +35,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.TagsActivity"
+        <activity
+            android:name=".activities.TagsActivity"
+            android:configChanges="screenSize|orientation|screenLayout"
             android:theme="@style/AppTheme.NoActionBar"
+
             ></activity>
         <activity
             android:name=".activities.SendEmailActivity"
-            android:parentActivityName=".activities.EmailsActivity"
             android:configChanges="screenSize|orientation|screenLayout"
+            android:parentActivityName=".activities.EmailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ProfileActivity"

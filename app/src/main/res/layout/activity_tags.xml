@@ -89,7 +89,7 @@
             android:id="@+id/tagsChipGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="22dp"
+            android:layout_margin="22dp"
 
             android:theme="@style/AppTheme.chipTheme"
             app:layout_constraintStart_toStartOf="parent"

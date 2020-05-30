@@ -69,61 +69,59 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
         // ovde make attachment icon visible ako ima attachmenta poruka
         if (messages.get(position).isUnread()) {
-          //  holder.cardView.setBackgroundColor(0XFFD8E0E5);
+            //  holder.cardView.setBackgroundColor(0XFFD8E0E5);
             holder.cardView.setBackgroundColor(0XFFC5D1D8);
-        }else{
+        } else {
             holder.cardView.setBackgroundColor(0xFFFFFFF);
         }
 //        Chip chip = new Chip(holder.chipGroup.getContext());
 //       chip.setText("test bravo 1");
-       Integer img = R.drawable.ic_lens_black_24dp;
+        Integer img = R.drawable.ic_lens_black_24dp;
 
 //        chip.setChipIconResource(img);
 //        holder.chipGroup.addView(chip);
         holder.chipGroup.removeAllViews();
-        for (int i =0;i<messages.get(position).getTags().size();i++) {
+        for (int i = 0; i < messages.get(position).getTags().size(); i++) {
 
             Chip chip = new Chip(holder.chipGroup.getContext());
             chip.setText(messages.get(position).getTags().get(i).getTagName());
-           // chip.setChipIconResource(img);
+            // chip.setChipIconResource(img);
             int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
             chip.setChipBackgroundColor(ColorStateList.valueOf(color));
             holder.chipGroup.addView(chip);
         }
         holder.attachment.setVisibility(View.INVISIBLE);
-        if(messages.get(position).getAttachments().size()>0){
+        if (messages.get(position).getAttachments().size() > 0) {
             holder.attachment.setVisibility(View.VISIBLE);
         }
-        Contact c= Repository.get(ctx).findContactByEmail(messages.get(position).getFrom().toLowerCase());
-        if(c!=null){
-            Log.d("DA LI JE NASOA",c.getDisplayName());
+        Contact c;
+        try {
+            c = Repository.get(ctx).findContactByEmail(messages.get(position).getFrom().toLowerCase());
 
-            //   int draw=2;
-           // holder.profilePicture.setImageResource(draw);
+
+        } catch (Exception e) {
+            c = null;
+
+        }
+        if (c != null) {
 
             Helper.displayImageIntoImageView(c.getPhotoPath(), holder.profilePicture, ctx);
-//            holder.profilePicture.setImageResource(R.drawable.dummy_contact_photo);
-            Log.d("myTag", "This is my message");
 
-        }else {
-            Log.d("My tag 2","nije nasao nista");
+
+        } else {
+            holder.profilePicture.setImageResource(R.drawable.ic_person_black_24dp);
         }
-
 
 
         holder.layoutRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ctx, EmailActivity.class);
-                intent.putExtra("message",messages.get(position));//Message.class je seriazable
+                intent.putExtra("message", messages.get(position));//Message.class je seriazable
                 ctx.startActivity(intent);
 
             }
         });
-
-
-
-        Log.i("ODODOSDOOSDDSOOSDOSD",messages.get(position).getTags().get(0).getTagName());
 
 
     }
@@ -149,19 +147,19 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             } else {
                 for (Message message : messagesAll) {
 
-                    if (message.getContent().toLowerCase().contains(constraint.toString().toLowerCase())||
-                            message.getSubject().toLowerCase().contains(constraint.toString().toLowerCase())||
-                            message.getFrom().toLowerCase().contains(constraint.toString().toLowerCase())||
-                            Helper.DoesItContainString(message.getTo(),constraint.toString().toLowerCase())||
-                            Helper.DoesItContainTag(message.getTags(),constraint.toString().toLowerCase())
+                    if (message.getContent().toLowerCase().contains(constraint.toString().toLowerCase()) ||
+                            message.getSubject().toLowerCase().contains(constraint.toString().toLowerCase()) ||
+                            message.getFrom().toLowerCase().contains(constraint.toString().toLowerCase()) ||
+                            Helper.DoesItContainString(message.getTo(), constraint.toString().toLowerCase()) ||
+                            Helper.DoesItContainTag(message.getTags(), constraint.toString().toLowerCase())
                         //    message.getTo().toLowerCase().contains(constraint.toString().toLowerCase())
 
                     ) {
                         filteredMessages.add(message);
                     }
-                    for (Tag tag:message.getTags()) {
-                        if(tag.getTagName().toLowerCase().contains(constraint.toString().toLowerCase())){
-                            if(!filteredMessages.contains(message)){
+                    for (Tag tag : message.getTags()) {
+                        if (tag.getTagName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                            if (!filteredMessages.contains(message)) {
                                 filteredMessages.add(message);
                             }
                         }
@@ -194,7 +192,8 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         CardView cardView;
         ChipGroup chipGroup;
         ConstraintLayout layoutRow;
-        ImageView attachment,profilePicture;
+        ImageView attachment, profilePicture;
+
         public EmailsViewHolder(@NonNull View itemView) {
             super(itemView);
             from = itemView.findViewById(R.id.fromText1);
@@ -208,7 +207,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
             attachment = itemView.findViewById(R.id.hasAttachmentIcon);
 
-            profilePicture=itemView.findViewById(R.id.imageView5);
+            profilePicture = itemView.findViewById(R.id.imageView5);
         }
 
 
