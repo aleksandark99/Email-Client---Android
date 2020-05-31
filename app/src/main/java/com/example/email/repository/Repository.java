@@ -1,10 +1,12 @@
 package com.example.email.repository;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
 import com.example.email.R;
+import com.example.email.model.Account;
 import com.example.email.model.Attachment;
 import com.example.email.model.Contact;
 import com.example.email.model.Message;
@@ -23,6 +25,10 @@ public class Repository {
 
     public static User loggedUser = null;
     public static String jwt = null;
+    public static Account activeAccount = null;
+    public static SharedPreferences sharedPreferences = null;
+
+
 
     private final int[] avatars = {R.drawable.kotur, R.drawable.dejan, R.drawable.brboric, R.drawable.ziga};
     private final int NUMBER_OF_CONTACTS = avatars.length;
@@ -411,5 +417,28 @@ public class Repository {
 
     public static boolean loggedUserHaveAccount(){
         return !loggedUser.getAccounts().isEmpty();
+    }
+//setActiveAccountForLoginActivity
+    public static SharedPreferences getSharedPreferences(Context context){
+        if (sharedPreferences == null) sharedPreferences = context.getSharedPreferences("my_pref", Context.MODE_PRIVATE);
+        return sharedPreferences;
+    }
+
+    public static void setActiveAccountForLoginActivity(int idOfLastUsedAccount){
+        activeAccount = loggedUser.getAccounts()
+                                   .stream().filter(acc -> acc.getId() == idOfLastUsedAccount)
+                                   .findFirst().orElse(null);
+    }
+
+    public static void setNewActiveAccount(String email){
+        activeAccount =  loggedUser.getAccounts().stream()
+                                       .filter(acc -> acc.getUsername().equals(email))
+                                       .findFirst().orElse(null);
+    }
+
+    public static void removeAccountById(int idRemove){
+        for (Account a : loggedUser.getAccounts()){
+            if (a.getId() == idRemove) loggedUser.getAccounts().remove(a); return;
+        }
     }
 }

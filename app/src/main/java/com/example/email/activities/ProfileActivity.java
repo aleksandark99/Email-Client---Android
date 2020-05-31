@@ -5,12 +5,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.email.R;
@@ -23,6 +29,8 @@ import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.user.UserService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,10 +46,18 @@ public class ProfileActivity extends AppCompatActivity {
 
     private EditText mFirstnameEditText ,mLastnameEditText,  mUsernameEditText , mPasswordEditText;
 
+    private TextView mTextViewAccount;
+
     private String firstname, lastname, username, password;
 
     private Button saveChanges, editAccounts;
 
+    private Spinner spinner;
+
+    private ArrayAdapter<String> accountsAdapter;
+
+    private String[] emails;
+    int count=0;
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final UserService mUserService = mRetrofit.create(UserService.class);
 
@@ -54,6 +70,61 @@ public class ProfileActivity extends AppCompatActivity {
         mLastnameEditText = findViewById(R.id.lastname);
         mUsernameEditText = findViewById(R.id.username);
         mPasswordEditText = findViewById(R.id.password);
+        mTextViewAccount = findViewById(R.id.account_display);
+
+        emails = getStringArray();
+
+        if (Repository.activeAccount == null){
+            mTextViewAccount.setText(R.string.choose_account);
+        } else mTextViewAccount.setText(Repository.activeAccount.getUsername());
+
+        spinner = findViewById(R.id.accounts);
+
+         accountsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emails);
+
+        spinner.setAdapter(accountsAdapter);
+
+        spinner.setSelection(findPositionOfActiveAccount(), false);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (count >= 1){
+                    Log.i("is cliked", "yes");
+                    Repository.setNewActiveAccount(emails[position]);
+                    //Write to shared pref
+                    SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
+
+                    SharedPreferences.Editor editor = pref.edit();
+
+                    //overwrites old value with same key...
+                    editor.putInt(Repository.loggedUser.getUsername(), Repository.activeAccount.getId());
+                    editor.apply();
+
+                    mTextViewAccount.setText(emails[position]);
+                }
+                count++;
+                Log.i("count", String.valueOf(count));
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+
+
+        });
+
+
+
+
+/*        if (Repository.activeAccount != null){
+            //set appropriate value in spinner
+            spinner.setSelection(findPositionOfActiveAccount());
+        }*/
 
 
 
@@ -167,5 +238,38 @@ public class ProfileActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         super.onBackPressed();
+    }
+
+    private String[] getStringArray(){
+        return Repository.loggedUser.getAccounts().stream().map(a -> a.getUsername()).toArray(String[]::new);
+    }
+
+    private int findPositionOfActiveAccount(){
+        if (Repository.activeAccount == null) return 0;
+        for (int i = 0; i<emails.length; i++){
+            if (emails[i].equals(Repository.activeAccount.getUsername())) return i;
+        }
+        return 0;
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i("RESUME", "called");
+        super.onResume();
+        emails = getStringArray();
+        String s = " ";
+        //Repository.loggedUser.getAccounts().stream().forEach(a -> s.concat(a.getUsername()));
+        for (Account a : Repository.loggedUser.getAccounts()){
+            s = a.getUsername() + s;
+        }
+        Log.i("teeeest", s);
+        accountsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emails);
+        accountsAdapter.notifyDataSetChanged();
+        spinner.setAdapter(accountsAdapter);
+        if (Repository.activeAccount != null){
+            //set appropriate value in spinner
+            spinner.setSelection(findPositionOfActiveAccount());
+        }
+
     }
 }
