@@ -97,10 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
                         int idOfLastUsedAccount = pref.getInt(Repository.loggedUser.getUsername(), -1);
 
-
                         if (idOfLastUsedAccount != -1) Repository.setActiveAccountForLoginActivity(idOfLastUsedAccount);
-
-
 
                         //welcome toast
 

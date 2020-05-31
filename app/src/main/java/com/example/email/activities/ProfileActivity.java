@@ -39,10 +39,10 @@ import retrofit2.Retrofit;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    ImageButton btnAddAccount;
-    FragmentManager fragmentManager;
-    FragmentTransaction transaction;
-    AddAccountFragment addAccount;
+    private ImageButton btnAddAccount;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction transaction;
+    private AddAccountFragment addAccount;
 
     private EditText mFirstnameEditText ,mLastnameEditText,  mUsernameEditText , mPasswordEditText;
 
@@ -80,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         spinner = findViewById(R.id.accounts);
 
-         accountsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emails);
+        accountsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emails);
 
         spinner.setAdapter(accountsAdapter);
 
@@ -91,52 +91,36 @@ public class ProfileActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 if (count >= 1){
-                    Log.i("is cliked", "yes");
-                    Repository.setNewActiveAccount(emails[position]);
-                    //Write to shared pref
-                    SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
+                    if ( position != 0){
+                        Repository.setNewActiveAccount(emails[position]);
+                        //Write to shared pref
+                        SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = pref.edit();
 
-                    SharedPreferences.Editor editor = pref.edit();
-
-                    //overwrites old value with same key...
-                    editor.putInt(Repository.loggedUser.getUsername(), Repository.activeAccount.getId());
-                    editor.apply();
-
-                    mTextViewAccount.setText(emails[position]);
+                        //overwrites old value with same key...
+                        editor.putInt(Repository.loggedUser.getUsername(), Repository.activeAccount.getId());
+                        editor.apply();
+                        mTextViewAccount.setText(emails[position]);
+                    } else{
+                        Repository.activeAccount = null;
+                        mTextViewAccount.setText(R.string.choose_account);
+                    }
                 }
                 count++;
-                Log.i("count", String.valueOf(count));
-
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
 
-
         });
-
-
-
-
-/*        if (Repository.activeAccount != null){
-            //set appropriate value in spinner
-            spinner.setSelection(findPositionOfActiveAccount());
-        }*/
-
-
-
 
         if (savedInstanceState != null){
             firstname = savedInstanceState.getString("firstname");
             lastname = savedInstanceState.getString("lastname");
             username = savedInstanceState.getString("username");
             password = savedInstanceState.getString("password");
-
         } else {
-
             firstname = Repository.loggedUser.getFirstName();
             lastname = Repository.loggedUser.getLastName();
             username = Repository.loggedUser.getUsername();
@@ -146,14 +130,10 @@ public class ProfileActivity extends AppCompatActivity {
         mFirstnameEditText.setText(firstname); mLastnameEditText.setText(lastname);
         mUsernameEditText.setText(username); mPasswordEditText.setText(password);
 
-
-
         btnAddAccount = findViewById(R.id.btnAddAccount);
         btnAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 fragmentManager = getSupportFragmentManager();
                 transaction = fragmentManager.beginTransaction();
                 addAccount = new AddAccountFragment();
@@ -206,8 +186,6 @@ public class ProfileActivity extends AppCompatActivity {
                             Repository.jwt = "Bearer " + token;
                             Toast.makeText(getApplicationContext(), "User credentials saved!", Toast.LENGTH_SHORT).show();;
                         }
-
-
                     }
 
                     @Override
@@ -219,8 +197,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
 
     @Override
@@ -231,17 +207,22 @@ public class ProfileActivity extends AppCompatActivity {
         savedInstanceState.putString("lastname", mLastnameEditText.getText().toString());
         savedInstanceState.putString("username", mUsernameEditText.getText().toString());
         savedInstanceState.putString("password", mPasswordEditText.getText().toString());
-
     }
 
     @Override
     public void onBackPressed() {
-
         super.onBackPressed();
     }
 
     private String[] getStringArray(){
-        return Repository.loggedUser.getAccounts().stream().map(a -> a.getUsername()).toArray(String[]::new);
+        String[] arr = new String[Repository.loggedUser.getAccounts().size()+1];
+        arr[0] = "No account selected";
+        int index = 1;
+        for (Account a : Repository.loggedUser.getAccounts()){
+            arr[index] = a.getUsername();
+            index++;
+        }
+        return arr;
     }
 
     private int findPositionOfActiveAccount(){
@@ -254,9 +235,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
-        Log.i("RESUME", "called");
         emails = getStringArray();
         accountsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emails);
         accountsAdapter.notifyDataSetChanged();
@@ -264,14 +243,7 @@ public class ProfileActivity extends AppCompatActivity {
         count = 0;
         if (Repository.activeAccount != null){
             //set appropriate value in spinner
-           // spinner.setSelection(findPositionOfActiveAccount());
-        } else {
-            Log.i("usao gde treba", "aaaa");
-            //mTextViewAccount.setText(String.valueOf("Please choose an account!"));
-
-            mTextViewAccount.setText("Please choose an account!");
-            //mTextViewAccount.setVisibility(View.VISIBLE);
-        }
-
+           spinner.setSelection(findPositionOfActiveAccount());
+        } else mTextViewAccount.setText("Please choose an account!");
     }
 }
