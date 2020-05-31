@@ -70,7 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
         mLastnameEditText = findViewById(R.id.lastname);
         mUsernameEditText = findViewById(R.id.username);
         mPasswordEditText = findViewById(R.id.password);
-        mTextViewAccount = findViewById(R.id.account_display);
+        mTextViewAccount = (TextView) findViewById(R.id.account_display);
 
         emails = getStringArray();
 
@@ -254,21 +254,23 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Log.i("RESUME", "called");
+
         super.onResume();
+        Log.i("RESUME", "called");
         emails = getStringArray();
-        String s = " ";
-        //Repository.loggedUser.getAccounts().stream().forEach(a -> s.concat(a.getUsername()));
-        for (Account a : Repository.loggedUser.getAccounts()){
-            s = a.getUsername() + s;
-        }
-        Log.i("teeeest", s);
         accountsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emails);
         accountsAdapter.notifyDataSetChanged();
         spinner.setAdapter(accountsAdapter);
+        count = 0;
         if (Repository.activeAccount != null){
             //set appropriate value in spinner
-            spinner.setSelection(findPositionOfActiveAccount());
+           // spinner.setSelection(findPositionOfActiveAccount());
+        } else {
+            Log.i("usao gde treba", "aaaa");
+            //mTextViewAccount.setText(String.valueOf("Please choose an account!"));
+
+            mTextViewAccount.setText("Please choose an account!");
+            //mTextViewAccount.setVisibility(View.VISIBLE);
         }
 
     }

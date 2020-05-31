@@ -108,6 +108,7 @@
 
                     <TextView
 
+                        android:text="Choose an account!!!"
                         android:id="@+id/account_display"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"

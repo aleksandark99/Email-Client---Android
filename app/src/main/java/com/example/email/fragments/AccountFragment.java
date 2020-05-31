@@ -223,12 +223,13 @@ public class AccountFragment extends Fragment {
                             return;
                         }
                         if (response.code() == 200){
-                            //Repository.loggedUser.getAccounts().remove(mAccount);
-                            Repository.removeAccountById(mAccount.getId());
-                            //Toast.makeText(getActivity(), "Account deleted!", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getActivity(), "Velicina accounta" + Repository.loggedUser.getAccounts().size(), Toast.LENGTH_LONG).show();
+                            Repository.loggedUser.getAccounts().remove(mAccount);
+                            //Repository.removeAccountById(mAccount.getId());
+                            Toast.makeText(getActivity(), "Account deleted!", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getActivity(), "Velicina accounta" + Repository.loggedUser.getAccounts().size(), Toast.LENGTH_LONG).show();
                             //if deleted account was active account
                             if (mAccount.getId() == Repository.activeAccount.getId()){
+                                Log.i("usaooooo", "asfaf");
                                 Repository.activeAccount = null;
                                 Repository.getSharedPreferences(getActivity().getApplicationContext()).edit().remove(mAccount.getUsername()).apply();
                             }
