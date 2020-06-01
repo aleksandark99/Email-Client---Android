@@ -10,7 +10,13 @@ import com.google.gson.annotations.SerializedName;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import retrofit2.http.Body;
+
 public class Contact implements Parcelable{
+
+    @SerializedName("active")
+    @Expose
+    private Boolean active;
 
     @SerializedName("id")
     @Expose
@@ -46,6 +52,7 @@ public class Contact implements Parcelable{
 
 
     public Contact(){
+        this.active = true;
         this.firstName = "";
         this.lastName = "";
         this.displayName = "";
@@ -54,7 +61,8 @@ public class Contact implements Parcelable{
         this.note = "";
     }
 
-    public Contact(Integer id, String firstName, String lastName, String displayName, String email, String photoPath, String note) {
+    public Contact(Boolean active, Integer id, String firstName, String lastName, String displayName, String email, String photoPath, String note) {
+        this.active = active;
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -63,8 +71,9 @@ public class Contact implements Parcelable{
         this.photoPath = photoPath;
         this.note = note;
     }
-
+    //authentication = in.readInt() == 1;
     protected Contact(Parcel in) {
+        active = in.readInt() == 1;
         id = in.readInt();
         firstName = in.readString();
         lastName = in.readString();
@@ -74,6 +83,14 @@ public class Contact implements Parcelable{
         note = in.readString();
 
 
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Integer getId() {
@@ -158,8 +175,7 @@ public class Contact implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
-        //dest.writeStringArray(new String[]{this.id.toString(), this.firstName, this.lastName, this.email, this.photoPath, this.note});
-
+        dest.writeInt(this.getActive() ? 1 : 0);
         dest.writeInt(this.id);
         dest.writeString(this.firstName);
         dest.writeString(this.lastName);
