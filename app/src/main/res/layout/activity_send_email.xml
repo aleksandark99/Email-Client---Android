@@ -37,13 +37,78 @@
                     android:text="From"
                     android:layout_marginLeft="6dp"/>
 
-                <TextView
-                    android:id="@+id/idFromSendEmail"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    >
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/fromChipGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="22dp"
+
+                        android:theme="@style/AppTheme.chipTheme"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <ImageView
+                    android:id="@+id/expandFrom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                   />
+                    android:layout_marginLeft="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/arrowdown" />
             </LinearLayout>
+
+           <!--My lin layout-->
+            <LinearLayout
+                android:id="@+id/fromLinearLayout"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Avaliable emails"
+                    android:layout_marginLeft="6dp"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    >
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/emailsChipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="22dp"
+
+                    android:theme="@style/AppTheme.chipTheme"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                </com.google.android.material.chip.ChipGroup>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+            <!--END OF MY LL-->
+
 
 
         </LinearLayout>

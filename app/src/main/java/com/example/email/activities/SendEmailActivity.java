@@ -21,25 +21,30 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.model.Account;
 import com.example.email.model.Message;
 import com.example.email.model.items.Tag;
 import com.example.email.repository.Repository;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.zip.Inflater;
 
 public class SendEmailActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private  Message mes;
-    private ChipGroup chipGroupTo,chipGroupCC,chipGroupBCC,chipGroupTags;
+    private ChipGroup chipGroupTo,chipGroupCC,chipGroupBCC,chipGroupTags, chipGroupEmails, chipGroupFrom;
     private EditText toSend,ccSend,bccSend,subject,content;
-    private ImageView expand;
-    private LinearLayout cc,bcc ;
+    //private TextView;
+    private ImageView expand, expandFrom;
+    private LinearLayout cc,bcc, fromLinearLayout;
 
     private ArrayList<String> toArrayString,ccArayString;
     private String contentString,subjectString,fromMessageString;
@@ -53,9 +58,10 @@ public class SendEmailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_send_email);
         cc=findViewById(R.id.ccSendEmail);
         bcc=findViewById(R.id.bccSendEmail);
+        fromLinearLayout = findViewById(R.id.fromLinearLayout);
         toSend=findViewById(R.id.toSendId111);
         toSend.requestFocus();
-
+        //fromEmailAddressTextView = findViewById(R.id.idFromSendEmail);
         subject=findViewById(R.id.subjectTextId );
         content=findViewById(R.id.contentTextId);
 
@@ -66,9 +72,45 @@ public class SendEmailActivity extends AppCompatActivity {
         chipGroupCC=findViewById(R.id.ccChipGroup);
         chipGroupBCC=findViewById(R.id.bccChipGroup);
         chipGroupTo=findViewById(R.id.ToChipGroup);
+        chipGroupEmails = findViewById(R.id.emailsChipGroup);
+        chipGroupFrom = findViewById(R.id.fromChipGroup);
 
         chipGroupTags=findViewById(R.id.tagsCheapGroupSendEmail);
-        expand=findViewById(R.id.imageView);
+        expand=findViewById(R.id.imageView); expandFrom = findViewById(R.id.expandFrom);
+
+        expandFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (fromLinearLayout.getVisibility() == View.GONE){
+
+                    Repository.loggedUser.getAccounts().forEach(a -> {
+                        Chip chip = new Chip(chipGroupEmails.getContext());
+                        chip.setText(a.getUsername());
+                        chip.setOnClickListener(new MyChipListener(a.getUsername()));
+                        chipGroupEmails.addView(chip);
+                    });
+                    fromLinearLayout.setVisibility(View.VISIBLE);
+                    expandFrom.setImageResource(R.drawable.arrowup);
+
+                } else if (fromLinearLayout.getVisibility() == View.VISIBLE){
+                    chipGroupEmails.removeAllViews();
+                    fromLinearLayout.setVisibility(View.GONE);
+                    expandFrom.setImageResource(R.drawable.arrowdown);
+                }
+
+
+
+
+
+
+                //Chip chip = new Chip(parentView.getContext());
+
+                //chipGroup.addView(chip);
+            }
+        });
+
+
         expand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,6 +263,8 @@ public class SendEmailActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
         toolbar=findViewById(R.id.customEmailsToolbar);
 
@@ -414,5 +458,34 @@ public class SendEmailActivity extends AppCompatActivity {
 //        themeMenu.add(0, , Menu.NONE, "Battery Saving");
 
         return true;
+    }
+
+    class MyChipListener implements View.OnClickListener{
+
+        private Chip mChip;
+
+        public MyChipListener(String email){
+            this.mChip = new Chip(chipGroupFrom.getContext());
+            mChip.setText(email);
+            mChip.setCloseIconResource(R.drawable.exit_icon);
+            mChip.setCloseIconVisible(true);
+
+            mChip.setOnCloseIconClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    chipGroupFrom.removeView(v);
+
+                }
+            });
+
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            chipGroupFrom.removeAllViews();
+            chipGroupFrom.addView(mChip);
+
+        }
     }
 }
