@@ -71,6 +71,8 @@
             android:theme="@style/PopUpTheme" />
         <activity
             android:name=".activities.EmailsActivity"
+            android:configChanges="screenSize|orientation|screenLayout"
+
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.FoldersActivity"

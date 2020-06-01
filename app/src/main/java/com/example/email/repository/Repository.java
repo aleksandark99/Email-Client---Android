@@ -24,14 +24,12 @@ public class Repository {
     public static User loggedUser = null;
     public static String jwt = null;
 
-    private final int[] avatars = {R.drawable.kotur, R.drawable.dejan, R.drawable.brboric, R.drawable.ziga};
-    private final int NUMBER_OF_CONTACTS = avatars.length;
 
     private static Repository sRepository;
+
     private ArrayList<Contact> mContacts;
 
     private ArrayList<Message> messages;
-
     private ArrayList<Tag> tags;
 
 
@@ -44,33 +42,13 @@ public class Repository {
 
     private Repository(Context context) {
         mContacts = new ArrayList<Contact>();
-       messages= new ArrayList<Message>();
-        tags=new ArrayList<Tag>();
+        messages = new ArrayList<Message>();
+        tags = new ArrayList<Tag>();
         setStaticTags();
         setStaticMessages();
-       /* mContacts = IntStream.rangeClosed(1, NUMBER_OF_CONTACTS)
-                .boxed()
-                .map(idContact -> new Contact(idContact, "Firstname " + idContact,
-                        "Lastname " + idContact,
-                        "email@contact" + idContact + ".com",
-                        avatars[idContact - 1]
-
-
-                ))
-                .collect(Collectors.toCollection(ArrayList::new));*/
 
     }
 
-    public void removeTag(String s){
-        for (Tag tag:tags
-             ) {
-            if(tag.getTagName().toLowerCase().equals(s.toLowerCase())){
-                tags.remove(tag);
-                break;
-            }
-
-        }
-    }
 
     public File getPhotoFile(Contact contact, Context context) {
         File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -94,49 +72,41 @@ public class Repository {
     public Contact findContactByEmail(String email) {
         return loggedUser.getContacts().stream().filter(contact -> contact.getEmail().toLowerCase().equals(email.toLowerCase())).findFirst().orElse(null);
     }
-    public void editTag(String tagname,String newTagname){
-        for (Tag t:tags
+
+    //tag methods
+    public ArrayList<Tag> getMyTags() {
+
+        return tags;
+    }
+
+    public void addTag(String tagname) {
+        Tag t = new Tag();
+        t.setTagName(tagname);
+        tags.add(t);
+    }
+
+    public void editTag(String tagname, String newTagname) {
+        for (Tag t : tags
         ) {
-            if(t.getTagName().toLowerCase().equals(tagname.toLowerCase())){
+            if (t.getTagName().toLowerCase().equals(tagname.toLowerCase())) {
                 t.setTagName(newTagname);
             }
 
         }
     }
-    public ArrayList<Tag> getMyTags() {
-//        tags=new ArrayList<Tag>();
-//        Tag t1;
-//        Tag t2;
-//        Tag t3;
-//        t1 = new Tag(1, "t1433333332");
-//        t2 = new Tag(2, "t2422434242432432");
-//        t3 = new Tag(3, "t342432432424342");
-//
-//        //tags = new ArrayList<Tag>();
-//        tags.add(t1);
-//        tags.add(t2);
-//        tags.add(t3);
-        return tags;
-    }
-    private void setStaticTags(){
-        Tag t1;
-        Tag t2;
-        Tag t3;
-        t1 = new Tag(1, "t1433333332");
-        t2 = new Tag(2, "t2422434242432432");
-        t3 = new Tag(3, "t342432432424342");
 
-        //tags = new ArrayList<Tag>();
-        tags.add(t1);
-        tags.add(t2);
-        tags.add(t3);
+    public void removeTag(String s) {
+        for (Tag tag : tags
+        ) {
+            if (tag.getTagName().toLowerCase().equals(s.toLowerCase())) {
+                tags.remove(tag);
+                break;
+            }
+
+        }
     }
 
-    public void addTag(String tagname){
-        Tag t =new Tag();
-        t.setTagName(tagname);
-        tags.add(t);
-    }
+
     public ArrayList<Message> getMessages() {
 
 //        messages=new ArrayList<Message>();
@@ -264,7 +234,6 @@ public class Repository {
         return messages;
     }
 
-
     public boolean DeleteMessage(long id) {
         for (Message m : messages
         ) {
@@ -286,8 +255,7 @@ public class Repository {
     }
 
 
-
-    private void setStaticMessages(){
+    private void setStaticMessages() {
         Message m1;
         Message m2;
         Message m3, m4, m5, m6;
@@ -407,5 +375,19 @@ public class Repository {
         messages.add(m1);
         messages.add(m2);
         messages.add(m3);
+    }
+
+    private void setStaticTags() {
+        Tag t1;
+        Tag t2;
+        Tag t3;
+        t1 = new Tag(1, "t1433333332");
+        t2 = new Tag(2, "t2422434242432432");
+        t3 = new Tag(3, "t342432432424342");
+
+        //tags = new ArrayList<Tag>();
+        tags.add(t1);
+        tags.add(t2);
+        tags.add(t3);
     }
 }
