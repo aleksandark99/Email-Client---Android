@@ -14,6 +14,10 @@ public class Account implements Parcelable {
     @Expose
     private int id;
 
+    @SerializedName("active")
+    @Expose
+    private Boolean active;
+
     @SerializedName("smtpAddress")
     @Expose
     private String smtpAddress;
@@ -64,7 +68,7 @@ public class Account implements Parcelable {
     }
 
     public Account(){
-
+        this.active = true;
     }
 
 
@@ -72,6 +76,7 @@ public class Account implements Parcelable {
 
     protected Account(Parcel in) {
         id = in.readInt();
+        active = in.readInt() == 1;
         smtpAddress = in.readString();
         smtpPort = in.readInt();
         inServerType = in.readInt();
@@ -91,6 +96,7 @@ public class Account implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
+        dest.writeInt(this.getActive() ? 1 :0);
         dest.writeString(this.smtpAddress);
         dest.writeInt(this.smtpPort);
         dest.writeInt(this.inServerType);
@@ -123,6 +129,14 @@ public class Account implements Parcelable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public String getSmtpAddress() {
