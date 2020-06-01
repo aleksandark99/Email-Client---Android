@@ -224,7 +224,15 @@ public class AccountFragment extends Fragment {
                         }
                         if (response.code() == 200){
                             Repository.loggedUser.getAccounts().remove(mAccount);
-                            Toast.makeText(getActivity(), "Account deleted!", Toast.LENGTH_SHORT).show();
+                            //Repository.removeAccountById(mAccount.getId());
+                            Toast.makeText(getActivity(), "Account deleted!", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getActivity(), "Velicina accounta" + Repository.loggedUser.getAccounts().size(), Toast.LENGTH_LONG).show();
+                            //if deleted account was active account
+                            if (mAccount.getId() == Repository.activeAccount.getId()){
+                                Log.i("usaooooo", "asfaf");
+                                Repository.activeAccount = null;
+                                Repository.getSharedPreferences(getActivity().getApplicationContext()).edit().remove(mAccount.getUsername()).apply();
+                            }
                             getActivity().finish();
                         }else Toast.makeText(getActivity(), "Account is not deleted, error on server!", Toast.LENGTH_SHORT).show();
 

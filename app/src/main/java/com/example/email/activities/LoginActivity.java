@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.model.Account;
 import com.example.email.model.Login;
 import com.example.email.model.LoginResponse;
 import com.example.email.repository.Repository;
@@ -90,6 +92,12 @@ public class LoginActivity extends AppCompatActivity {
                         Repository.loggedUser = r.getUser();
                         String authToken =  "Bearer " + r.getJwt();
                         Repository.jwt = authToken;
+
+                        //set previous account if exists
+                        SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
+                        int idOfLastUsedAccount = pref.getInt(Repository.loggedUser.getUsername(), -1);
+
+                        if (idOfLastUsedAccount != -1) Repository.setActiveAccountForLoginActivity(idOfLastUsedAccount);
 
                         //welcome toast
 

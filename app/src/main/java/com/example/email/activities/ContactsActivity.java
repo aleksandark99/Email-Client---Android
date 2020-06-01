@@ -1,5 +1,6 @@
 package com.example.email.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,11 +15,13 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.email.R;
@@ -29,6 +32,7 @@ import com.example.email.model.items.ContactNavItem;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.contacts.ContactService;
 import com.example.email.retrofit.RetrofitClient;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +43,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ContactsActivity extends AppCompatActivity {
+public class ContactsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private static final int REQUEST_CODE = 1;
 
-
+    private Toolbar toolbar;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
 
     private RecyclerView mRecyclerView;
     private DrawerLayout drawerLayout;
@@ -62,41 +68,27 @@ public class ContactsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_contacts);
 
-        prepareDrawerItems();
-        drawerList = (ListView) findViewById(R.id.drawerList);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-
-        drawerList.setAdapter(new ContactNavigationAdapter(this, mNavItems));
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.customEmailsToolbar);
         setSupportActionBar(toolbar);
-        final ActionBar actionBar = getSupportActionBar();
+        getSupportActionBar().setTitle("Contacts");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_icon);// set drawable icon
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setIcon(R.drawable.ic_launcher);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
-            actionBar.setHomeButtonEnabled(true);
-        }
+        mNavigationView = findViewById(R.id.navViewContacts);
+        mDrawerLayout = findViewById(R.id.contactsDrawerLayout);
+        mNavigationView.bringToFront();
 
-       drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.open_drawer, R.string.close_drawer) {
-            //Called when a drawer has settled in a completely closed state
-            @Override
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                invalidateOptionsMenu();
-            }
-            //Called when a drawer has settled in a completely open state.
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
-        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle =  new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
+        mDrawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        mNavigationView.setNavigationItemSelectedListener(this);
+        View headerName = mNavigationView.getHeaderView(0);
+        TextView name = headerName.findViewById(R.id.name);
+        name.setText(Repository.loggedUser.getUsername());
+
+
 
         mRecyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
 
@@ -116,14 +108,21 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_new:
-                Intent createNewContactIntent = new Intent(this, CreateContactActivity.class);
-                startActivityForResult(createNewContactIntent, REQUEST_CODE);
-                return false;
+        if (Repository.loggedUserHaveAccount()){
+            Toast.makeText(this, "Please create at least one account!", Toast.LENGTH_LONG).show();
+            return true;
+        } else {
+            switch (item.getItemId()){
 
-            default: return true;
+                case R.id.action_new:
+                    Intent createNewContactIntent = new Intent(this, CreateContactActivity.class);
+                    startActivityForResult(createNewContactIntent, REQUEST_CODE);
+                    return false;
+
+                default: return true;
+            }
         }
+
     }
 
     @Override
@@ -150,13 +149,6 @@ public class ContactsActivity extends AppCompatActivity {
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private void prepareDrawerItems(){
-        //Item for Create Email Activity
-        mNavItems.add(new ContactNavItem(getString(R.string.inbox),getString(R.string.inbox_description), R.drawable.ic_inbox_black_24dp));
-        mNavItems.add(new ContactNavItem(getString(R.string.search_contacts), getString(R.string.search_contacts_description),  R.drawable.ic_contacts_search));
-        mNavItems.add(new ContactNavItem(getString(R.string.folder), getString(R.string.folder_description),  R.drawable.ic_folder_black_24dp));
-        mNavItems.add(new ContactNavItem(getString(R.string.settings), getString(R.string.settings_description),  R.drawable.ic_settings_applications_black_24dp));
-    }
 
 
     @Override
@@ -185,36 +177,35 @@ public class ContactsActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
-
-        public DrawerItemClickListener(){
-
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int itemId = menuItem.getItemId();
+        switch (itemId) {
+            case R.id.messages_item:
+                startActivity(new Intent(ContactsActivity.this, EmailsActivity.class));
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.settings_item:
+                startActivity(new Intent(ContactsActivity.this, SettingsActivity.class));
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.folders_item:
+                startActivity(new Intent(ContactsActivity.this, FoldersActivity.class));
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.profile_item:
+                startActivity(new Intent(this, ProfileActivity.class));
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.tags_item:
+                startActivity(new Intent(this, TagsActivity.class));
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                break;
         }
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //Code to run when an item in the navigation drawer gets clicked
-            String message = "";
-            switch (position){
-                case 1:
-                    message = "Open inbox...";
-                    break;
-                case 2:
-                    message = "Search contacts...";
-                    break;
-                case 3:
-                    message = "Open folders...";
-                    break;
-                case 4:
-                    message = "Open settings...";
-                    break;
+        return true;
+    }
 
-            }
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
-        }
-    };
 
     private void fetchAllContacts(){
 

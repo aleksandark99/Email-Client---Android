@@ -3,6 +3,8 @@ package com.example.email.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -213,5 +215,19 @@ public class Account implements Parcelable {
                 ", displayName='" + displayName + '\'' +
                 ", authentication=" + authentication +
                 '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof Account) {
+            if( ((Account) obj).getId() == this.getId()   ){
+                return true;
+            } else return false;
+        } else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getId();
     }
 }
