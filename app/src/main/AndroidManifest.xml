@@ -23,9 +23,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:required="true" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:required="true" />
+
 
     <application
         android:allowBackup="true"
@@ -35,12 +33,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.CreateRulesActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.TagsActivity"
             android:configChanges="screenSize|orientation|screenLayout"
-            android:theme="@style/AppTheme.NoActionBar"
-
-            ></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SendEmailActivity"
             android:configChanges="screenSize|orientation|screenLayout"
@@ -63,16 +61,11 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".activities.CreateContactActivity" />
         <activity
-            android:name=".activities.SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
             android:name=".activities.CreateFolderActivity"
             android:theme="@style/PopUpTheme" />
         <activity
             android:name=".activities.EmailsActivity"
             android:configChanges="screenSize|orientation|screenLayout"
-
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.FoldersActivity"
