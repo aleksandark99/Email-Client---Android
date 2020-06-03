@@ -32,6 +32,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     ActionMode mActionMode;
 
+    FolderAdapter folderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         ArrayList<Message> folderMessages = folder.getMessages();
 
 
-        FolderAdapter folderAdapter = new FolderAdapter(this, images, childFolders, folderMessages, this);
+        folderAdapter = new FolderAdapter(this, images, childFolders, folderMessages, this);
+
 
         recyclerView.setAdapter(folderAdapter);
 
@@ -131,6 +133,18 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
                 mActionMode = startSupportActionMode(mActionModeCallback);
 
+                Menu actionMenu = mActionMode.getMenu();
+
+                if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_FOLDER){
+
+                    actionMenu.findItem(R.id.action_mode_move).setVisible(false);
+                    actionMenu.findItem(R.id.action_mode_copy).setVisible(false);
+
+                }else if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_EMAIL){
+
+                    actionMenu.findItem(R.id.action_mode_add_rule).setVisible(false);
+                }
+
                 return true;
             }
 
@@ -152,6 +166,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+
             return false;
         }
 
@@ -179,6 +194,12 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
                 case R.id.action_mode_del:
 
                     Toast.makeText(FolderActivity.this, "Delete option selected", Toast.LENGTH_SHORT).show();
+
+                    mode.finish();
+
+                    return true;
+
+                case R.id.action_mode_add_rule:
 
                     mode.finish();
 

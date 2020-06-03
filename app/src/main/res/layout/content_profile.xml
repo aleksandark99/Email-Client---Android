@@ -40,7 +40,7 @@
                     android:id="@+id/firstname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="First name"
+                    android:text="First name"
                     android:layout_marginStart="30dp"
                     android:textAlignment="textStart"
                     android:inputType="text"
@@ -98,24 +98,30 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="350dp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="20dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
 
                     <Spinner
                         android:id="@+id/accounts"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
+                        android:layout_width="300dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="30dp"
+                        android:backgroundTint="@color/colorPrimary"/>
 
                     <TextView
-
-                        android:text="Choose an account!!!"
+                        android:text="Choose an account"
                         android:id="@+id/account_display"
                         android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginEnd="30dp"
                         android:backgroundTint="@color/colorPrimary"
-                        android:paddingTop="20dp"
-                        android:textAlignment="textStart" />
+                        android:textAlignment="textStart"
+                        android:textSize="16sp"/>
 
 
 
@@ -196,25 +202,60 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:orientation="vertical">-->
+<!--            <Button-->
+<!--                android:id="@+id/save_changes"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:gravity="start"-->
+<!--                android:text="Save changes"></Button>-->
+
+<!--            <Button-->
+<!--                android:id="@+id/edit_account"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:gravity="start"-->
+<!--                android:text="Edit accounts"></Button>-->
+<!--        </LinearLayout>-->
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="vertical">
-            <Button
-                android:id="@+id/save_changes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="start"
-                android:text="Save changes"></Button>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="30dp">
+
 
             <Button
                 android:id="@+id/edit_account"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="start"
-                android:text="Edit accounts"></Button>
-        </LinearLayout>
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/button_purple_round"
+                android:text="Edit"
+                android:textColor="@android:color/white" />
+
+
+            <Button
+                android:id="@+id/save_changes"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/button_purple_round"
+                android:text="Save changes"
+                android:textColor="@android:color/white" />
+
+
+        </RelativeLayout>
 
 
 
