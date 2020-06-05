@@ -35,6 +35,8 @@ import com.google.android.material.chip.ChipGroup;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.zip.Inflater;
 
 public class SendEmailActivity extends AppCompatActivity {
@@ -469,7 +471,29 @@ public class SendEmailActivity extends AppCompatActivity {
 
     private Message createMessageFromData(){
 
+        Message newMessage = new Message();
+
+        String from = ((Chip) chipGroupFrom.getChildAt(0)).getText().toString();
+
+        ArrayList<String> toAddress = extractArrayListFromChipGroup(chipGroupTo);
+
+        if (chipGroupCC.getChildCount() > 0) { ArrayList<String> ccAddress = extractArrayListFromChipGroup(chipGroupCC); }
+
+        if (chipGroupBCC.getChildCount() > 0) { ArrayList<String> bccAddress = extractArrayListFromChipGroup(chipGroupBCC); }
+
+        String textSubjet = subject.getText().toString();
+
+        String textContent = content.getText().toString();
+
+        
+
         return null;
+    }
+
+    public ArrayList<String> extractArrayListFromChipGroup(ChipGroup chipGroup){
+        return IntStream.rangeClosed(0, chipGroup.getChildCount()-1).boxed()
+                .map(idChip -> ((Chip) chipGroup.getChildAt(idChip)).getText().toString())
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private boolean accountIsSelected(){
