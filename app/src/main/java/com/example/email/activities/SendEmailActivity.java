@@ -491,14 +491,10 @@ public class SendEmailActivity extends AppCompatActivity {
         String textContent = content.getText().toString(); newMessage.setContent(textContent);
 
 
+        //Log.i("new messag", String.valueOf(newMessage));
 
 
-
-
-        Log.i("new messag", String.valueOf(newMessage));
-
-
-        return null;
+        return newMessage;
     }
 
     public ArrayList<Tag> extractTagsFromChipGroup(){
