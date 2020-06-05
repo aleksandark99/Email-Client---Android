@@ -393,7 +393,13 @@ public class SendEmailActivity extends AppCompatActivity {
                 return true;
 
             case R.id.sendEmailConfirm:
-                Toast.makeText(this, "sendEmailConfirm", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "sendEmailConfirm", Toast.LENGTH_SHORT).show();
+                if (accountIsSelected()){
+                    if (!isToAddressEmpty()){
+
+                    } else Toast.makeText(this, "Please add at least one email address to which you want to send new email!", Toast.LENGTH_SHORT).show();
+
+                }else Toast.makeText(this, "Please select email from which you want to send new email!", Toast.LENGTH_SHORT).show();
                 return true;
 
                     
