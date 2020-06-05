@@ -473,7 +473,7 @@ public class SendEmailActivity extends AppCompatActivity {
 
     private Message createMessageFromData(){
 
-        Message newMessage = new Message(2);
+        Message newMessage = new Message("This constructor is only for test, this string doesn't do anything...");
 
         String from = ((Chip) chipGroupFrom.getChildAt(0)).getText().toString();  newMessage.setFrom(from);
 

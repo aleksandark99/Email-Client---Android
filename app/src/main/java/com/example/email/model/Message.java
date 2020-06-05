@@ -25,7 +25,7 @@ public class Message implements Serializable {
     private ArrayList<Tag> tags;
     private ArrayList<Attachment> attachments;
 
-    public Message(int x){
+    public Message(String testExample){
 
     }
 
