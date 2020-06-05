@@ -1,10 +1,17 @@
 package com.example.email.model.items;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Tag implements Serializable {
 
+    @SerializedName("id")
+    @Expose
     private int id;
+    @SerializedName("name")
+    @Expose
     private String tagName;
     private boolean active = true;
 
@@ -41,4 +48,15 @@ public class Tag implements Serializable {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", tagName='" + tagName + '\'' +
+                ", active=" + active +
+                '}';
+    }
+
+
 }

@@ -25,7 +25,9 @@ public class Message implements Serializable {
     private ArrayList<Tag> tags;
     private ArrayList<Attachment> attachments;
 
+    public Message(int x){
 
+    }
 
 
     public Message(){
@@ -142,5 +144,18 @@ public class Message implements Serializable {
         this.attachments = attachments;
     }
 
-
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", from='" + from + '\'' +
+                ", to=" + to +
+                ", cc=" + cc +
+                ", bcc=" + bcc +
+                ", subject='" + subject + '\'' +
+                ", content='" + content + '\'' +
+                ", unread=" + unread +
+                ", tags=" + tags +
+                '}';
+    }
 }

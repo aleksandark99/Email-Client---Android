@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -276,10 +277,10 @@ public class SendEmailActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getData();
+        //getData();
 
 
-        setData();
+        //setData();
 
 
 
@@ -409,12 +410,13 @@ public class SendEmailActivity extends AppCompatActivity {
 
 
         }
-        for (Tag t:Repository.get(this).getMyTags()
+        for (Tag t:Repository.loggedUser.getTags()
              ) {
             if(t.getId()==item.getItemId()){
                 Toast.makeText(this, t.getTagName(), Toast.LENGTH_SHORT).show();
 
                 Chip chip = new Chip(chipGroupTags.getContext());
+                chip.setId(t.getId());
                 chip.setText(t.getTagName());
                 chip.setCloseIconResource(R.drawable.exit_icon);
                 chip.setCloseIconVisible(true);
@@ -449,7 +451,7 @@ public class SendEmailActivity extends AppCompatActivity {
 //        themeMenu.clear();
 
 
-        for (Tag t: Repository.get(this).getMyTags()  ) {
+        for (Tag t: Repository.loggedUser.getTags()  ) {
 
             MenuItem menuItem = menu.findItem(R.id.addTagId).getSubMenu().add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
 
@@ -471,23 +473,38 @@ public class SendEmailActivity extends AppCompatActivity {
 
     private Message createMessageFromData(){
 
-        Message newMessage = new Message();
+        Message newMessage = new Message(2);
 
-        String from = ((Chip) chipGroupFrom.getChildAt(0)).getText().toString();
+        String from = ((Chip) chipGroupFrom.getChildAt(0)).getText().toString();  newMessage.setFrom(from);
 
-        ArrayList<String> toAddress = extractArrayListFromChipGroup(chipGroupTo);
+        ArrayList<String> toAddress = extractArrayListFromChipGroup(chipGroupTo); newMessage.setTo(toAddress);
 
-        if (chipGroupCC.getChildCount() > 0) { ArrayList<String> ccAddress = extractArrayListFromChipGroup(chipGroupCC); }
+        if (chipGroupCC.getChildCount() > 0) { ArrayList<String> ccAddress = extractArrayListFromChipGroup(chipGroupCC); newMessage.setCc(ccAddress);}
 
-        if (chipGroupBCC.getChildCount() > 0) { ArrayList<String> bccAddress = extractArrayListFromChipGroup(chipGroupBCC); }
+        if (chipGroupBCC.getChildCount() > 0) { ArrayList<String> bccAddress = extractArrayListFromChipGroup(chipGroupBCC); newMessage.setBcc(bccAddress);}
 
-        String textSubjet = subject.getText().toString();
+        if (chipGroupTags.getChildCount() > 0) { ArrayList<Tag> tags = extractTagsFromChipGroup();  newMessage.setTags(tags);}
 
-        String textContent = content.getText().toString();
+        String textSubject = subject.getText().toString(); newMessage.setSubject(textSubject);
 
-        
+        String textContent = content.getText().toString(); newMessage.setContent(textContent);
+
+
+
+
+
+
+        Log.i("new messag", String.valueOf(newMessage));
+
 
         return null;
+    }
+
+    public ArrayList<Tag> extractTagsFromChipGroup(){
+        return IntStream.rangeClosed(0, chipGroupTags.getChildCount()-1).boxed()
+                .map(idChip -> ((Chip) chipGroupTags.getChildAt(idChip)).getId() )
+                .map(idTag -> Repository.findTagById(idTag))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<String> extractArrayListFromChipGroup(ChipGroup chipGroup){

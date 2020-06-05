@@ -90,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                         LoginResponse r = response.body();
                         //setujemo ulogovanog user-a i token za njega
                         Repository.loggedUser = r.getUser();
+                        Log.i("TAG", "USEEER: " + String.valueOf(r.getUser()));
                         String authToken =  "Bearer " + r.getJwt();
                         Repository.jwt = authToken;
 

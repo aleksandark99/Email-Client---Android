@@ -422,4 +422,8 @@ public class Repository {
             if (a.getId() == idRemove) loggedUser.getAccounts().remove(a); return;
         }
     }
+
+    public static Tag findTagById(int id){
+        return loggedUser.getTags().stream().filter(t -> t.getId() == id).findFirst().orElse(null);
+    }
 }
