@@ -396,6 +396,7 @@ public class SendEmailActivity extends AppCompatActivity {
                 //Toast.makeText(this, "sendEmailConfirm", Toast.LENGTH_SHORT).show();
                 if (accountIsSelected()){
                     if (!isToAddressEmpty()){
+                        Message newMessage = createMessageFromData();
 
                     } else Toast.makeText(this, "Please add at least one email address to which you want to send new email!", Toast.LENGTH_SHORT).show();
 
@@ -466,6 +467,21 @@ public class SendEmailActivity extends AppCompatActivity {
         return true;
     }
 
+    private Message createMessageFromData(){
+
+        return null;
+    }
+
+    private boolean accountIsSelected(){
+        int atLeastOneAddress = chipGroupFrom.getChildCount();
+        return atLeastOneAddress > 0;
+    }
+
+    private boolean isToAddressEmpty(){
+        int atLeastOneAddress = chipGroupTo.getChildCount();
+        return atLeastOneAddress > 0 ? false : true;
+    }
+
     class MyChipListener implements View.OnClickListener{
 
         private Chip mChip;
@@ -494,4 +510,6 @@ public class SendEmailActivity extends AppCompatActivity {
 
         }
     }
+
+
 }
