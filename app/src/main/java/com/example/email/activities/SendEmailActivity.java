@@ -400,6 +400,7 @@ public class SendEmailActivity extends AppCompatActivity {
                 if (accountIsSelected()){
                     if (!isToAddressEmpty()){
                         Message newMessage = createMessageFromData();
+                        //sendMessage(newMessage);
 
                     } else Toast.makeText(this, "Please add at least one email address to which you want to send new email!", Toast.LENGTH_SHORT).show();
 
