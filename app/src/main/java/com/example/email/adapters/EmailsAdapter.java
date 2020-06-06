@@ -3,8 +3,6 @@ package com.example.email.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.Icon;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +18,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
 import com.example.email.activities.EmailActivity;
-import com.example.email.activities.EmailsActivity;
 import com.example.email.model.Contact;
 import com.example.email.model.Message;
-import com.example.email.model.items.Tag;
+import com.example.email.model.Tag;
 import com.example.email.repository.Repository;
 import com.example.email.utility.Helper;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.zip.Inflater;
 
 public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsViewHolder> implements Filterable {
 

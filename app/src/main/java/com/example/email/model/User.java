@@ -1,7 +1,6 @@
 package com.example.email.model;
 
 
-import com.example.email.model.items.Tag;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

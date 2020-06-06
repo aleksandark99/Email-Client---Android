@@ -3,21 +3,17 @@ package com.example.email.repository;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.util.Log;
 
-import com.example.email.R;
 import com.example.email.model.Account;
 import com.example.email.model.Attachment;
 import com.example.email.model.Contact;
 import com.example.email.model.Message;
 import com.example.email.model.User;
-import com.example.email.model.items.Tag;
+import com.example.email.model.Tag;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 /*Dummy repository Singleton class for storing different objects*/
