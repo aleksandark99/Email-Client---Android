@@ -1,5 +1,7 @@
 package com.example.email.retrofit;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -21,7 +23,9 @@ public class RetrofitClient {
 
             HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
             httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).build();
+            OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor)
+            .connectTimeout(100, TimeUnit.SECONDS)
+                    .readTimeout(100,TimeUnit.SECONDS).build();
 
             retrofit = new retrofit2.Retrofit.Builder()
                     .baseUrl(BASE_URL)

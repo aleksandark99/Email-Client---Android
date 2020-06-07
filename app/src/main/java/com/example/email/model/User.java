@@ -42,6 +42,10 @@ public class User {
     @Expose
     private Set<Account> accounts;
 
+    @SerializedName("tags")
+    @Expose
+    private Set<Tag> tags;
+
     public User(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,6 +54,7 @@ public class User {
         this.roles = "ROLE_USER";
         this.contacts = new HashSet<Contact>() {};
         this.accounts = new HashSet<Account>() {};
+        this.tags = new HashSet<Tag>(){};
     }
     public User(int id, String firstName, String lastName, String username, String password, String roles) {
         this.id = id;
@@ -148,6 +153,7 @@ public class User {
                 ", roles='" + roles + '\'' +
                 ", contacts=" + contacts +
                 ", accounts=" + accounts +
+                ", tags=" + tags +
                 '}';
     }
 
@@ -169,6 +175,14 @@ public class User {
 
     public void setAccounts(Set<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 }
 

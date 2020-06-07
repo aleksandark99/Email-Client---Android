@@ -1,11 +1,8 @@
 package com.example.email.model;
 
-import com.example.email.model.items.Tag;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.function.Predicate;
 
 public class Message implements Serializable {
 
@@ -20,12 +17,20 @@ public class Message implements Serializable {
 
     private String subject;
     private String content;
-    private LocalDateTime dateReceived;
+    private LocalDateTime date;
     private boolean unread;
     private ArrayList<Tag> tags;
     private ArrayList<Attachment> attachments;
 
+    public Message(String testExample){
+        this.cc = new ArrayList<String>();
+        this.bcc = new ArrayList<String>();
+        //this.attachments = new ArrayList<Attachment>();
+        this.date = LocalDateTime.now();
+        this.unread = false;
+        this.tags = new ArrayList<Tag>();
 
+    }
 
 
     public Message(){
@@ -42,7 +47,7 @@ public class Message implements Serializable {
     }
 
 
-    public Message(long id, String from, ArrayList<String> to, ArrayList<String> cc, ArrayList<String> bcc, String subject, String content, LocalDateTime dateReceived, boolean unread, ArrayList<Tag> tags) {
+    public Message(long id, String from, ArrayList<String> to, ArrayList<String> cc, ArrayList<String> bcc, String subject, String content, LocalDateTime date, boolean unread, ArrayList<Tag> tags) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -50,7 +55,7 @@ public class Message implements Serializable {
         this.bcc = bcc;
         this.subject = subject;
         this.content = content;
-        this.dateReceived = dateReceived;
+        this.date= date;
         this.unread = unread;
         this.tags = tags;
     }
@@ -112,11 +117,11 @@ public class Message implements Serializable {
     }
 
     public LocalDateTime getDateReceived() {
-        return dateReceived;
+        return date;
     }
 
-    public void setDateReceived(LocalDateTime dateReceived) {
-        this.dateReceived = dateReceived;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public boolean isUnread() {
@@ -142,5 +147,18 @@ public class Message implements Serializable {
         this.attachments = attachments;
     }
 
-
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", from='" + from + '\'' +
+                ", to=" + to +
+                ", cc=" + cc +
+                ", bcc=" + bcc +
+                ", subject='" + subject + '\'' +
+                ", content='" + content + '\'' +
+                ", unread=" + unread +
+                ", tags=" + tags +
+                '}';
+    }
 }
