@@ -19,7 +19,7 @@ import com.example.email.model.Folder;
 import com.example.email.model.Message;
 import com.example.email.model.Rule;
 import com.example.email.model.interfaces.RecyclerClickListener;
-import com.example.email.model.items.Tag;
+import com.example.email.model.Tag;
 
 import java.util.ArrayList;
 

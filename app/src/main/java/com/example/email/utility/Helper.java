@@ -6,14 +6,10 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.ImageView;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.email.R;
-import com.example.email.model.items.Tag;
+import com.example.email.model.Tag;
 
 import java.util.ArrayList;
 

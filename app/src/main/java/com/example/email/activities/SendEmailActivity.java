@@ -1,41 +1,41 @@
 package com.example.email.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.ClipData;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.email.R;
-import com.example.email.model.Account;
 import com.example.email.model.Message;
-import com.example.email.model.items.Tag;
+import com.example.email.model.Tag;
 import com.example.email.repository.Repository;
+import com.example.email.retrofit.RetrofitClient;
+import com.example.email.retrofit.message.MessageService;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
-import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.zip.Inflater;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class SendEmailActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -49,6 +49,9 @@ public class SendEmailActivity extends AppCompatActivity {
     private ArrayList<String> toArrayString,ccArayString;
     private String contentString,subjectString,fromMessageString;
     private ArrayList<Tag> tags;
+
+    private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
+    private final MessageService mMessageService = mRetrofit.create(MessageService.class);
 
 
 
@@ -274,10 +277,10 @@ public class SendEmailActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getData();
+        //getData();
 
 
-        setData();
+        //setData();
 
 
 
@@ -393,19 +396,28 @@ public class SendEmailActivity extends AppCompatActivity {
                 return true;
 
             case R.id.sendEmailConfirm:
-                Toast.makeText(this, "sendEmailConfirm", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "sendEmailConfirm", Toast.LENGTH_SHORT).show();
+                if (accountIsSelected()){
+                    if (!isToAddressEmpty()){
+                        Message newMessage = createMessageFromData();
+                        sendMessage(newMessage);
+
+                    } else Toast.makeText(this, "Please add at least one email address to which you want to send new email!", Toast.LENGTH_SHORT).show();
+
+                }else Toast.makeText(this, "Please select email from which you want to send new email!", Toast.LENGTH_SHORT).show();
                 return true;
 
                     
 
 
         }
-        for (Tag t:Repository.get(this).getMyTags()
+        for (Tag t:Repository.loggedUser.getTags()
              ) {
             if(t.getId()==item.getItemId()){
                 Toast.makeText(this, t.getTagName(), Toast.LENGTH_SHORT).show();
 
                 Chip chip = new Chip(chipGroupTags.getContext());
+                chip.setId(t.getId());
                 chip.setText(t.getTagName());
                 chip.setCloseIconResource(R.drawable.exit_icon);
                 chip.setCloseIconVisible(true);
@@ -440,7 +452,7 @@ public class SendEmailActivity extends AppCompatActivity {
 //        themeMenu.clear();
 
 
-        for (Tag t: Repository.get(this).getMyTags()  ) {
+        for (Tag t: Repository.loggedUser.getTags()  ) {
 
             MenuItem menuItem = menu.findItem(R.id.addTagId).getSubMenu().add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
 
@@ -459,6 +471,91 @@ public class SendEmailActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private Message createMessageFromData(){
+
+        Message newMessage = new Message("This constructor is only for test, this string doesn't do anything useful...");
+
+        String from = ((Chip) chipGroupFrom.getChildAt(0)).getText().toString();  newMessage.setFrom(from);
+
+        ArrayList<String> toAddress = extractArrayListFromChipGroup(chipGroupTo); newMessage.setTo(toAddress);
+
+        if (chipGroupCC.getChildCount() > 0) { ArrayList<String> ccAddress = extractArrayListFromChipGroup(chipGroupCC); newMessage.setCc(ccAddress);}
+
+        if (chipGroupBCC.getChildCount() > 0) { ArrayList<String> bccAddress = extractArrayListFromChipGroup(chipGroupBCC); newMessage.setBcc(bccAddress);}
+
+        if (chipGroupTags.getChildCount() > 0) { ArrayList<Tag> tags = extractTagsFromChipGroup();  newMessage.setTags(tags);}
+
+        String textSubject = subject.getText().toString(); newMessage.setSubject(textSubject);
+
+        String textContent = content.getText().toString(); newMessage.setContent(textContent);
+
+        newMessage.setDate(LocalDateTime.now()); newMessage.setUnread(false);
+
+
+
+        //Log.i("new messag", String.valueOf(newMessage));
+
+
+        return newMessage;
+    }
+
+    public ArrayList<Tag> extractTagsFromChipGroup(){
+        return IntStream.rangeClosed(0, chipGroupTags.getChildCount()-1).boxed()
+                .map(idChip -> ((Chip) chipGroupTags.getChildAt(idChip)).getId() )
+                .map(idTag -> Repository.findTagById(idTag))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public ArrayList<String> extractArrayListFromChipGroup(ChipGroup chipGroup){
+        return IntStream.rangeClosed(0, chipGroup.getChildCount()-1).boxed()
+                .map(idChip -> ((Chip) chipGroup.getChildAt(idChip)).getText().toString())
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private boolean accountIsSelected(){
+        int atLeastOneAddress = chipGroupFrom.getChildCount();
+        return atLeastOneAddress > 0;
+    }
+
+    private boolean isToAddressEmpty(){
+        int atLeastOneAddress = chipGroupTo.getChildCount();
+        return atLeastOneAddress > 0 ? false : true;
+    }
+
+
+    private void sendMessage(Message newMessage){
+        Call<Boolean> call = mMessageService.sendNewMessage(newMessage, Repository.activeAccount.getId(), Repository.jwt);
+
+        call.enqueue(new Callback<Boolean>() {
+
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                if (!response.isSuccessful()){
+                    Log.i("ERROR KOD Slanja nove poruke POGLEDAJ KONZOLU", String.valueOf(response.code()));
+                    return;
+                }
+                if (response.code() == 200){
+                    boolean resultOfSendingNewMessage = response.body();
+                    if (resultOfSendingNewMessage) {
+                        Toast.makeText(getApplicationContext(), "Message successfully sent!", Toast.LENGTH_LONG).show();
+                        SendEmailActivity.this.finish();
+                    } else Toast.makeText(getApplicationContext(), "Error on server, please check all receiving addresses!", Toast.LENGTH_LONG).show();
+
+                }else Toast.makeText(getApplicationContext(), "Error on server, please check all receiving addresses!", Toast.LENGTH_LONG).show();
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "ERROOOOOR PRILIKOM Slanja nove poruke POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
+                Log.i("ERROOOOOR PRILIKOM Slanja nove poruke POGLEDAJ KONZOLU", t.toString());
+            }
+        });
+    }
+
 
     class MyChipListener implements View.OnClickListener{
 
@@ -488,4 +585,11 @@ public class SendEmailActivity extends AppCompatActivity {
 
         }
     }
+
+
 }
+
+
+
+
+

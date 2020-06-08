@@ -17,18 +17,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.EmailsAdapter;
 import com.example.email.model.Message;
-import com.example.email.model.items.Tag;
 import com.example.email.repository.Repository;
 import com.google.android.material.navigation.NavigationView;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 

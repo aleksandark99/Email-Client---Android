@@ -2,7 +2,6 @@ package com.example.email.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
@@ -20,11 +19,10 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.model.Message;
-import com.example.email.model.items.Tag;
+import com.example.email.model.Tag;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class EmailActivity extends AppCompatActivity {
