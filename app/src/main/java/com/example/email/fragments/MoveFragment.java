@@ -112,7 +112,8 @@ public class MoveFragment extends Fragment {
 
                     toChipGroup.addView(chip);
 
-                    chip.setText("");
+//                    chip.setText("");
+                    toText.setText("");
                 }
             }
         });
