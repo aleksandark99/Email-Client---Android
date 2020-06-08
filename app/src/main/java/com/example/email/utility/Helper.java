@@ -47,7 +47,7 @@ public class Helper {
         Glide.with(context)
                 .load(imageFilePath)
                 .apply(new RequestOptions().centerCrop())
-                .error(R.drawable.dummy_contact_photo)
+                .error(R.drawable.ic_person_black_24dp)
                 .override(imageView.getWidth(), imageView.getHeight())
                 .into(imageView);
     }

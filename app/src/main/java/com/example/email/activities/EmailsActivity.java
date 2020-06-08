@@ -68,8 +68,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         navEmail.setNavigationItemSelectedListener(this);
         View headerName = navEmail.getHeaderView(0);
-        TextView name = headerName.findViewById(R.id.name);
-        name.setText(Repository.loggedUser.getUsername());
+//        TextView name = headerName.findViewById(R.id.name);
+//        name.setText(Repository.loggedUser.getUsername());
 
 
 ///ADAPTER
