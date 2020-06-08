@@ -7,9 +7,21 @@
         app:key="sync"
         app:title="Sync"
         app:icon="@drawable/ic_sync">
+
         <SwitchPreferenceCompat
             app:key="enable_sync"
+            android:defaultValue="false"
             app:title="Enable periodic syncing"/>
+
+        <ListPreference
+            app:key="sync_list"
+            app:title="Sync time"
+            app:summary="Pull new messages from server"
+
+            app:entries="@array/syncTimes_entires"
+            app:dependency="enable_sync"
+            app:entryValues="@array/syncTimes_values"
+            />
     </PreferenceCategory>
 
     <PreferenceCategory
