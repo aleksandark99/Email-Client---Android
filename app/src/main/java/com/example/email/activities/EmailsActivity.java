@@ -24,10 +24,18 @@ import com.example.email.R;
 import com.example.email.adapters.EmailsAdapter;
 import com.example.email.model.Message;
 import com.example.email.repository.Repository;
+import com.example.email.retrofit.RetrofitClient;
+import com.example.email.retrofit.message.MessageService;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     RecyclerView recyclerView;
@@ -45,6 +53,13 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emails);
+
+
+
+
+
+
+
 
         recyclerView = findViewById(R.id.emailsRecyclerView);
 
@@ -76,7 +91,15 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
 ///ADAPTER
 
-        messages = Repository.get(this).getMessages();
+      //  messages = Repository.get(this).getMessages();
+
+//        if(Repository.activeAccount!=null){
+//            messages=getAllMessagesForAccount(Repository.activeAccount.getId());
+//
+//        }else{
+//            messages=new ArrayList<Message>();
+//        }
+        messages=getAllMessagesForAccount(Repository.loggedUser.getAccounts().iterator().next().getId());
         emailsAdapter = new EmailsAdapter(this, messages);
         recyclerView.setAdapter(emailsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -186,5 +209,34 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         return true;
 
+    }
+    public ArrayList<Message> getAllMessagesForAccount(int id){
+        ArrayList<Message> messages=new ArrayList<Message>();
+        Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
+        MessageService messageService=mRetrofit.create(MessageService.class);
+        Call<Set<Message>> call=messageService.getAllMessages(id, Repository.jwt);
+
+        call.enqueue(new Callback<Set<Message>>() {
+            @Override
+            public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
+                if (response.code() == 200){
+                    Set<Message> mes=response.body();
+                    for (Message m:mes
+                         ) {
+                        messages.add(m);
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Set<Message>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Eror PRILIKOM preuzimanja poruka POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        return messages;
     }
 }
