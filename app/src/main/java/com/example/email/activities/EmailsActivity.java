@@ -27,6 +27,7 @@ import com.example.email.model.Message;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.message.MessageService;
+import com.example.email.utility.Helper;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +52,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     SearchView searchView;
     EmailsAdapter emailsAdapter;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+            getAllMessagesForAccount(Helper.getActiveAccountId()); // u slucaju da se promeni acc iz profile activity posto idemo back ka inboxu mora ovako
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +101,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration); // ove dve linije samo za dekoraciju nista vise
         emailsAdapter = new EmailsAdapter(this);
-        getAllMessagesForAccount(1);
+        if(Helper.getActiveAccountId()!=0){
+            getAllMessagesForAccount(Helper.getActiveAccountId());
+
+        }
 
     }
 
