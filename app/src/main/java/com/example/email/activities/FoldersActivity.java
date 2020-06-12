@@ -26,9 +26,12 @@ import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.folders.FolderService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import retrofit2.Call;
@@ -95,9 +98,9 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         /*  Adapters for RecycleView */
 
-        foldersAdapter = new FoldersAdapter(this, this);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        foldersAdapter = new FoldersAdapter(this, this);
 
         fillFoldersData();
 
@@ -124,8 +127,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         }
 
     }
-
-
 
     /* Make an intents for each item clicked in NavDrawer */
     @Override
@@ -195,7 +196,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         FolderService folderService = retrofit.create(FolderService.class);
 
-        int acc_id = getActiveAccId();
+        int acc_id = 1;
 
         Call<Set<Folder>> call = folderService.getFoldersByAccount(acc_id, Repository.jwt);
 
@@ -204,24 +205,22 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             @Override
             public void onResponse(Call<Set<Folder>> call, Response<Set<Folder>> response) {
 
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
 
-                    Log.i("ERROR: ", String.valueOf(response.errorBody()));
+                    Log.i("ERROR: ", String.valueOf(response.code()));
 
                     return;
+
                 }
+                    foldersAdapter.setData(new ArrayList<>(response.body()));
 
-                ArrayList<Folder> loadFolders = (ArrayList<Folder>) response.body();
-
-                foldersAdapter.setData(loadFolders);
-
-                recyclerView.setAdapter(foldersAdapter);
-            }
+                    recyclerView.setAdapter(foldersAdapter);
+                }
 
             @Override
             public void onFailure(Call<Set<Folder>> call, Throwable t) {
 
-                Log.i("ERROR: ", t.getMessage());
+                Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
             }
         });
 
@@ -229,24 +228,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
     }
 
-    private int getActiveAccId() {
-
-        try {
-
-            if (Repository.loggedUser.getAccounts().iterator().hasNext()) {
-
-                int acc_id = Repository.loggedUser.getAccounts().iterator().next().getId();
-
-                return acc_id;
-            }
-
-            }catch(Exception ex){
-
-                ex.printStackTrace();
-            }
-
-        return 0;
-    }
 
 
 }

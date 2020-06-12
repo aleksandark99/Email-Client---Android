@@ -2,11 +2,23 @@ package com.example.email.model;
 
 import com.example.email.model.enums.ECondition;
 import com.example.email.model.enums.EOperation;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-public class Rule {
+import java.io.Serializable;
 
+public class Rule implements Serializable {
+
+    @SerializedName("id")
+    @Expose
     private int id;
+
+    @SerializedName("operation")
+    @Expose
     private EOperation operation;
+
+    @SerializedName("condition")
+    @Expose
     private ECondition condition;
 
 

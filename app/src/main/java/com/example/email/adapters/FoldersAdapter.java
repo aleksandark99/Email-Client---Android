@@ -16,13 +16,12 @@ import com.example.email.model.Message;
 import com.example.email.model.interfaces.RecyclerClickListener;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersViewAdapter> {
 
-    Context context;
-
-    ArrayList<Folder> folders;
-
+    private Context context;
+    private ArrayList<Folder> folders;
     private RecyclerClickListener recyclerClickListener;
 
     public FoldersAdapter(Context ctx, RecyclerClickListener listener){
@@ -54,7 +53,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
     @Override
     public void onBindViewHolder(@NonNull FoldersViewAdapter holder, int position) {
 
-        ArrayList<Message> folderMessages = folders.get(position).getMessages();
+        Set<Message> folderMessages = folders.get(position).getMessages();
 
         int messageCount = (folderMessages == null) ? 0 : folderMessages.size();
 

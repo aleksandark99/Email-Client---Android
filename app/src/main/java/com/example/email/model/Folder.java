@@ -1,28 +1,52 @@
 package com.example.email.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Set;
 
-public class Folder {
+public class Folder implements Serializable {
 
+    @SerializedName("id")
+    @Expose
     private int id;
-    private String name;
-    private Folder parent_folder;
-    private ArrayList<Folder> childFolders;
-    private ArrayList<Message> messages;
-    private Rule destination;
 
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+
+    @SerializedName("parent_folder")
+    @Expose
+    private Folder parent_folder;
+
+
+    @SerializedName("childFolders")
+    @Expose
+    private Set<Folder> childFolders;
+
+
+    @SerializedName("messages")
+    @Expose
+    private Set<Message> messages;
+
+
+    @SerializedName("destination")
+    @Expose
+    private Set<Rule> destination;
 
     public Folder(){}
 
-    public Folder(int id, String name, Folder parent, ArrayList<Message> messages, ArrayList<Folder> childFolders, Rule destination) {
+    public Folder(int id, String name, Folder parent_folder, Set<Folder> childFolders, Set<Message> messages, Set<Rule> destination) {
         this.id = id;
         this.name = name;
-        this.parent_folder = parent;
-        this.messages = messages;
+        this.parent_folder = parent_folder;
         this.childFolders = childFolders;
+        this.messages = messages;
         this.destination = destination;
     }
-
 
     public int getId() {
         return id;
@@ -40,29 +64,35 @@ public class Folder {
         this.name = name;
     }
 
-    public Folder getParent_folder() { return parent_folder; }
-
-    public void setParent_folder(Folder parent_folder) { this.parent_folder = parent_folder; }
-
-    public ArrayList<Message> getMessages() {
-        return messages;
+    public Folder getParent_folder() {
+        return parent_folder;
     }
 
-    public void setMessages(ArrayList<Message> messages) {
-        this.messages = messages;
+    public void setParent_folder(Folder parent_folder) {
+        this.parent_folder = parent_folder;
     }
 
-    public ArrayList<Folder> getChildFolders() {
+    public Set<Folder> getChildFolders() {
         return childFolders;
     }
 
-    public void setChildFolders(ArrayList<Folder> childFolders) { this.childFolders = childFolders; }
+    public void setChildFolders(Set<Folder> childFolders) {
+        this.childFolders = childFolders;
+    }
 
-    public Rule getDestination() {
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
+    }
+
+    public Set<Rule> getDestination() {
         return destination;
     }
 
-    public void setDestination(Rule destination) {
+    public void setDestination(Set<Rule> destination) {
         this.destination = destination;
     }
 }
