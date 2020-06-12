@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.email.R;
 import com.example.email.model.Tag;
+import com.example.email.repository.Repository;
 
 import java.util.ArrayList;
 
@@ -72,4 +73,11 @@ public class Helper {
 
     }
 
+    public static int getActiveAccountId(){
+        if(Repository.activeAccount!=null){
+            return Repository.activeAccount.getId();
+        }else{
+            return 0;
+        }
+    }
 }
