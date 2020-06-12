@@ -11,24 +11,32 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
+import com.example.email.model.Folder;
+import com.example.email.model.Message;
 import com.example.email.model.interfaces.RecyclerClickListener;
+
+import java.util.ArrayList;
 
 public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersViewAdapter> {
 
     Context context;
-    String[] folderNames;
-    int[] messageCount;
-    int[] images;
+
+    ArrayList<Folder> folders;
 
     private RecyclerClickListener recyclerClickListener;
 
-    public FoldersAdapter(Context ctx, String[] names, int[] messages, int[] idImage, RecyclerClickListener listener){
+    public FoldersAdapter(Context ctx, RecyclerClickListener listener){
 
         context = ctx;
-        folderNames = names;
-        messageCount = messages;
-        images = idImage;
         recyclerClickListener = listener;
+
+    }
+
+    public void setData(ArrayList<Folder> loadFolders){
+
+        folders = loadFolders;
+
+        notifyDataSetChanged();
 
     }
 
@@ -46,15 +54,21 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
     @Override
     public void onBindViewHolder(@NonNull FoldersViewAdapter holder, int position) {
 
-        holder.fNameView.setText(folderNames[position]);
-        holder.mCountView.setText(messageCount[position] + "");
-        holder.folderImage.setImageResource(images[0]);
+        ArrayList<Message> folderMessages = folders.get(position).getMessages();
+
+        int messageCount = (folderMessages == null) ? 0 : folderMessages.size();
+
+        holder.fNameView.setText(folders.get(position).getName());
+        holder.mCountView.setText(messageCount + "");
+        holder.folderImage.setImageResource(R.drawable.ic_folder_purple);
     }
 
     @Override
     public int getItemCount() {
 
-        return folderNames.length;
+        int folders_number = (folders == null) ? 0 : folders.size();
+
+        return folders_number;
     }
 
     public class FoldersViewAdapter extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {

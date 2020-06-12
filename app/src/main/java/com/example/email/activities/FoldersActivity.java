@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -18,23 +19,32 @@ import android.widget.TextView;
 import com.example.email.MainActivity;
 import com.example.email.R;
 import com.example.email.adapters.FoldersAdapter;
+import com.example.email.model.Folder;
 import com.example.email.model.interfaces.RecyclerClickListener;
+import com.example.email.repository.Repository;
+import com.example.email.retrofit.RetrofitClient;
+import com.example.email.retrofit.folders.FolderService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RecyclerClickListener {
-
-    String[] foldersName;
-
-    int[] messageCount;
-
-    int[] images = {R.drawable.ic_folder_purple};
 
     DrawerLayout drawerLayout;
 
     NavigationView navigationView;
 
     RecyclerView recyclerView;
+
+    FoldersAdapter foldersAdapter;
 
     Toolbar toolbar;
 
@@ -45,11 +55,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folders);
-
-        /*  String resources */
-
-        foldersName = getResources().getStringArray(R.array.folders_name);
-        messageCount = getResources().getIntArray(R.array.message_count);
 
         /* Hooks */
 
@@ -90,10 +95,11 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         /*  Adapters for RecycleView */
 
-        FoldersAdapter foldersAdapter = new FoldersAdapter(this, foldersName, messageCount, images, this);
-        recyclerView.setAdapter(foldersAdapter);
+        foldersAdapter = new FoldersAdapter(this, this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        fillFoldersData();
 
         btnAddFolder.setOnClickListener(v -> {
 
@@ -181,4 +187,66 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             }
         });
     }
+
+
+    private void fillFoldersData(){
+
+        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+
+        FolderService folderService = retrofit.create(FolderService.class);
+
+        int acc_id = getActiveAccId();
+
+        Call<Set<Folder>> call = folderService.getFoldersByAccount(acc_id, Repository.jwt);
+
+        call.enqueue(new Callback<Set<Folder>>() {
+
+            @Override
+            public void onResponse(Call<Set<Folder>> call, Response<Set<Folder>> response) {
+
+                if(!response.isSuccessful()){
+
+                    Log.i("ERROR: ", String.valueOf(response.errorBody()));
+
+                    return;
+                }
+
+                ArrayList<Folder> loadFolders = (ArrayList<Folder>) response.body();
+
+                foldersAdapter.setData(loadFolders);
+
+                recyclerView.setAdapter(foldersAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<Set<Folder>> call, Throwable t) {
+
+                Log.i("ERROR: ", t.getMessage());
+            }
+        });
+
+
+
+    }
+
+    private int getActiveAccId() {
+
+        try {
+
+            if (Repository.loggedUser.getAccounts().iterator().hasNext()) {
+
+                int acc_id = Repository.loggedUser.getAccounts().iterator().next().getId();
+
+                return acc_id;
+            }
+
+            }catch(Exception ex){
+
+                ex.printStackTrace();
+            }
+
+        return 0;
+    }
+
+
 }
