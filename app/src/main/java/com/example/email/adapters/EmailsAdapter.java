@@ -10,6 +10,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -41,15 +42,27 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         this.messages = messages;
         this.ctx = ctx;
         //za FilterProba
-        this.messagesAll = new ArrayList<>(messages);
+//        this.messagesAll = new ArrayList<>(messages);
 
+    }
+    public EmailsAdapter(Context ctx ) {
+        this.ctx = ctx;
+        this.messagesAll=new ArrayList<Message>();
+        //za FilterProba
+//        this.messagesAll = new ArrayList<>(messages);
+
+    }
+
+    public void setData(ArrayList<Message> mm){
+        this.messages=mm;
+        this.messagesAll=new ArrayList<>(messages);
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public EmailsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(ctx);
-//        View view = inflater.inflate(R.layout.emails_row, parent, false);
         View view = inflater.inflate(R.layout.new_emails_row, parent, false);
 
         return new EmailsViewHolder(view);
@@ -137,8 +150,10 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         protected FilterResults performFiltering(CharSequence constraint) {
 
             ArrayList<Message> filteredMessages = new ArrayList<Message>();
-            if (constraint.toString().isEmpty()) {
+            if (constraint.toString().equals("")) {
                 filteredMessages.addAll(messagesAll);
+                Toast.makeText(ctx, "aaaaa", Toast.LENGTH_SHORT).show();
+               // notifyDataSetChanged();
             } else {
                 for (Message message : messagesAll) {
 
@@ -172,8 +187,10 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         //run on ui thread
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            messages.clear();
-            messages.addAll((Collection<? extends Message>) results.values);
+                messages.clear();
+                messages.addAll((Collection<? extends Message>) results.values);
+
+
 
 
             notifyDataSetChanged();

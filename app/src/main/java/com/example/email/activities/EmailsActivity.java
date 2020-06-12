@@ -22,11 +22,14 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.EmailsAdapter;
+import com.example.email.model.Contact;
 import com.example.email.model.Message;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.message.MessageService;
 import com.google.android.material.navigation.NavigationView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,16 +56,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emails);
-
-
-
-
-
-
-
-
         recyclerView = findViewById(R.id.emailsRecyclerView);
-
         toolbar = findViewById(R.id.customEmailsToolbar);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayShowTitleEnabled(false);//Removes Title from toolbar
@@ -89,23 +83,19 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
 
 
-///ADAPTER
 
-      //  messages = Repository.get(this).getMessages();
+        //Repository.get(this).setMessages(getAllMessagesForAccount(1));
+        //messages = Repository.get(this).getMessages();
+//        emailsAdapter = new EmailsAdapter(this, messages);
+//        recyclerView.setAdapter(emailsAdapter);
 
-//        if(Repository.activeAccount!=null){
-//            messages=getAllMessagesForAccount(Repository.activeAccount.getId());
-//
-//        }else{
-//            messages=new ArrayList<Message>();
-//        }
-        messages=getAllMessagesForAccount(Repository.loggedUser.getAccounts().iterator().next().getId());
-        emailsAdapter = new EmailsAdapter(this, messages);
-        recyclerView.setAdapter(emailsAdapter);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration); // ove dve linije samo za dekoraciju nista vise
+        emailsAdapter = new EmailsAdapter(this);
+        getAllMessagesForAccount(1);
 
     }
 
@@ -115,12 +105,16 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             case R.id.sortByDate:
                 Toast.makeText(EmailsActivity.this, "SortByDate", Toast.LENGTH_SHORT).show();
                 messages.sort(Comparator.comparing(Message::getDateReceived));
+                emailsAdapter.setData(messages);
+
                 emailsAdapter.notifyDataSetChanged();
 
                 return true;
             case R.id.sortBySender:
                 Toast.makeText(EmailsActivity.this, "sortBySender", Toast.LENGTH_SHORT).show();
                 messages.sort(Comparator.comparing(Message::getFrom));
+                emailsAdapter.setData(messages);
+
                 emailsAdapter.notifyDataSetChanged();
 
                 return true;
@@ -128,6 +122,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             case R.id.sortBySubject:
                 Toast.makeText(EmailsActivity.this, "sortBySubject", Toast.LENGTH_SHORT).show();
                 messages.sort(Comparator.comparing(Message::getSubject));
+                emailsAdapter.setData(messages);
                 emailsAdapter.notifyDataSetChanged();
 
                 return true;
@@ -210,7 +205,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         return true;
 
     }
-    public ArrayList<Message> getAllMessagesForAccount(int id){
+    public void getAllMessagesForAccount(int id){
         ArrayList<Message> messages=new ArrayList<Message>();
         Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         MessageService messageService=mRetrofit.create(MessageService.class);
@@ -220,13 +215,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
                 if (response.code() == 200){
-                    Set<Message> mes=response.body();
-                    for (Message m:mes
-                         ) {
-                        messages.add(m);
-
-
-                    }
+                    emailsAdapter.setData(new ArrayList<>((Set<Message>) response.body()));
+                    recyclerView.setAdapter(emailsAdapter);
+                    setMessages(new ArrayList<>((Set<Message>) response.body()));
                 }
             }
 
@@ -237,6 +228,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
-        return messages;
+//        return messages;
+    }
+    private void setMessages(ArrayList<Message> m){
+        this.messages=m;
     }
 }
