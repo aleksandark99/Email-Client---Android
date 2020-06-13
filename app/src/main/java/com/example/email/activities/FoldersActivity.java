@@ -1,6 +1,7 @@
 package com.example.email.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -107,9 +108,24 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         btnAddFolder.setOnClickListener(v -> {
 
             Intent intent = new Intent(FoldersActivity.this, CreateFolderActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
 
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1){
+
+            if(resultCode == RESULT_OK){
+
+                Folder newFolder = (Folder) data.getSerializableExtra("newFolder");
+                folders.add(newFolder);
+
+            }
+        }
     }
 
     @Override

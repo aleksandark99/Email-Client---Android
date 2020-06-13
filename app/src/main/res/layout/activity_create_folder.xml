@@ -50,15 +50,6 @@
                 android:layout_marginBottom="25dp"
                 android:orientation="vertical">
 
-                <!--
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:textAlignment="center"
-                    android:textSize="20dp"
-                    android:text="Add a new folder"/> -->
 
                 <EditText
                     android:id="@+id/txtFolderName"
@@ -68,8 +59,7 @@
                     android:layout_gravity="center"
                     android:hint="Folder name"
                     android:textAlignment="center"
-                    android:backgroundTint="@color/colorPrimary"
-                    />
+                    android:backgroundTint="@color/colorPrimary"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -82,9 +72,9 @@
                         android:layout_width="100dp"
                         android:layout_height="30dp"
                         android:text="Cancel"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@android:color/white"
                         android:background="@drawable/button_purple_round"
-                        android:backgroundTint="@android:color/white"
+                        android:backgroundTint="@color/colorPrimary"
                         android:layout_gravity="left"/>
 
                     <Button
