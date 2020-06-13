@@ -54,11 +54,13 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
     public void onBindViewHolder(@NonNull FoldersViewAdapter holder, int position) {
 
         Set<Message> folderMessages = folders.get(position).getMessages();
+        Set<Folder> childFolders = folders.get(position).getChildFolders();
 
         int messageCount = (folderMessages == null) ? 0 : folderMessages.size();
+        int foldersCount = (folderMessages == null) ? 0 : childFolders.size();
 
         holder.fNameView.setText(folders.get(position).getName());
-        holder.mCountView.setText(messageCount + "");
+        holder.mCountView.setText(messageCount + foldersCount  + "");
         holder.folderImage.setImageResource(R.drawable.ic_folder_purple);
     }
 

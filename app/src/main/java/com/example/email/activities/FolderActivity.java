@@ -20,72 +20,32 @@ import com.example.email.model.Message;
 import com.example.email.model.Rule;
 import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.model.Tag;
+import com.example.email.repository.Repository;
 
 import java.util.ArrayList;
 
 public class FolderActivity extends AppCompatActivity implements RecyclerClickListener {
 
-    int[] images = {R.drawable.ic_folder_purple};
+    private Toolbar toolbar;
 
-    Toolbar toolbar;
+    private RecyclerView recyclerView;
 
-    RecyclerView recyclerView;
+    private ActionMode mActionMode;
 
-    ActionMode mActionMode;
+    private FolderAdapter folderAdapter;
 
-    FolderAdapter folderAdapter;
+    private Folder mFolder;
+
+    private ArrayList<Folder> childFolders;
+
+    private ArrayList<Message> folderMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folder);
 
-
-        /*  Those objects will be later removed. Their purpose are for testing FolderAdapter */
-
-
-//        ArrayList<Message> messages = new ArrayList<>();
-//        ArrayList<Message> messagesInner = new ArrayList<>();
-//        ArrayList<Folder> innerFolders = new ArrayList<>();
-//        ArrayList<Folder> testFolders = new ArrayList<>();
-//
-//        Message m1 = new Message();
-//        Message m2 = new Message();
-//
-//        Tag t1 = new Tag(1, "tag1");
-//        Tag t2 = new Tag(2, "tag2");
-//
-//        ArrayList<Tag> tags = new ArrayList<>();
-//
-//        m1.setFrom("m1From");
-//        m2.setFrom("m2From");
-//
-//        m1.setSubject("m1Subject");
-//        m2.setSubject("m2Subject");
-//
-//        m1.setUnread(true);
-//        m2.setUnread(false);
-//
-//        tags.add(t1);
-//        tags.add(t2);
-//
-//        m1.setTags(tags);
-//        m2.setTags(tags);
-//
-//        m1.setContent("Content za m1");
-//        m2.setContent("Content za m23");
-//
-//        messages.add(m1);
-//        messages.add(m2);
-//        messagesInner.add(m1);
-//
-//        Folder f2 = new Folder(3, "Folder 3", new ArrayList<Message>(), null, new Rule());
-//        testFolders.add(f2);
-//
-//        Folder f1 = new Folder(2, "Inner Folder", messagesInner, testFolders, new Rule());
-//        innerFolders.add(f1);
-//
-//        Folder folder = new Folder(1, "TestFolder", messages, innerFolders, new Rule());
+        mFolder = (Folder) getIntent().getSerializableExtra("folder");
 
 
         /*  Hooks and Toolbar */
@@ -96,15 +56,21 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Folder");
+        getSupportActionBar().setTitle(mFolder.getName());
 
-        ArrayList<Folder> childFolders = null;
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        ArrayList<Message> folderMessages = null;
+                finish();
+            }
+        });
 
+        childFolders = new ArrayList<>(mFolder.getChildFolders());
 
-        folderAdapter = new FolderAdapter(this, images, childFolders, folderMessages, this);
+        folderMessages = new ArrayList<>(mFolder.getMessages());
 
+        folderAdapter = new FolderAdapter(this, childFolders, folderMessages, this);
 
         recyclerView.setAdapter(folderAdapter);
 
@@ -115,6 +81,16 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     @Override
     public void OnItemClick(View view, int position) {
+
+        if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_FOLDER) {
+
+            Intent intent = new Intent(this, FolderActivity.class);
+
+            intent.putExtra("folder", childFolders.get(position));
+
+            startActivity(intent);
+
+        }
 
     }
 

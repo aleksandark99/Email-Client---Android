@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.email.MainActivity;
+
 import com.example.email.R;
 import com.example.email.adapters.FoldersAdapter;
 import com.example.email.model.Folder;
@@ -24,14 +24,12 @@ import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.folders.FolderService;
+import com.example.email.utility.Helper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import retrofit2.Call;
@@ -52,6 +50,8 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     Toolbar toolbar;
 
     FloatingActionButton btnAddFolder;
+
+    ArrayList<Folder> folders;
 
 
     @Override
@@ -172,6 +172,10 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         Intent intent = new Intent(this, FolderActivity.class);
 
+        intent.putExtra("folder", folders.get(position));
+
+        System.out.println("INTENNNNNNNNNNNNNNNNNNNNNNNNNNNNNNT " + folders.get(position).getName());
+
         startActivity(intent);
 
     }
@@ -196,7 +200,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         FolderService folderService = retrofit.create(FolderService.class);
 
-        int acc_id = 1;
+        int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
 
         Call<Set<Folder>> call = folderService.getFoldersByAccount(acc_id, Repository.jwt);
 
@@ -212,7 +216,9 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                     return;
 
                 }
-                    foldersAdapter.setData(new ArrayList<>(response.body()));
+                    folders = new ArrayList<>(response.body());
+
+                    foldersAdapter.setData(folders);
 
                     recyclerView.setAdapter(foldersAdapter);
                 }

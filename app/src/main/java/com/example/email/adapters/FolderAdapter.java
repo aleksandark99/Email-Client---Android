@@ -25,17 +25,15 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static int TYPE_EMAIL = 1;
 
     Context context;
-    int[] imageFolder;
     ArrayList<Folder> folders;
     ArrayList<Message> messages;
 
     private RecyclerClickListener recyclerClickListener;
 
 
-    public FolderAdapter(Context ctx, int[] idImage, ArrayList<Folder> childFolders, ArrayList<Message> folderMessages, RecyclerClickListener listener) {
+    public FolderAdapter(Context ctx, ArrayList<Folder> childFolders, ArrayList<Message> folderMessages, RecyclerClickListener listener) {
 
         context = ctx;
-        imageFolder = idImage;
         folders = childFolders;
         messages = folderMessages;
         recyclerClickListener = listener;
@@ -154,8 +152,9 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             fNameView.setText(folder.getName());
             int childFoldersSize = (folder.getChildFolders() == null) ? 0 : folder.getChildFolders().size();
-            mCountView.setText(childFoldersSize + "");
-            folderImage.setImageResource(imageFolder[0]);
+            int childFolderMessages = (folder.getMessages() == null) ? 0 : folder.getMessages().size();
+            mCountView.setText(childFoldersSize + childFolderMessages  + "");
+            folderImage.setImageResource(R.drawable.ic_folder_purple);
         }
 
         @Override
