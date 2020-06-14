@@ -1,5 +1,6 @@
 package com.example.email.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +22,7 @@ import com.example.email.model.Rule;
 import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.model.Tag;
 import com.example.email.repository.Repository;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -29,6 +31,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     private Toolbar toolbar;
 
     private RecyclerView recyclerView;
+
+    private FloatingActionButton btnAddSubFolder;
 
     private ActionMode mActionMode;
 
@@ -54,9 +58,15 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         recyclerView = findViewById(R.id.recViewFolder);
 
+        btnAddSubFolder = findViewById(R.id.btnAddSubFolder);
+
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle(mFolder.getName());
+        String folderName = (!mFolder.getName().isEmpty()) ? mFolder.getName() : "";
+
+        hideBtnAddFolder(folderName);
+
+        getSupportActionBar().setTitle(folderName);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +86,29 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        btnAddSubFolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                Intent intent = new Intent(FolderActivity.this, CreateFolderActivity.class);
+                intent.putExtra("parent_folder", mFolder);
+                startActivityForResult(intent, 2);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 2){
+
+            if(resultCode == RESULT_OK){
+
+                Folder childFolder = (Folder) data.getSerializableExtra("newFolder");
+                childFolders.add(childFolder);
+            }
+        }
     }
 
     @Override
@@ -196,4 +228,17 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
             mActionMode = null;
         }
     };
+
+    private void hideBtnAddFolder(String folderName){
+
+        if(folderName.equals("Sent") || folderName.equals("Drafts") ||
+        folderName.equals("Trash") || folderName.equals("Favorites")){
+
+            btnAddSubFolder.hide();
+
+        }else{
+
+            btnAddSubFolder.show();
+        }
+    }
 }

@@ -34,11 +34,21 @@ public class CreateFolderActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private FolderService folderService;
     private Folder newFolder = new Folder();
+    private Folder parentFolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_folder);
+
+        if(getIntent().hasExtra("parent_folder")) {
+
+            parentFolder = (Folder) getIntent().getSerializableExtra("parent_folder");
+
+        }else{
+
+            parentFolder = null;
+        }
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -70,7 +80,7 @@ public class CreateFolderActivity extends AppCompatActivity {
                     }
 
                     newFolder.setName(folderName);
-                    newFolder.setParent_folder(null);
+                    newFolder.setParent_folder(parentFolder);
 
                     Call<Folder> call = folderService.createFolder(newFolder, acc_id, Repository.jwt);
 

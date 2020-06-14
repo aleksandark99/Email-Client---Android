@@ -17,10 +17,29 @@
         android:theme="?attr/actionBarTheme"
         app:navigationIcon="@drawable/ic_arrow_back"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recViewFolder"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20dp"/>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recViewFolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"/>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnAddSubFolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:layout_marginEnd="25dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:layout_gravity="end|bottom"
+            android:clickable="true"
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_add"/>
+
+    </FrameLayout>
 
 </LinearLayout>
