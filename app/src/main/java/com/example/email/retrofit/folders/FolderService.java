@@ -9,6 +9,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface FolderService {
@@ -18,4 +19,7 @@ public interface FolderService {
 
     @POST("/folder/{account_id}")
     Call<Folder> createFolder(@Body Folder folder, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
+
+    @PUT("/folder/{account_id}")
+    Call<Folder> updateFolder(@Body Folder folder, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
 }

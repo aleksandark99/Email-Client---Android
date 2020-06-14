@@ -1,5 +1,6 @@
 package com.example.email.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
@@ -10,12 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.FolderAdapter;
+import com.example.email.fragments.EditFolderFragment;
 import com.example.email.model.Folder;
 import com.example.email.model.Message;
 import com.example.email.model.Rule;
@@ -240,5 +243,57 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
             btnAddSubFolder.show();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        String folderName = mFolder.getName();
+
+        if(folderName.equals("Sent") || folderName.equals("Drafts") ||
+        folderName.equals("Trash") || folderName.equals("Favorites")){
+
+            return false;
+
+        }else{
+
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.folders_menu_toolbar, menu);
+
+            return true;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch(item.getItemId()){
+
+            case R.id.delete_folder_item:
+
+                return true;
+
+            case R.id.edit_folder_item:
+
+                openEditDialog();
+
+                return true;
+
+            default:
+
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void openEditDialog(){
+
+        EditFolderFragment editFragment = new EditFolderFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("folderToChange", mFolder);
+        editFragment.setArguments(args);
+
+        editFragment.show(getSupportFragmentManager(), "edit folder");
+
     }
 }

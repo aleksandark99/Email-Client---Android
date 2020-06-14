@@ -237,6 +237,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                     foldersAdapter.setData(folders);
 
                     recyclerView.setAdapter(foldersAdapter);
+
                 }
 
             @Override
