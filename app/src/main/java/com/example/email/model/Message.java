@@ -25,7 +25,7 @@ public class Message implements Serializable {
     public Message(String testExample){
         this.cc = new ArrayList<String>();
         this.bcc = new ArrayList<String>();
-        //this.attachments = new ArrayList<Attachment>();
+        this.attachments = new ArrayList<Attachment>();
         this.date = LocalDateTime.now();
         this.unread = false;
         this.tags = new ArrayList<Tag>();

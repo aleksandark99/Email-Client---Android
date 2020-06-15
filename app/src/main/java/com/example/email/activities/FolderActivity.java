@@ -35,6 +35,10 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     FolderAdapter folderAdapter;
 
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
