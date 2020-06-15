@@ -29,7 +29,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class FolderActivity extends AppCompatActivity implements RecyclerClickListener {
+public class FolderActivity extends AppCompatActivity implements RecyclerClickListener, EditFolderFragment.EditFolderNameDialogListener {
+
+    private static final int ADD_SUBFOLDER = 3;
+    private static final int EDIT_SUBFOLDER = 4;
 
     private Toolbar toolbar;
 
@@ -41,7 +44,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private FolderAdapter folderAdapter;
 
-    private Folder mFolder;
+    private Folder mFolder, previewFolder;
 
     private ArrayList<Folder> childFolders;
 
@@ -95,7 +98,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
                 Intent intent = new Intent(FolderActivity.this, CreateFolderActivity.class);
                 intent.putExtra("parent_folder", mFolder);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, ADD_SUBFOLDER);
             }
         });
     }
@@ -104,13 +107,20 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 2){
+        if(requestCode == ADD_SUBFOLDER){
 
             if(resultCode == RESULT_OK){
 
                 Folder childFolder = (Folder) data.getSerializableExtra("newFolder");
                 childFolders.add(childFolder);
             }
+        }
+        if(requestCode == EDIT_SUBFOLDER){
+
+            Folder changedSubFolder = (Folder) data.getSerializableExtra("changedFolder");
+            childFolders.remove(previewFolder);
+            childFolders.add(changedSubFolder);
+            folderAdapter.notifyDataSetChanged();
         }
     }
 
@@ -121,9 +131,11 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
             Intent intent = new Intent(this, FolderActivity.class);
 
-            intent.putExtra("folder", childFolders.get(position));
+            previewFolder = childFolders.get(position);
 
-            startActivity(intent);
+            intent.putExtra("folder", previewFolder);
+
+            startActivityForResult(intent, EDIT_SUBFOLDER);
 
         }
 
@@ -287,13 +299,27 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     }
 
     private void openEditDialog(){
-
         EditFolderFragment editFragment = new EditFolderFragment();
         Bundle args = new Bundle();
         args.putSerializable("folderToChange", mFolder);
         editFragment.setArguments(args);
-
         editFragment.show(getSupportFragmentManager(), "edit folder");
+    }
 
+    @Override
+    public void onFinishedEditDialog(int code, String name) {
+        if(code == 3){
+            mFolder.setName(name);
+            getSupportActionBar().setTitle(name);
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent();
+        intent.putExtra("changedFolder", mFolder);
+        setResult(RESULT_OK, intent);
     }
 }

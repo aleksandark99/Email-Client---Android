@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.email.R;
 import com.example.email.adapters.FoldersAdapter;
+import com.example.email.fragments.EditFolderFragment;
 import com.example.email.model.Folder;
 import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.repository.Repository;
@@ -40,6 +41,9 @@ import retrofit2.Retrofit;
 
 public class FoldersActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RecyclerClickListener {
 
+    private static final int ADD_FOLDER = 1;
+    private static final int EDIT_FOLDER = 2;
+
     DrawerLayout drawerLayout;
 
     NavigationView navigationView;
@@ -53,6 +57,8 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     FloatingActionButton btnAddFolder;
 
     ArrayList<Folder> folders;
+
+    Folder previewFolder;
 
 
     @Override
@@ -108,7 +114,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         btnAddFolder.setOnClickListener(v -> {
 
             Intent intent = new Intent(FoldersActivity.this, CreateFolderActivity.class);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, ADD_FOLDER);
 
         });
     }
@@ -117,13 +123,23 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1){
+        if(requestCode == ADD_FOLDER) {
 
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
 
                 Folder newFolder = (Folder) data.getSerializableExtra("newFolder");
                 folders.add(newFolder);
 
+            }
+        }
+        if(requestCode == EDIT_FOLDER){
+
+            if(resultCode == RESULT_OK){
+
+                Folder updatedFolder = (Folder) data.getSerializableExtra("changedFolder");
+                folders.remove(previewFolder);
+                folders.add(updatedFolder);
+                foldersAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -188,11 +204,11 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         Intent intent = new Intent(this, FolderActivity.class);
 
-        intent.putExtra("folder", folders.get(position));
+        previewFolder = folders.get(position);
 
-        System.out.println("INTENNNNNNNNNNNNNNNNNNNNNNNNNNNNNNT " + folders.get(position).getName());
+        intent.putExtra("folder", previewFolder);
 
-        startActivity(intent);
+        startActivityForResult(intent, EDIT_FOLDER);
 
     }
 
@@ -250,7 +266,5 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
 
     }
-
-
 
 }

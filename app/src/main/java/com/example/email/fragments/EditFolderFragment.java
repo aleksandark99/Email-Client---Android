@@ -1,6 +1,7 @@
 package com.example.email.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,10 +29,14 @@ import retrofit2.Retrofit;
 
 public class EditFolderFragment extends AppCompatDialogFragment {
 
+    private static final int EDIT_FOLDER_NAME = 3;
+
     private EditText txtFolderName;
     private Folder folderToChange;
     private Retrofit retrofit;
     private FolderService folderService;
+
+    public EditFolderNameDialogListener interfaceCommunicator;
 
     @NonNull
     @Override
@@ -86,7 +91,16 @@ public class EditFolderFragment extends AppCompatDialogFragment {
 
                                     //I must notify FolderActivity and then FoldersActivity about changes I have made
 
-                                    dismiss();
+                                    Folder updateFolder = response.body();
+
+                                    if(updateFolder == null){
+                                        Toast.makeText(getActivity(), "Choose different folder name!", Toast.LENGTH_SHORT).show();
+
+                                    }else{
+                                        interfaceCommunicator.onFinishedEditDialog(EDIT_FOLDER_NAME,  updateFolder.getName());
+                                        dismiss();
+                                    }
+
                                 }
 
                                 @Override
@@ -126,5 +140,22 @@ public class EditFolderFragment extends AppCompatDialogFragment {
         });
 
         alertDialog.show();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try{
+            interfaceCommunicator = (EditFolderNameDialogListener) context;
+
+        }catch(ClassCastException ex){
+
+            throw new ClassCastException(context.toString() + " must implement EditFolderNameDialogListener!");
+        }
+    }
+
+    public interface EditFolderNameDialogListener {
+        void onFinishedEditDialog(int code, String name);
     }
 }
