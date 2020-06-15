@@ -21,6 +21,7 @@ public class Message implements Serializable {
     private boolean unread;
     private ArrayList<Tag> tags;
     private ArrayList<Attachment> attachments;
+    private Account account;
 
     public Message(String testExample){
         this.cc = new ArrayList<String>();
@@ -29,6 +30,7 @@ public class Message implements Serializable {
         this.date = LocalDateTime.now();
         this.unread = false;
         this.tags = new ArrayList<Tag>();
+
 
     }
 
@@ -46,6 +48,13 @@ public class Message implements Serializable {
 
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
     public Message(long id, String from, ArrayList<String> to, ArrayList<String> cc, ArrayList<String> bcc, String subject, String content, LocalDateTime date, boolean unread, ArrayList<Tag> tags) {
         this.id = id;

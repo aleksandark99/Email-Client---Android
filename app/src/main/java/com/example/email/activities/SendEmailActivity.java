@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.model.Account;
 import com.example.email.model.Attachment;
 import com.example.email.model.Message;
 import com.example.email.model.Tag;
@@ -493,6 +494,10 @@ public class SendEmailActivity extends AppCompatActivity {
 
         Message newMessage = new Message("This constructor is only for test, this string doesn't do anything useful...");
 
+        Account account=Repository.activeAccount;
+
+        newMessage.setAccount(account);
+
         String from = ((Chip) chipGroupFrom.getChildAt(0)).getText().toString();  newMessage.setFrom(from);
 
         ArrayList<String> toAddress = extractArrayListFromChipGroup(chipGroupTo); newMessage.setTo(toAddress);
@@ -649,8 +654,12 @@ public class SendEmailActivity extends AppCompatActivity {
                     int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     cursor.moveToFirst();
                     Log.d("DDDD", cursor.getString(nameIndex));
+                    String base64Encoded = Base64.getEncoder().encodeToString(inputData);
+                    Log.d("DDDD", base64Encoded);
 
-                     Attachment attachment=new Attachment();
+
+
+                    Attachment attachment=new Attachment();
                      attachment.setData(inputData);
                      attachment.setMime_type(type);
                      attachment.setName( cursor.getString(nameIndex));
