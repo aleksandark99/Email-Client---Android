@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Set;
 
 public class Folder implements Serializable {
@@ -37,15 +36,20 @@ public class Folder implements Serializable {
     @Expose
     private Set<Rule> destination;
 
+    @SerializedName("isActive")
+    @Expose
+    private boolean isActive;
+
     public Folder(){}
 
-    public Folder(int id, String name, Folder parent_folder, Set<Folder> childFolders, Set<Message> messages, Set<Rule> destination) {
+    public Folder(int id, String name, Folder parent_folder, Set<Folder> childFolders, Set<Message> messages, Set<Rule> destination, boolean isActive) {
         this.id = id;
         this.name = name;
         this.parent_folder = parent_folder;
         this.childFolders = childFolders;
         this.messages = messages;
         this.destination = destination;
+        this.isActive = true;
     }
 
     public int getId() {
@@ -94,5 +98,13 @@ public class Folder implements Serializable {
 
     public void setDestination(Set<Rule> destination) {
         this.destination = destination;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
