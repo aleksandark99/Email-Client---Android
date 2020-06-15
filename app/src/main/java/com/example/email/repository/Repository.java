@@ -224,27 +224,27 @@ public class Repository {
         m4.setFrom("From person4");
         m5.setFrom("From person5");
         m6.setFrom("From person6");
-
-        ArrayList<Attachment> at1 = new ArrayList<>();
-        ArrayList<Attachment> at2 = new ArrayList<>();
-        ArrayList<Attachment> at3 = new ArrayList<>();
-        Attachment a1 = new Attachment("attachment1");
-        Attachment a2 = new Attachment("attachment3");
-        Attachment a3 = new Attachment("attachment2");
-        Attachment a4 = new Attachment("at1Slika");
-        Attachment a5 = new Attachment("pdfFile");
-        at1.add(a1);
-        at1.add(a5);
-
-        at2.add(a2);
-
-        at3.add(a2);
-        at3.add(a4);
-        at3.add(a3);
-
-        m1.setAttachments(at1);
-        m5.setAttachments(at3);
-        m3.setAttachments(at2);
+//
+//        ArrayList<Attachment> at1 = new ArrayList<>();
+//        ArrayList<Attachment> at2 = new ArrayList<>();
+//        ArrayList<Attachment> at3 = new ArrayList<>();
+//        Attachment a1 = new Attachment("attachment1");
+//        Attachment a2 = new Attachment("attachment3");
+//        Attachment a3 = new Attachment("attachment2");
+//        Attachment a4 = new Attachment("at1Slika");
+//        Attachment a5 = new Attachment("pdfFile");
+//        at1.add(a1);
+//        at1.add(a5);
+//
+//        at2.add(a2);
+//
+//        at3.add(a2);
+//        at3.add(a4);
+//        at3.add(a3);
+//
+//        m1.setAttachments(at1);
+//        m5.setAttachments(at3);
+//        m3.setAttachments(at2);
         m1.setId(1);
         m2.setId(2);
         m3.setId(3);

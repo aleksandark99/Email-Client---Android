@@ -50,6 +50,10 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private ArrayList<Message> folderMessages;
 
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

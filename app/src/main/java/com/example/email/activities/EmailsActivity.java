@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -106,6 +107,18 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         }
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(-1)) {
+                    Toast.makeText(EmailsActivity.this, "First", Toast.LENGTH_LONG).show();
+                    getAllMessagesForAccount(Helper.getActiveAccountId());
+                }
+            }
+        });
+
     }
 
     @Override
@@ -147,6 +160,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -186,27 +201,34 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             case R.id.contacts_item:
 
                 startActivity(new Intent(EmailsActivity.this, ContactsActivity.class));
+                emailsDrawerLayour.closeDrawer(Gravity.LEFT);
 
                 break;
 
             case R.id.settings_item:
 
                 startActivity(new Intent(EmailsActivity.this, SettingsActivity.class));
+                emailsDrawerLayour.closeDrawer(Gravity.LEFT);
 
                 break;
 
             case R.id.folders_item:
 
                 startActivity(new Intent(EmailsActivity.this, FoldersActivity.class));
+                emailsDrawerLayour.closeDrawer(Gravity.LEFT);
+
                 break;
 
             case R.id.profile_item:
 
                 startActivity(new Intent(this, ProfileActivity.class));
+                emailsDrawerLayour.closeDrawer(Gravity.LEFT);
 
                 break;
             case R.id.tags_item:
                 startActivity(new Intent(this, TagsActivity.class));
+                emailsDrawerLayour.closeDrawer(Gravity.LEFT);
+
                 break;
 
         }
@@ -242,4 +264,5 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     private void setMessages(ArrayList<Message> m){
         this.messages=m;
     }
+
 }

@@ -4,20 +4,28 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Instrumentation;
+import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.model.Attachment;
 import com.example.email.model.Message;
 import com.example.email.model.Tag;
 import com.example.email.repository.Repository;
@@ -26,8 +34,13 @@ import com.example.email.retrofit.message.MessageService;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -53,7 +66,10 @@ public class SendEmailActivity extends AppCompatActivity {
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final MessageService mMessageService = mRetrofit.create(MessageService.class);
 
+    private Uri URI;
+    private String dataString;
 
+    private Attachment a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -389,6 +405,7 @@ public class SendEmailActivity extends AppCompatActivity {
                 return true;
             case R.id.addAttachment:
                 Toast.makeText(this, "addAttachment", Toast.LENGTH_SHORT).show();
+                openFolder();
                 return true;
 
             case R.id.cancelEmail:
@@ -492,8 +509,9 @@ public class SendEmailActivity extends AppCompatActivity {
 
         newMessage.setDate(LocalDateTime.now()); newMessage.setUnread(false);
 
-
-
+        ArrayList<Attachment> aa=new ArrayList<Attachment>();
+        aa.add(a);
+        newMessage.setAttachments(aa);
         //Log.i("new messag", String.valueOf(newMessage));
 
 
@@ -586,8 +604,78 @@ public class SendEmailActivity extends AppCompatActivity {
         }
     }
 
+    public void openFolder() {
+        Intent intent = new Intent();
+        intent.setType("*/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.putExtra("return-data", true);
+        startActivityForResult(Intent.createChooser(intent, "Complete action using"), 10);
+    }
 
-}
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 101 && resultCode == RESULT_OK) {
+//            URI = data.getData();
+//            dataString = URI.getLastPathSegment();
+//            Log.d("SEE IF ATTSELCT WORKS", dataString);
+//
+//        }
+//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                             Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+        if (requestCode == 10
+                && resultCode == RESULT_OK) {
+            // The result data contains a URI for the document or directory that
+            // the user selected.
+            Uri uri = null;
+            byte[]  uriData=null;
+
+            if (resultData != null) {
+                uri = resultData.getData();
+                // Perform operations on the document using its URI.
+                try {
+                    InputStream iStream =   getContentResolver().openInputStream(uri);
+                    byte[] inputData = getBytes(iStream);
+                    Log.d("DDDD", Arrays.toString(Base64.getEncoder().encode(inputData)));
+
+                    Log.d("DDDD", String.valueOf(uri));
+                    ContentResolver cR = this.getContentResolver();
+                    MimeTypeMap mime = MimeTypeMap.getSingleton();
+                    String type = mime.getExtensionFromMimeType(cR.getType(uri));
+                    Log.d("DDDD", type);
+                    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    cursor.moveToFirst();
+                    Log.d("DDDD", cursor.getString(nameIndex));
+
+                     Attachment attachment=new Attachment();
+                     attachment.setData(inputData);
+                     attachment.setMime_type(type);
+                     attachment.setName( cursor.getString(nameIndex));
+                     a=attachment;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+        }
+    }
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+    }
 
 
 
