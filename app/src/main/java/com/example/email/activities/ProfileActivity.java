@@ -52,11 +52,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Button saveChanges, editAccounts;
 
-    private Spinner spinner;
+    public static Spinner spinner;
 
-    private ArrayAdapter<String> accountsAdapter;
+    public static ArrayAdapter<String> accountsAdapter;
 
-    private String[] emails;
+    public static String[] emails;
+
     int count=0;
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final UserService mUserService = mRetrofit.create(UserService.class);
@@ -90,7 +91,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (count >= 1){
                     if ( position != 0){
                         Repository.setNewActiveAccount(emails[position]);
                         //Write to shared pref
@@ -101,12 +101,15 @@ public class ProfileActivity extends AppCompatActivity {
                         editor.putInt(Repository.loggedUser.getUsername(), Repository.activeAccount.getId());
                         editor.apply();
                         mTextViewAccount.setText(emails[position]);
-                    } else{
+                    } else if (position == 0){
                         Repository.activeAccount = null;
+                        SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.remove(Repository.loggedUser.getUsername());
+                        editor.commit();
                         mTextViewAccount.setText(R.string.choose_account);
                     }
-                }
-                count++;
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -214,18 +217,18 @@ public class ProfileActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private String[] getStringArray(){
+    public  static String[] getStringArray(){
         String[] arr = new String[Repository.loggedUser.getAccounts().size()+1];
         arr[0] = "No account selected";
         int index = 1;
         for (Account a : Repository.loggedUser.getAccounts()){
             arr[index] = a.getUsername();
-            index++;
+            index=index+1;
         }
         return arr;
     }
 
-    private int findPositionOfActiveAccount(){
+    public static int findPositionOfActiveAccount(){
         if (Repository.activeAccount == null) return 0;
         for (int i = 0; i<emails.length; i++){
             if (emails[i].equals(Repository.activeAccount.getUsername())) return i;
@@ -235,15 +238,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        Log.i("TAG", "onResume: pozzziv");
         super.onResume();
-        emails = getStringArray();
-        accountsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, emails);
-        accountsAdapter.notifyDataSetChanged();
-        spinner.setAdapter(accountsAdapter);
-        count = 0;
+
         if (Repository.activeAccount != null){
             //set appropriate value in spinner
-           spinner.setSelection(findPositionOfActiveAccount());
+            spinner.setSelection(findPositionOfActiveAccount());
         } else mTextViewAccount.setText("Please choose an account!");
     }
+
+
 }
