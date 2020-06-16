@@ -20,18 +20,30 @@
         android:layout_margin="5dp"/>
 
     <TextView
-        android:id="@+id/textView4"
-        android:layout_width="139dp"
-        android:layout_height="23dp"
+        android:id="@+id/attachmentNameId"
         android:layout_marginTop="19dp"
-        android:layout_marginEnd="191dp"
-        android:layout_marginBottom="22dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="55dp"
+        android:layout_height="22dp"
         android:singleLine="true"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_width="wrap_content" />
+
+    <ImageView
+        android:id="@+id/x_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/x_for_attachment" />
 </androidx.constraintlayout.widget.ConstraintLayout>
