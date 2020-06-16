@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,13 +24,21 @@ import com.example.email.adapters.FolderAdapter;
 import com.example.email.fragments.EditFolderFragment;
 import com.example.email.model.Folder;
 import com.example.email.model.Message;
-import com.example.email.model.Rule;
 import com.example.email.model.interfaces.RecyclerClickListener;
-import com.example.email.model.Tag;
 import com.example.email.repository.Repository;
+import com.example.email.retrofit.RetrofitClient;
+import com.example.email.retrofit.folders.FolderService;
+import com.example.email.utility.Helper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Set;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class FolderActivity extends AppCompatActivity implements RecyclerClickListener, EditFolderFragment.EditFolderNameDialogListener {
 
@@ -52,8 +61,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private ArrayList<Message> folderMessages;
 
-
-
+    private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
+    private final FolderService folderService = mRetrofit.create(FolderService.class);
 
 
     @Override
@@ -88,13 +97,14 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
             }
         });
 
-        childFolders = new ArrayList<>(mFolder.getChildFolders());
+        //childFolders = new ArrayList<>(mFolder.getChildFolders());
 
         folderMessages = new ArrayList<>(mFolder.getMessages());
 
-        folderAdapter = new FolderAdapter(this, childFolders, folderMessages, this);
-
-        recyclerView.setAdapter(folderAdapter);
+        folderAdapter = new FolderAdapter(this, folderMessages, this);
+        loadChildFolders(mFolder.getId());
+        //folderAdapter.setData(childFolders);
+        //recyclerView.setAdapter(folderAdapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -127,6 +137,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
             childFolders.remove(previewFolder);
             childFolders.add(changedSubFolder);
             folderAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -180,6 +191,19 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         });
 
+    }
+
+    @Override
+    public void onDeleteClick(View view, int position) {
+
+        int folder_id = childFolders.get(position).getId();
+
+        openDeleteDialog(folder_id, position);
+    }
+
+    private void removeItem(int position){
+        childFolders.remove(position);
+        folderAdapter.notifyItemRemoved(position);
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -287,7 +311,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         switch(item.getItemId()){
 
-            case R.id.delete_folder_item:
+            case R.id.add_rule_item:
 
                 return true;
 
@@ -308,6 +332,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         EditFolderFragment editFragment = new EditFolderFragment();
         Bundle args = new Bundle();
         args.putSerializable("folderToChange", mFolder);
+        System.out.println("PRE POZIVANJA FRAGMENTA " + mFolder.isActive());
         editFragment.setArguments(args);
         editFragment.show(getSupportFragmentManager(), "edit folder");
     }
@@ -324,17 +349,19 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     @Override
     protected void onResume() {
         super.onResume();
+        loadChildFolders(mFolder.getId());
         Intent intent = new Intent();
         intent.putExtra("changedFolder", mFolder);
         setResult(RESULT_OK, intent);
     }
 
-    private void openDeleteDialog(Folder folderToDelete){
+
+    private void openDeleteDialog(int folder_id, int position){
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
         alertDialog.setTitle("Confirm");
-        alertDialog.setMessage("Are you sure you want to delete" + folderToDelete.getName() + "folder?");
+        alertDialog.setMessage("Are you sure you want to delete folder?");
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -344,10 +371,60 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                
+
+                int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
+
+                Call<ResponseBody> call = folderService.deleteFolder(folder_id, acc_id, Repository.jwt);
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        if (!response.isSuccessful()) {
+                            Log.i("Some error happened during folder delete!", String.valueOf(response.code()));
+                            return;
+                        }
+                        if (response.code() == 200) {
+                            removeItem(position);
+                            Toast.makeText(getApplicationContext(), "You successfully delete folder!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+                    }
+                });
+                alertDialog.dismiss();
             }
         });
+        alertDialog.show();
+    }
 
+    private void loadChildFolders(int parent_folder_id){
 
+        int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
+
+        Call<Set<Folder>> call = folderService.getSubFoldersByAccount(acc_id, parent_folder_id, Repository.jwt);
+
+        call.enqueue(new Callback<Set<Folder>>() {
+            @Override
+            public void onResponse(Call<Set<Folder>> call, Response<Set<Folder>> response) {
+
+                if (!response.isSuccessful()) {
+                    Log.i("ERROR: ", String.valueOf(response.code()));
+                    return;
+                }
+
+                childFolders = new ArrayList<>(response.body());
+                folderAdapter.setData(childFolders);
+                recyclerView.setAdapter(folderAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<Set<Folder>> call, Throwable t) {
+                Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+            }
+        });
     }
 }

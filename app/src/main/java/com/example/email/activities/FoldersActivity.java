@@ -3,6 +3,7 @@ package com.example.email.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -10,17 +11,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.email.R;
 import com.example.email.adapters.FoldersAdapter;
-import com.example.email.fragments.EditFolderFragment;
 import com.example.email.model.Folder;
 import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.repository.Repository;
@@ -34,6 +36,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.Set;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +46,10 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
     private static final int ADD_FOLDER = 1;
     private static final int EDIT_FOLDER = 2;
+
+    private Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+
+    private FolderService folderService = retrofit.create(FolderService.class);
 
     DrawerLayout drawerLayout;
 
@@ -137,12 +144,15 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             if(resultCode == RESULT_OK){
 
                 Folder updatedFolder = (Folder) data.getSerializableExtra("changedFolder");
+
                 folders.remove(previewFolder);
                 folders.add(updatedFolder);
                 foldersAdapter.notifyDataSetChanged();
+
             }
         }
     }
+
 
     @Override
     public void onBackPressed() {
@@ -206,6 +216,8 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         previewFolder = folders.get(position);
 
+        System.out.println("Folders activity active item " + previewFolder.isActive());
+
         intent.putExtra("folder", previewFolder);
 
         startActivityForResult(intent, EDIT_FOLDER);
@@ -225,12 +237,20 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         });
     }
 
+    @Override
+    public void onDeleteClick(View view, int position) {
+
+        int folder_id = folders.get(position).getId();
+        openDeleteDialog(folder_id, position);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fillFoldersData();
+    }
 
     private void fillFoldersData(){
-
-        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
-
-        FolderService folderService = retrofit.create(FolderService.class);
 
         int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
 
@@ -262,9 +282,56 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
                 Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
             }
         });
-
-
-
     }
 
+    private void openDeleteDialog(int folder_id, int position){
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        alertDialog.setTitle("Confirm");
+        alertDialog.setMessage("Are you sure you want to delete folder?");
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
+
+                Call<ResponseBody> call = folderService.deleteFolder(folder_id, acc_id, Repository.jwt);
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        if (!response.isSuccessful()) {
+                            Log.i("Some error happened during folder delete!", String.valueOf(response.code()));
+                            return;
+                        }
+                        if (response.code() == 200) {
+                            removeItem(position);
+                            Toast.makeText(getApplicationContext(), "You successfully delete folder!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+                    }
+                });
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+
+    private void removeItem(int position){
+        folders.remove(position);
+        foldersAdapter.notifyItemRemoved(position);
+    }
 }

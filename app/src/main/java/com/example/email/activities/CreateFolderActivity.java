@@ -80,6 +80,7 @@ public class CreateFolderActivity extends AppCompatActivity {
                     }
 
                     newFolder.setName(folderName);
+                    newFolder.setActive(true);
                     newFolder.setParent_folder(parentFolder);
 
                     Call<Folder> call = folderService.createFolder(newFolder, acc_id, Repository.jwt);

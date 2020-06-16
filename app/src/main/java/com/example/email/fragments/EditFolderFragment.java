@@ -120,6 +120,7 @@ public class EditFolderFragment extends AppCompatDialogFragment {
 
         folderToChange = (Folder) getArguments().getSerializable("folderToChange");
 
+
         txtFolderName.setText(folderToChange.getName());
 
         return builder.create();

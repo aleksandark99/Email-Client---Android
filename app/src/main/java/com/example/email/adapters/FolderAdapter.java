@@ -31,14 +31,19 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private RecyclerClickListener recyclerClickListener;
 
 
-    public FolderAdapter(Context ctx, ArrayList<Folder> childFolders, ArrayList<Message> folderMessages, RecyclerClickListener listener) {
+    public FolderAdapter(Context ctx, ArrayList<Message> folderMessages, RecyclerClickListener listener) {
 
         context = ctx;
-        folders = childFolders;
         messages = folderMessages;
         recyclerClickListener = listener;
 
     }
+
+    public void setData(ArrayList<Folder> subFolders){
+        folders = subFolders;
+    }
+
+    public ArrayList<Folder> getSubFolders(){return folders;}
 
 
     @NonNull
@@ -131,7 +136,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         TextView fNameView, mCountView;
 
-        ImageView folderImage;
+        ImageView folderImage, deleteImage;
 
         RecyclerClickListener recyclerClickListener;
 
@@ -141,11 +146,25 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             fNameView = itemView.findViewById(R.id.tv_folder_name);
             mCountView = itemView.findViewById(R.id.tv_mCount);
             folderImage = itemView.findViewById(R.id.imageFolder);
+            deleteImage = itemView.findViewById(R.id.imageDeleteFolder);
 
             recyclerClickListener = listener;
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
+
+            deleteImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(recyclerClickListener != null){
+                        int position = getLayoutPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            recyclerClickListener.onDeleteClick(itemView, position);
+                        }
+
+                    }
+                }
+            });
         }
 
         private void setFolderDetails(Folder folder){

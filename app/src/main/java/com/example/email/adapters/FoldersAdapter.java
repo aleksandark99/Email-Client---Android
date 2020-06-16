@@ -62,6 +62,12 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
         holder.fNameView.setText(folders.get(position).getName());
         holder.mCountView.setText(messageCount + foldersCount  + "");
         holder.folderImage.setImageResource(R.drawable.ic_folder_purple);
+
+        String folderName = folders.get(position).getName();
+        if(folderName.equals("Drafts") || folderName.equals("Sent") ||
+                folderName.equals("Trash") || folderName.equals("Favorites")){
+            holder.deleteImage.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -76,7 +82,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
 
         TextView fNameView, mCountView;
 
-        ImageView folderImage;
+        ImageView folderImage, deleteImage;
 
         RecyclerClickListener recyclerClickListener;
 
@@ -87,10 +93,23 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
             fNameView = itemview.findViewById(R.id.tv_folder_name);
             mCountView = itemview.findViewById(R.id.tv_mCount);
             folderImage = itemview.findViewById(R.id.imageFolder);
+            deleteImage = itemview.findViewById(R.id.imageDeleteFolder);
             recyclerClickListener = listener;
 
             itemview.setOnClickListener(this);
             itemview.setOnLongClickListener(this);
+
+            deleteImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(recyclerClickListener != null){
+                        int position = getLayoutPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            recyclerClickListener.onDeleteClick(itemview, position);
+                        }
+                    }
+                }
+            });
         }
 
 

@@ -36,7 +36,7 @@ public class Folder implements Serializable {
     @Expose
     private Set<Rule> destination;
 
-    @SerializedName("isActive")
+    @SerializedName("active")
     @Expose
     private boolean isActive;
 
@@ -49,7 +49,7 @@ public class Folder implements Serializable {
         this.childFolders = childFolders;
         this.messages = messages;
         this.destination = destination;
-        this.isActive = true;
+        this.isActive = isActive;
     }
 
     public int getId() {
