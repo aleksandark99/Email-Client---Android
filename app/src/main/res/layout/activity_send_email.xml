@@ -324,5 +324,10 @@
 
         </com.google.android.material.chip.ChipGroup>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_attachmentsSend"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

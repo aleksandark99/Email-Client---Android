@@ -3,6 +3,8 @@ package com.example.email.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Instrumentation;
 import android.content.ContentResolver;
@@ -25,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.adapters.AttachmentAdapter;
 import com.example.email.model.Account;
 import com.example.email.model.Attachment;
 import com.example.email.model.Message;
@@ -70,11 +73,17 @@ public class SendEmailActivity extends AppCompatActivity {
     private Uri URI;
     private String dataString;
 
+    private RecyclerView recyclerView;
+    private AttachmentAdapter attachmentAdapter;
+
     private Attachment a;
+
+    private ArrayList<Attachment> attachments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        attachments=new ArrayList<Attachment>();
         setContentView(R.layout.activity_send_email);
         cc=findViewById(R.id.ccSendEmail);
         bcc=findViewById(R.id.bccSendEmail);
@@ -299,6 +308,10 @@ public class SendEmailActivity extends AppCompatActivity {
 
         //setData();
 
+        recyclerView=findViewById(R.id.recycler_view_attachmentsSend);
+        attachmentAdapter=new AttachmentAdapter(attachments,this);
+        recyclerView.setAdapter(attachmentAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
     }
@@ -407,10 +420,12 @@ public class SendEmailActivity extends AppCompatActivity {
             case R.id.addAttachment:
                 Toast.makeText(this, "addAttachment", Toast.LENGTH_SHORT).show();
                 openFolder();
+
                 return true;
 
             case R.id.cancelEmail:
                 Toast.makeText(this, "cancelEmail", Toast.LENGTH_SHORT).show();
+                Log.d("DDD", String.valueOf(attachmentAdapter.getAttachments().size()));
                 return true;
 
             case R.id.sendEmailConfirm:
@@ -615,6 +630,7 @@ public class SendEmailActivity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.putExtra("return-data", true);
         startActivityForResult(Intent.createChooser(intent, "Complete action using"), 10);
+
     }
 
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -664,6 +680,10 @@ public class SendEmailActivity extends AppCompatActivity {
                      attachment.setMime_type(type);
                      attachment.setName( cursor.getString(nameIndex));
                      a=attachment;
+                     attachments.add(attachment);
+                     attachmentAdapter.notifyDataSetChanged();
+//                     attachmentAdapter.setData(attachments);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
