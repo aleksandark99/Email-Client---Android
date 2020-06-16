@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.email.R;
+import com.example.email.activities.ProfileActivity;
 import com.example.email.model.Account;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
@@ -188,8 +190,10 @@ public class AccountFragment extends Fragment {
                                 Toast.makeText(getActivity(), "Please choose different email address!", Toast.LENGTH_SHORT).show();
                             } else{
                                 Repository.loggedUser.getAccounts().remove(mAccount);
+                                if (Repository.activeAccount != null && updatedAcc.getId() == Repository.activeAccount.getId()) Repository.activeAccount = updatedAcc;
                                 Repository.loggedUser.getAccounts().add(updatedAcc);
                                 Toast.makeText(getActivity(), "Account updated", Toast.LENGTH_LONG).show();
+                                fillAdapter();
                                 //getActivity().getSupportFragmentManager().beginTransaction().remove(AccountFragment.this).commit();
                                 getActivity().finish();
                             }
@@ -224,15 +228,12 @@ public class AccountFragment extends Fragment {
                         }
                         if (response.code() == 200){
                             Repository.loggedUser.getAccounts().remove(mAccount);
-                            //Repository.removeAccountById(mAccount.getId());
                             Toast.makeText(getActivity(), "Account deleted!", Toast.LENGTH_LONG).show();
-                            //Toast.makeText(getActivity(), "Velicina accounta" + Repository.loggedUser.getAccounts().size(), Toast.LENGTH_LONG).show();
-                            //if deleted account was active account
-                            if (mAccount.getId() == Repository.activeAccount.getId()){
-                                Log.i("usaooooo", "asfaf");
+                            if (Repository.activeAccount != null && mAccount.getId() == Repository.activeAccount.getId()) {
                                 Repository.activeAccount = null;
                                 Repository.getSharedPreferences(getActivity().getApplicationContext()).edit().remove(mAccount.getUsername()).apply();
                             }
+                            fillAdapter();
                             getActivity().finish();
                         }else Toast.makeText(getActivity(), "Account is not deleted, error on server!", Toast.LENGTH_SHORT).show();
 
@@ -281,7 +282,6 @@ public class AccountFragment extends Fragment {
                getActivity().finish();
             }
         });
-
 
         return  rootView;
     }
@@ -423,4 +423,15 @@ public class AccountFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    private void fillAdapter(){
+        String[] arr = ProfileActivity.getStringArray();
+        ProfileActivity.emails = arr;
+        ProfileActivity.accountsAdapter  = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, arr);
+        ProfileActivity.spinner.setAdapter(ProfileActivity.accountsAdapter);
+        ProfileActivity.accountsAdapter.notifyDataSetChanged();
+        ProfileActivity.spinner.setSelection(ProfileActivity.findPositionOfActiveAccount(), false);
+
+    }
+
 }

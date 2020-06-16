@@ -96,7 +96,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
 
         mContactsAdapter = new ContactsAdapter(this);
 
-        fetchAllContacts();
+        //fetchAllContacts();
     }
 
     @Override

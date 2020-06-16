@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -22,10 +23,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.email.R;
+import com.example.email.activities.ProfileActivity;
 import com.example.email.model.Account;
+import com.example.email.model.Attachment;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.account.AccountService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,7 +52,6 @@ public class AddAccountFragment extends DialogFragment {
 
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final AccountService mAccountService = mRetrofit.create(AccountService.class);
-
 
     public AddAccountFragment(){}
 
@@ -179,7 +184,9 @@ public class AddAccountFragment extends DialogFragment {
                                 Toast.makeText(getActivity(), "Please choose different email address!", Toast.LENGTH_SHORT).show();
                             } else{
                                 Repository.loggedUser.getAccounts().add(newAcc);
-                                Toast.makeText(getActivity(), "Account saved", Toast.LENGTH_LONG).show();
+                                Log.d("ukupan broj acc", String.valueOf(Repository.loggedUser.getAccounts().size()));
+                                fillAdapter();
+                                Toast.makeText(getActivity(), "Account saved!", Toast.LENGTH_LONG).show();
                                 getActivity().getSupportFragmentManager().beginTransaction().remove(AddAccountFragment.this).commit();
                             }
                         }
@@ -357,5 +364,16 @@ public class AddAccountFragment extends DialogFragment {
 
     private boolean isWhitespacesOnly(String text){
         return text.trim().isEmpty();
+    }
+
+    private void fillAdapter(){
+        String[] arr = ProfileActivity.getStringArray();
+        ProfileActivity.emails = arr;
+        ProfileActivity.accountsAdapter  = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, arr);
+        ProfileActivity.spinner.setAdapter(ProfileActivity.accountsAdapter);
+        ProfileActivity.accountsAdapter.notifyDataSetChanged();
+        ProfileActivity.spinner.setSelection(ProfileActivity.findPositionOfActiveAccount(), false);
+
+
     }
 }
