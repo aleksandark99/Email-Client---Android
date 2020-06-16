@@ -529,12 +529,8 @@ public class SendEmailActivity extends AppCompatActivity {
 
         newMessage.setDate(LocalDateTime.now()); newMessage.setUnread(false);
 
-        /*ArrayList<Attachment> aa=new ArrayList<Attachment>();
-        aa.add(a);
-        newMessage.setAttachments(aa);*/
-        //Log.i("new messag", String.valueOf(newMessage));
-
-
+        newMessage.setAttachments(attachmentAdapter.getAttachments());
+        
         return newMessage;
     }
 
