@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.FolderAdapter;
+import com.example.email.adapters.FoldersAdapter;
 import com.example.email.fragments.EditFolderFragment;
 import com.example.email.model.Folder;
 import com.example.email.model.Message;
@@ -44,6 +45,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private static final int ADD_SUBFOLDER = 3;
     private static final int EDIT_SUBFOLDER = 4;
+    private static final int EDIT_OK = 3;
 
     private Toolbar toolbar;
 
@@ -161,35 +163,25 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     @Override
     public void OnLongItemClick(View view, int position) {
 
+        if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_EMAIL) {
 
-        view.setOnLongClickListener(new View.OnLongClickListener() {
+            view.setOnLongClickListener(new View.OnLongClickListener() {
 
-            @Override
-            public boolean onLongClick(View v) {
+                @Override
+                public boolean onLongClick(View v) {
 
-                if(mActionMode != null){
+                    if (mActionMode != null) {
 
-                    return false;
+                        return false;
+                    }
+
+                    mActionMode = startSupportActionMode(mActionModeCallback);
+
+                    return true;
                 }
 
-                mActionMode = startSupportActionMode(mActionModeCallback);
-
-                Menu actionMenu = mActionMode.getMenu();
-
-                if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_FOLDER){
-
-                    actionMenu.findItem(R.id.action_mode_move).setVisible(false);
-                    actionMenu.findItem(R.id.action_mode_copy).setVisible(false);
-
-                }else if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_EMAIL){
-
-                    actionMenu.findItem(R.id.action_mode_add_rule).setVisible(false);
-                }
-
-                return true;
-            }
-
-        });
+            });
+        }
 
     }
 
@@ -253,15 +245,6 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
                     return true;
 
-                case R.id.action_mode_add_rule:
-
-                    Intent intent = new Intent(FolderActivity.this, CreateRulesActivity.class);
-
-                    startActivity(intent);
-
-                    mode.finish();
-
-                    return true;
 
                 default: return false;
             }
@@ -339,7 +322,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     @Override
     public void onFinishedEditDialog(int code, String name) {
-        if(code == 3){
+        if(code == EDIT_OK){
             mFolder.setName(name);
             getSupportActionBar().setTitle(name);
         }
