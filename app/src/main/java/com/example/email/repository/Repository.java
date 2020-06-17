@@ -303,4 +303,12 @@ public class Repository {
     public static Tag findTagById(int id){
         return loggedUser.getTags().stream().filter(t -> t.getId() == id).findFirst().orElse(null);
     }
+
+    public static Integer findIdOfSendingAccoount(String email){
+        return loggedUser.getAccounts()
+                .stream()
+                .filter(acc -> acc.getUsername().equals(email))
+                .findFirst().map(acc-> acc.getId())
+                .orElse(-1);
+    }
 }

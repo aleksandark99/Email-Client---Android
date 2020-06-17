@@ -559,7 +559,7 @@ public class SendEmailActivity extends AppCompatActivity {
 
 
     private void sendMessage(Message newMessage){
-        Call<Boolean> call = mMessageService.sendNewMessage(newMessage, Repository.activeAccount.getId(), Repository.jwt);
+        Call<Boolean> call = mMessageService.sendNewMessage(newMessage, Repository.findIdOfSendingAccoount(((Chip) chipGroupFrom.getChildAt(0)).getText().toString()), Repository.jwt);
 
         call.enqueue(new Callback<Boolean>() {
 
@@ -700,7 +700,15 @@ public class SendEmailActivity extends AppCompatActivity {
         }
         return byteBuffer.toByteArray();
     }
-    }
+
+
+
+
+
+
+
+
+}
 
 
 

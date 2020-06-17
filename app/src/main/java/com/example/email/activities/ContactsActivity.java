@@ -108,7 +108,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (Repository.loggedUserHaveAccount()){
+        if (Repository.loggedUser.getAccounts().isEmpty()){
             Toast.makeText(this, "Please create at least one account!", Toast.LENGTH_LONG).show();
             return true;
         } else {
