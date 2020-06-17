@@ -296,6 +296,10 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
             case R.id.add_rule_item:
 
+                Intent intent = new Intent(this, CreateRulesActivity.class);
+                intent.putExtra("folder_id", mFolder.getId());
+                startActivity(intent);
+
                 return true;
 
             case R.id.edit_folder_item:

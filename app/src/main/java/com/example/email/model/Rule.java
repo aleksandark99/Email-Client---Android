@@ -21,13 +21,23 @@ public class Rule implements Serializable {
     @Expose
     private ECondition condition;
 
+    @SerializedName("value")
+    @Expose
+    private String value;
+
+    @SerializedName("active")
+    @Expose
+    private boolean active;
+
 
     public Rule() {}
 
-    public Rule(int id, EOperation operation, ECondition condition) {
+    public Rule(int id, EOperation operation, ECondition condition, String value, boolean active) {
         this.id = id;
         this.operation = operation;
         this.condition = condition;
+        this.value = value;
+        this.active = active;
     }
 
     public int getId() {
@@ -52,5 +62,13 @@ public class Rule implements Serializable {
 
     public void setCondition(ECondition condition) {
         this.condition = condition;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

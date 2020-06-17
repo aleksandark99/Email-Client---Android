@@ -20,10 +20,14 @@ public class CreateRulesActivity extends AppCompatActivity {
     TabItem moveItem, deleteItem;
     RulePagerAdapter pagerAdapter;
 
+    private int folder_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_rules);
+
+        folder_id = getIntent().getIntExtra("folder_id", 0);
 
         toolbar = findViewById(R.id.add_rule_toolbar);
         setSupportActionBar(toolbar);
@@ -36,6 +40,7 @@ public class CreateRulesActivity extends AppCompatActivity {
         deleteItem = findViewById(R.id.tab_delete);
 
         pagerAdapter = new RulePagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, mTabLayout.getTabCount());
+        pagerAdapter.setFolderId(folder_id);
         pager.setAdapter(pagerAdapter);
 
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
