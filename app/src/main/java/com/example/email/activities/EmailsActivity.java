@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -113,7 +114,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(-1)) {
-                    Toast.makeText(EmailsActivity.this, "First", Toast.LENGTH_LONG).show();
+              //      Toast.makeText(EmailsActivity.this, "First", Toast.LENGTH_LONG).show();
                     getAllMessagesForAccount(Helper.getActiveAccountId());
                 }
             }
@@ -246,6 +247,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
                 if (response.code() == 200){
+
                     emailsAdapter.setData(new ArrayList<>((Set<Message>) response.body()));
                     recyclerView.setAdapter(emailsAdapter);
                     setMessages(new ArrayList<>((Set<Message>) response.body()));
@@ -255,6 +257,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onFailure(Call<Set<Message>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Eror PRILIKOM preuzimanja poruka POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
+                Log.d("SSS",t.getMessage());
 
             }
         });

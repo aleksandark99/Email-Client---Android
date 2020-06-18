@@ -4,15 +4,22 @@ import java.io.Serializable;
 
 public class Attachment implements Serializable {
     private String name;
-    private byte[]  data;
+   // private byte[]  data;
     private String mime_type;
 
+    private String data;
 
-    public Attachment(String name, byte[] data, String mime_type) {
+    public Attachment(String name, String mime_type, String data) {
         this.name = name;
-        this.data = data;
         this.mime_type = mime_type;
+        this.data = data;
     }
+
+    //    public Attachment(String name, byte[] data, String mime_type) {
+//        this.name = name;
+//        this.data = data;
+//        this.mime_type = mime_type;
+//    }
     public Attachment(){}
 
     public String getName() {
@@ -23,11 +30,20 @@ public class Attachment implements Serializable {
         this.name = name;
     }
 
-    public byte[] getData() {
+//    public byte[] getData() {
+//        return data;
+//    }
+//
+//    public void setData(byte[] data) {
+//        this.data = data;
+//    }
+
+
+    public String getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public void setData(String data) {
         this.data = data;
     }
 

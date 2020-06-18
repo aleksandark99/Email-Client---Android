@@ -104,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         usernameEditText.setText(""); passwordEditText.setText("");
                         Log.i("USER",Repository.loggedUser.toString());
+
                         startActivity(goToEmailsIntent);
 
                     }

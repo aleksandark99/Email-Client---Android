@@ -3,6 +3,8 @@ package com.example.email.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -18,6 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.adapters.AttachmentAdapter;
+import com.example.email.adapters.EmailAttachmentAdapter;
+import com.example.email.model.Attachment;
 import com.example.email.model.Message;
 import com.example.email.model.Tag;
 import com.google.android.material.chip.Chip;
@@ -37,6 +42,10 @@ public class EmailActivity extends AppCompatActivity {
     LinearLayout detailToTexts,toLongLinearLayout,ccLongLinearLayout;
     Button replyAll,reply,forward;
     ImageView arrowIcon;
+    ArrayList<Attachment> attachments;
+
+    private RecyclerView recyclerView;
+    private EmailAttachmentAdapter attachmentAdapter;
 
     ChipGroup chipGroup;
 
@@ -61,6 +70,13 @@ public class EmailActivity extends AppCompatActivity {
         ccLongLinearLayout = findViewById(R.id.ccLongLinearLayout);
         getData();
         setData();
+
+        recyclerView=findViewById(R.id.email_attachment_recycler);
+        attachmentAdapter= new EmailAttachmentAdapter(attachments,this);
+        recyclerView.setAdapter(attachmentAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
 
         reply=findViewById(R.id.replyButton);
         replyAll=findViewById(R.id.replyAllButton);
@@ -162,6 +178,7 @@ public class EmailActivity extends AppCompatActivity {
             //dateString=
             contentString=m.getContent();
             To=m.getTo().get(0);
+            attachments=m.getAttachments();
 
         }else{
             Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();

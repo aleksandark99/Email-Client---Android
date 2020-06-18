@@ -221,8 +221,9 @@ public class ContactFragment extends Fragment {
             String picturePath = Helper.getPicturePath(selectedImageUri, getActivity());
 
             Helper.displayImageIntoImageView(picturePath, mPhotoView, getActivity());
-
             filePath = picturePath;
+            Repository.get(getContext()).findContactByEmail(editTextBoxEmail.getText().toString()).setPhotoPath(filePath);
+
         }
     }
 
