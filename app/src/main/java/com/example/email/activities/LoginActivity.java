@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             /////test ovo neaaaaffffffffff
             if (isWhitespacesOnly(username) || isWhitespacesOnly(password)){
                 Toast.makeText(getApplicationContext(), "Credentials cannot be whitespaces", Toast.LENGTH_SHORT).show();
-                startActivity(goToEmailsIntent);
+                //startActivity(goToEmailsIntent);
 
             } else {
                 //call backend
@@ -93,12 +93,12 @@ public class LoginActivity extends AppCompatActivity {
                         //extract user & token
                         LoginResponse r = response.body();
                         //setujemo ulogovanog user-a i token za njega
-                        //Repository.loggedUser = r.getUser();
-                        loggedUser = r.getUser();
+                        Repository.loggedUser = r.getUser();
+                        //loggedUser = r.getUser();
                         //Log.i("TAG", "USEEER: " + String.valueOf(r.getUser()));
                         String authToken =  "Bearer " + r.getJwt();
-                       // Repository.jwt = authToken;
-                        token = authToken;
+                        Repository.jwt = authToken;
+                        //token = authToken;
 
                         //set previous account if exists
                         SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
@@ -160,15 +160,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Repository.loggedUser == null){
-            Repository.loggedUser = loggedUser;
-            Repository.jwt = token;
-        } else {
-            //Repository.loggedUser != null
+        if (Repository.loggedUser != null){
             Repository.loggedUser = null;
             Repository.jwt = null;
-            loggedUser = null;
-            token = null;
+            Repository.activeAccount = null;
         }
     }
 
