@@ -37,9 +37,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private String username, password;
 
-    private User loggedUser;
-    private String token;
-
     private Button LoginButton, Register;
     private EditText usernameEditText, passwordEditText;
     @Override
@@ -50,9 +47,6 @@ public class LoginActivity extends AppCompatActivity {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         //____________________________________________________________________________________
-
-        //Repository.loggedUser = null;
-        //Repository.jwt = null;
 
         usernameEditText = findViewById(R.id.usernameFiled); passwordEditText = findViewById(R.id.passwordField);
 
@@ -76,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
             /////test ovo neaaaaffffffffff
             if (isWhitespacesOnly(username) || isWhitespacesOnly(password)){
                 Toast.makeText(getApplicationContext(), "Credentials cannot be whitespaces", Toast.LENGTH_SHORT).show();
-                //startActivity(goToEmailsIntent);
 
             } else {
                 //call backend
@@ -94,11 +87,9 @@ public class LoginActivity extends AppCompatActivity {
                         LoginResponse r = response.body();
                         //setujemo ulogovanog user-a i token za njega
                         Repository.loggedUser = r.getUser();
-                        //loggedUser = r.getUser();
-                        //Log.i("TAG", "USEEER: " + String.valueOf(r.getUser()));
                         String authToken =  "Bearer " + r.getJwt();
                         Repository.jwt = authToken;
-                        //token = authToken;
+
 
                         //set previous account if exists
                         SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
@@ -107,7 +98,6 @@ public class LoginActivity extends AppCompatActivity {
                         if (idOfLastUsedAccount != -1) Repository.setActiveAccountForLoginActivity(idOfLastUsedAccount);
 
                         //welcome toast
-
                         usernameEditText.setText(""); passwordEditText.setText("");
                         Log.i("USER",Repository.loggedUser.toString());
 
