@@ -19,6 +19,7 @@ import com.example.email.R;
 import com.example.email.model.Account;
 import com.example.email.model.Login;
 import com.example.email.model.LoginResponse;
+import com.example.email.model.User;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.login.LoginService;
@@ -36,6 +37,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private String username, password;
 
+    private User loggedUser;
+    private String token;
+
     private Button LoginButton, Register;
     private EditText usernameEditText, passwordEditText;
     @Override
@@ -47,8 +51,8 @@ public class LoginActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         //____________________________________________________________________________________
 
-        Repository.loggedUser = null;
-        Repository.jwt = null;
+        //Repository.loggedUser = null;
+        //Repository.jwt = null;
 
         usernameEditText = findViewById(R.id.usernameFiled); passwordEditText = findViewById(R.id.passwordField);
 
@@ -89,10 +93,12 @@ public class LoginActivity extends AppCompatActivity {
                         //extract user & token
                         LoginResponse r = response.body();
                         //setujemo ulogovanog user-a i token za njega
-                        Repository.loggedUser = r.getUser();
-                        Log.i("TAG", "USEEER: " + String.valueOf(r.getUser()));
+                        //Repository.loggedUser = r.getUser();
+                        loggedUser = r.getUser();
+                        //Log.i("TAG", "USEEER: " + String.valueOf(r.getUser()));
                         String authToken =  "Bearer " + r.getJwt();
-                        Repository.jwt = authToken;
+                       // Repository.jwt = authToken;
+                        token = authToken;
 
                         //set previous account if exists
                         SharedPreferences pref = Repository.getSharedPreferences(getApplicationContext());
@@ -154,6 +160,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (Repository.loggedUser == null){
+            Repository.loggedUser = loggedUser;
+            Repository.jwt = token;
+        } else {
+            //Repository.loggedUser != null
+            Repository.loggedUser = null;
+            Repository.jwt = null;
+            loggedUser = null;
+            token = null;
+        }
     }
 
     @Override
