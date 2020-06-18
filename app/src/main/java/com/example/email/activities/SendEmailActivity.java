@@ -672,7 +672,10 @@ public class SendEmailActivity extends AppCompatActivity {
 
 
                     Attachment attachment=new Attachment();
-                     attachment.setData(inputData);
+                     String encoded = Base64.getEncoder().encodeToString(inputData);
+                    attachment.setData(encoded);
+
+//                     attachment.setData(inputData);
                      attachment.setMime_type(type);
                      attachment.setName( cursor.getString(nameIndex));
                      a=attachment;
