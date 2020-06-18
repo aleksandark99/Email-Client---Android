@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class Rule implements Serializable {
 
-    @SerializedName("id")
+    @SerializedName("rule_id")
     @Expose
     private int id;
 
@@ -27,7 +27,7 @@ public class Rule implements Serializable {
 
     @SerializedName("active")
     @Expose
-    private boolean active;
+    private boolean isActive;
 
 
     public Rule() {}
@@ -37,7 +37,7 @@ public class Rule implements Serializable {
         this.operation = operation;
         this.condition = condition;
         this.value = value;
-        this.active = active;
+        this.isActive = active;
     }
 
     public int getId() {
@@ -64,11 +64,13 @@ public class Rule implements Serializable {
         this.condition = condition;
     }
 
-    public String getValue() {
-        return value;
-    }
+    public String getValue() { return value; }
 
     public void setValue(String value) {
         this.value = value;
     }
+
+    public boolean isActive() { return isActive; }
+
+    public void setActive(boolean active) { isActive = active; }
 }

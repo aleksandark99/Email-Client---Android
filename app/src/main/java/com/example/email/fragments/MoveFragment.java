@@ -1,8 +1,10 @@
 package com.example.email.fragments;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.model.Rule;
@@ -19,13 +22,17 @@ import com.example.email.model.enums.EOperation;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.rules.RuleService;
+import com.example.email.utility.Helper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,6 +52,10 @@ public class MoveFragment extends Fragment {
     private final RuleService ruleService = mRetrofit.create(RuleService.class);
 
     private final int MOVE_OPERATION = EOperation.MOVE.ordinal();
+    private int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
+    private int folder_id;
+
+    private Rule rule = new Rule();
 
     public MoveFragment() {
         // Required empty public constructor
@@ -57,7 +68,7 @@ public class MoveFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_move, container, false);
 
-        int folder_id = getArguments().getInt("folderId");
+        folder_id = getArguments().getInt("folderId");
 
         MyAsyncTask m = new MyAsyncTask(folder_id);
         m.execute();
@@ -72,78 +83,15 @@ public class MoveFragment extends Fragment {
         fromText = rootView.findViewById(R.id.from_edit_txt);
         subjectText = rootView.findViewById(R.id.subject_edit_txt);
 
-        toText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+        toText.setOnKeyListener(new RuleOnKeyListener(toText, toChipGroup));
+        ccText.setOnKeyListener(new RuleOnKeyListener(ccText, ccChipGroup));
+        fromText.setOnKeyListener(new RuleOnKeyListener(fromText, fromChipGroup));
+        subjectText.setOnKeyListener(new RuleOnKeyListener(subjectText, subjectChipGroup));
 
-                String keyword = toText.getText().toString();
-
-                if(keyword != null || !keyword.isEmpty()) {
-
-                    if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
-
-                        Chip chip = new Chip(toChipGroup.getContext());
-
-                        chip.setText(keyword);
-
-                        chip.setCloseIconResource(R.drawable.ic_close);
-
-                        chip.setCloseIconVisible(true);
-
-                        chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                toChipGroup.removeView(v);
-                            }
-                        });
-
-                        toChipGroup.addView(chip);
-
-                        toText.setText("");
-
-                        return true;
-                    }
-
-                }
-
-                return false;
-            }
-
-        });
-
-        toText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-
-                String keyword = toText.getText().toString();
-
-                if(!hasFocus && !keyword.isEmpty()){
-
-                    Chip chip = new Chip(toChipGroup.getContext());
-
-                    chip.setText(keyword);
-
-                    chip.setCloseIconResource(R.drawable.ic_close);
-
-                    chip.setCloseIconVisible(true);
-
-                    chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            toChipGroup.removeView(v);
-                        }
-                    });
-
-                    toChipGroup.addView(chip);
-
-//                    chip.setText("");
-                    toText.setText("");
-                }
-            }
-        });
+        toText.setOnFocusChangeListener(new RuleOnFocusChangeListener(toText));
+        ccText.setOnFocusChangeListener(new RuleOnFocusChangeListener(ccText));
+        fromText.setOnFocusChangeListener(new RuleOnFocusChangeListener(fromText));
+        subjectText.setOnFocusChangeListener(new RuleOnFocusChangeListener(subjectText));
 
         return rootView;
     }
@@ -175,26 +123,28 @@ public class MoveFragment extends Fragment {
         for(Rule rule : rules){
 
             if(rule.getCondition() == ECondition.TO){
-                addChip(rule.getValue(), toChipGroup);
+                addChip(rule.getValue(), rule.getId() , toChipGroup);
 
             }else if(rule.getCondition() == ECondition.CC){
-                addChip(rule.getValue(), ccChipGroup);
+                addChip(rule.getValue(), rule.getId(), ccChipGroup);
 
             }else if(rule.getCondition() == ECondition.FROM){
-                addChip(rule.getValue(), fromChipGroup);
+                addChip(rule.getValue(), rule.getId(), fromChipGroup);
 
             }else if(rule.getCondition() == ECondition.SUBJECT){
-                addChip(rule.getValue(), subjectChipGroup);
+                addChip(rule.getValue(), rule.getId(), subjectChipGroup);
             }
         }
     }
 
-    private void addChip(String rule_value, ChipGroup chipGroup){
+    private void addChip(String rule_value, int rule_id, ChipGroup chipGroup){
 
         Chip chip = new Chip(chipGroup.getContext());
         chip.setText(rule_value);
         chip.setCloseIconResource(R.drawable.ic_close);
         chip.setCloseIconVisible(true);
+        chip.setId(rule_id);
+        chip.setOnCloseIconClickListener(new RuleOnRemoveClickListener(chip, chipGroup));
         chipGroup.addView(chip);
     }
 
@@ -214,6 +164,149 @@ public class MoveFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
+        }
+    }
+
+    class RuleOnKeyListener implements View.OnKeyListener{
+
+        EditText mRuleValue;
+        Chip mChip;
+        ChipGroup mChipGroup;
+        String keyword;
+
+        public RuleOnKeyListener(EditText mValue, ChipGroup mChipGroup){
+
+            this.mChipGroup = mChipGroup;
+            this.mRuleValue = mValue;
+        }
+
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+            keyword = mRuleValue.getText().toString();
+            int edit_text_id = mRuleValue.getId();
+
+            //Check does entered keyword value already exist in db for this rule, if exist -> make a toast message
+
+            if(keyword != null && !keyword.isEmpty()){
+
+                if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP){
+
+                    rule.setValue(keyword);
+                    rule.setOperation(EOperation.MOVE);
+
+                    if(edit_text_id == R.id.to_edit_txt){
+                        rule.setCondition(ECondition.TO);
+                    }else if(edit_text_id == R.id.cc_edit_txt){
+                        rule.setCondition(ECondition.CC);
+                    }else if(edit_text_id == R.id.from_edit_txt){
+                        rule.setCondition(ECondition.FROM);
+                    }else if(edit_text_id == R.id.subject_edit_txt){
+                        rule.setCondition(ECondition.SUBJECT);
+                    }
+
+                    Call<Rule> call = ruleService.createRule(rule, folder_id, acc_id, Repository.jwt);
+
+                    call.enqueue(new Callback<Rule>() {
+                        @Override
+                        public void onResponse(Call<Rule> call, Response<Rule> response) {
+                            if (!response.isSuccessful()) {
+                                Log.i("ERROR: ", String.valueOf(response.code()));
+                                return;
+                            }
+                            rule = response.body();
+
+                            mChip = new Chip(mChipGroup.getContext());
+                            mChip.setText(rule.getValue());
+                            mChip.setCloseIconResource(R.drawable.ic_close);
+                            mChip.setCloseIconVisible(true);
+                            mChip.setId(rule.getId());
+
+                            mChip.setOnCloseIconClickListener(new RuleOnRemoveClickListener(mChip, mChipGroup));
+
+                            mChipGroup.addView(mChip);
+                            mRuleValue.setText("");
+                            Toast.makeText(getActivity(), "You successfully add a new rule!", Toast.LENGTH_SHORT).show();
+                        }
+                        @Override
+                        public void onFailure(Call<Rule> call, Throwable t) {
+                            Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+                        }
+                    });
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    class RuleOnFocusChangeListener implements View.OnFocusChangeListener{
+
+        EditText mRuleValue;
+
+        public RuleOnFocusChangeListener(EditText value){
+            this.mRuleValue = value;
+        }
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+
+            if (!hasFocus) {
+                mRuleValue.setText("");
+            }
+        }
+    }
+
+    class RuleOnRemoveClickListener implements View.OnClickListener{
+
+        Chip mChip;
+        ChipGroup mChipGroup;
+
+        public RuleOnRemoveClickListener(Chip chip, ChipGroup chipGroup){
+            this.mChip = chip;
+            this.mChipGroup = chipGroup;
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+
+            alertDialog.setTitle("Confirm");
+            alertDialog.setMessage("Are you sure you want to delete this rule?");
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    Call<ResponseBody> call = ruleService.deleteRule(mChip.getId(), folder_id, acc_id, Repository.jwt);
+
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (!response.isSuccessful()) {
+                                Log.i("ERROR: ", String.valueOf(response.code()));
+                                return;
+                            }
+                            if(response.code() == 200){
+                                mChipGroup.removeView(v);
+                                Toast.makeText(getActivity(), "You successfully delete rule!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+                        }
+                    });
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.show();
         }
     }
 }
