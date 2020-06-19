@@ -36,6 +36,7 @@ public class Writer {
         }
 
         //Create a new file that points to the root directory, with the given name:
+
         File file = new File(c.getExternalFilesDir(null), filenameExternal);
 
         //This point and below is responsible for the write operation
