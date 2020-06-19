@@ -268,4 +268,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         this.messages=m;
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Repository.activeAccount=null;
+    }
 }
