@@ -1,6 +1,7 @@
 package com.example.email.adapters;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.email.fragments.DeleteFragment;
 import com.example.email.fragments.MoveFragment;
+import com.example.email.model.Rule;
+
+import java.util.ArrayList;
 
 public class RulePagerAdapter extends FragmentPagerAdapter {
 
@@ -24,6 +28,7 @@ public class RulePagerAdapter extends FragmentPagerAdapter {
     public void setFolderId(int id){
         folder_id = id;
     }
+
 
     @NonNull
     @Override

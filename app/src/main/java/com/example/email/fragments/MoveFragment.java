@@ -26,11 +26,9 @@ import com.example.email.utility.Helper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.concurrent.Executor;
+
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -48,10 +46,11 @@ public class MoveFragment extends Fragment {
 
     private ArrayList<Rule> folderRules;
 
+
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final RuleService ruleService = mRetrofit.create(RuleService.class);
 
-    private final int MOVE_OPERATION = EOperation.MOVE.ordinal();
+    //private final int MOVE_OPERATION = EOperation.MOVE.ordinal();
     private int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
     private int folder_id;
 
@@ -96,9 +95,9 @@ public class MoveFragment extends Fragment {
         return rootView;
     }
 
-    private void getRulesForMoveOperation(int folder_id){
+    private void getRulesForFolder(int folder_id){
 
-        Call<Set<Rule>> call = ruleService.getRulesByOperation(folder_id, MOVE_OPERATION, Repository.jwt);
+        Call<Set<Rule>> call = ruleService.getRulesByFolder(folder_id, acc_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Rule>>() {
             @Override
@@ -122,17 +121,20 @@ public class MoveFragment extends Fragment {
 
         for(Rule rule : rules){
 
-            if(rule.getCondition() == ECondition.TO){
-                addChip(rule.getValue(), rule.getId() , toChipGroup);
+            if(rule.getOperation() == EOperation.MOVE) {
 
-            }else if(rule.getCondition() == ECondition.CC){
-                addChip(rule.getValue(), rule.getId(), ccChipGroup);
+                if (rule.getCondition() == ECondition.TO) {
+                    addChip(rule.getValue(), rule.getId(), toChipGroup);
 
-            }else if(rule.getCondition() == ECondition.FROM){
-                addChip(rule.getValue(), rule.getId(), fromChipGroup);
+                } else if (rule.getCondition() == ECondition.CC) {
+                    addChip(rule.getValue(), rule.getId(), ccChipGroup);
 
-            }else if(rule.getCondition() == ECondition.SUBJECT){
-                addChip(rule.getValue(), rule.getId(), subjectChipGroup);
+                } else if (rule.getCondition() == ECondition.FROM) {
+                    addChip(rule.getValue(), rule.getId(), fromChipGroup);
+
+                } else if (rule.getCondition() == ECondition.SUBJECT) {
+                    addChip(rule.getValue(), rule.getId(), subjectChipGroup);
+                }
             }
         }
     }
@@ -157,7 +159,7 @@ public class MoveFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            getRulesForMoveOperation(id);
+            getRulesForFolder(id);
             return true;
         }
 
@@ -190,50 +192,54 @@ public class MoveFragment extends Fragment {
 
             if(keyword != null && !keyword.isEmpty()){
 
-                if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP){
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
 
-                    rule.setValue(keyword);
-                    rule.setOperation(EOperation.MOVE);
+                    if(isRuleValid(keyword, edit_text_id)) {
 
-                    if(edit_text_id == R.id.to_edit_txt){
-                        rule.setCondition(ECondition.TO);
-                    }else if(edit_text_id == R.id.cc_edit_txt){
-                        rule.setCondition(ECondition.CC);
-                    }else if(edit_text_id == R.id.from_edit_txt){
-                        rule.setCondition(ECondition.FROM);
-                    }else if(edit_text_id == R.id.subject_edit_txt){
-                        rule.setCondition(ECondition.SUBJECT);
-                    }
+                        rule.setValue(keyword);
+                        rule.setOperation(EOperation.MOVE);
 
-                    Call<Rule> call = ruleService.createRule(rule, folder_id, acc_id, Repository.jwt);
+                        if (edit_text_id == R.id.to_edit_txt) {
+                            rule.setCondition(ECondition.TO);
+                        } else if (edit_text_id == R.id.cc_edit_txt) {
+                            rule.setCondition(ECondition.CC);
+                        } else if (edit_text_id == R.id.from_edit_txt) {
+                            rule.setCondition(ECondition.FROM);
+                        } else if (edit_text_id == R.id.subject_edit_txt) {
+                            rule.setCondition(ECondition.SUBJECT);
+                        }
 
-                    call.enqueue(new Callback<Rule>() {
-                        @Override
-                        public void onResponse(Call<Rule> call, Response<Rule> response) {
-                            if (!response.isSuccessful()) {
-                                Log.i("ERROR: ", String.valueOf(response.code()));
-                                return;
+                        Call<Rule> call = ruleService.createRule(rule, folder_id, acc_id, Repository.jwt);
+
+                        call.enqueue(new Callback<Rule>() {
+                            @Override
+                            public void onResponse(Call<Rule> call, Response<Rule> response) {
+                                if (!response.isSuccessful()) {
+                                    Log.i("ERROR: ", String.valueOf(response.code()));
+                                    return;
+                                }
+                                rule = response.body();
+
+                                mChip = new Chip(mChipGroup.getContext());
+                                mChip.setText(rule.getValue());
+                                mChip.setCloseIconResource(R.drawable.ic_close);
+                                mChip.setCloseIconVisible(true);
+                                mChip.setId(rule.getId());
+
+                                mChip.setOnCloseIconClickListener(new RuleOnRemoveClickListener(mChip, mChipGroup));
+
+                                mChipGroup.addView(mChip);
+                                mRuleValue.setText("");
+                                Toast.makeText(getActivity(), "You successfully add a new rule!", Toast.LENGTH_SHORT).show();
                             }
-                            rule = response.body();
 
-                            mChip = new Chip(mChipGroup.getContext());
-                            mChip.setText(rule.getValue());
-                            mChip.setCloseIconResource(R.drawable.ic_close);
-                            mChip.setCloseIconVisible(true);
-                            mChip.setId(rule.getId());
-
-                            mChip.setOnCloseIconClickListener(new RuleOnRemoveClickListener(mChip, mChipGroup));
-
-                            mChipGroup.addView(mChip);
-                            mRuleValue.setText("");
-                            Toast.makeText(getActivity(), "You successfully add a new rule!", Toast.LENGTH_SHORT).show();
-                        }
-                        @Override
-                        public void onFailure(Call<Rule> call, Throwable t) {
-                            Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
-                        }
-                    });
-                    return true;
+                            @Override
+                            public void onFailure(Call<Rule> call, Throwable t) {
+                                Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+                            }
+                        });
+                        return true;
+                    }
                 }
             }
             return false;
@@ -307,6 +313,66 @@ public class MoveFragment extends Fragment {
                 }
             });
             alertDialog.show();
+        }
+    }
+
+    private boolean isRuleValid(String rule_value, int edit_txt_id) {
+
+        Toast toast = Toast.makeText(getActivity(), "This rule value is contradictory with existing one!", Toast.LENGTH_SHORT);
+        Toast toast2 = Toast.makeText(getActivity(), "This rule value already exist!", Toast.LENGTH_SHORT);
+
+        if (folderRules != null && !folderRules.isEmpty()) {
+
+            for (Rule r : folderRules) {
+
+                String existing_value = r.getValue();
+                EOperation operation = r.getOperation();
+                ECondition condition = r.getCondition();
+
+                if (edit_txt_id == R.id.to_edit_txt) {
+                    if (existing_value.contains(rule_value) && operation == EOperation.DELETE && condition == ECondition.TO) {
+                        toast.show();
+                        return false;
+                    }
+                    if (existing_value.contains(rule_value) && operation == EOperation.MOVE && condition == ECondition.TO) {
+                        toast2.show();
+                        return false;
+                    }
+                } else if (edit_txt_id == R.id.cc_edit_txt) {
+                    if (existing_value.contains(rule_value) && operation == EOperation.DELETE &&  condition == ECondition.CC) {
+                        toast.show();
+                        return false;
+                    }
+                    if (existing_value.contains(rule_value) && operation == EOperation.MOVE &&  condition == ECondition.CC) {
+                        toast2.show();
+                        return false;
+                    }
+                } else if (edit_txt_id == R.id.from_edit_txt) {
+                    if (existing_value.contains(rule_value) && operation == EOperation.DELETE && condition == ECondition.FROM) {
+                        toast.show();
+                        return false;
+                    }
+                    if (existing_value.contains(rule_value) && operation == EOperation.MOVE && condition == ECondition.FROM) {
+                        toast2.show();
+                        return false;
+                    }
+                } else if (edit_txt_id == R.id.subject_edit_txt) {
+                    if (existing_value.contains(rule_value) && operation == EOperation.DELETE && condition == ECondition.SUBJECT) {
+                        toast.show();
+                        return false;
+                    }
+                    if (existing_value.contains(rule_value) && operation == EOperation.MOVE && condition == ECondition.SUBJECT) {
+                        toast2.show();
+                        return false;
+                    }
+                }
+
+            }
+            return true;
+
+        }else{
+
+            return true;
         }
     }
 }

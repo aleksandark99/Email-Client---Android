@@ -1,5 +1,8 @@
 package com.example.email.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.example.email.model.enums.ECondition;
 import com.example.email.model.enums.EOperation;
 import com.google.gson.annotations.Expose;
@@ -73,4 +76,5 @@ public class Rule implements Serializable {
     public boolean isActive() { return isActive; }
 
     public void setActive(boolean active) { isActive = active; }
+
 }

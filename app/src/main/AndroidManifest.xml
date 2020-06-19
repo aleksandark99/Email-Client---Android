@@ -35,7 +35,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".activities.CreateRulesActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="screenSize|orientation|screenLayout"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".activities.TagsActivity"
             android:configChanges="screenSize|orientation|screenLayout"
