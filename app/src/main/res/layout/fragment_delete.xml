@@ -103,9 +103,8 @@
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/colorPrimary"
                         android:layout_marginStart="15dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:singleLine="true"
+                        app:layout_constraintBottom_toBottomOf="parent" />
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
@@ -157,9 +156,8 @@
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/colorPrimary"
                         android:layout_marginStart="15dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:singleLine="true"
+                        app:layout_constraintBottom_toBottomOf="parent" />
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
@@ -213,9 +211,8 @@
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/colorPrimary"
                         android:layout_marginStart="15dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:singleLine="true"
+                        app:layout_constraintBottom_toBottomOf="parent" />
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
@@ -240,40 +237,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_margin="10dp">
-
-
-                <Button
-                    android:id="@+id/btnCancelRuleDel"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:background="@drawable/button_purple_round"
-                    android:text="Cancel"
-                    android:textColor="@android:color/white" />
-
-
-                <Button
-                    android:id="@+id/btnSaveRuleDel"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/button_purple_round"
-                    android:text="Save"
-                    android:textColor="@android:color/white" />
-
-            </RelativeLayout>
 
         </LinearLayout>
 

@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.activities.CreateRulesActivity;
 import com.example.email.model.Rule;
 import com.example.email.model.enums.ECondition;
 import com.example.email.model.enums.EOperation;
@@ -46,15 +47,11 @@ public class MoveFragment extends Fragment {
 
     private ArrayList<Rule> folderRules;
 
-
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final RuleService ruleService = mRetrofit.create(RuleService.class);
 
-    //private final int MOVE_OPERATION = EOperation.MOVE.ordinal();
     private int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
     private int folder_id;
-
-    private Rule rule = new Rule();
 
     public MoveFragment() {
         // Required empty public constructor
@@ -119,6 +116,11 @@ public class MoveFragment extends Fragment {
 
     private void setRulesAsChips(ArrayList<Rule> rules){
 
+        toChipGroup.removeAllViews();
+        ccChipGroup.removeAllViews();
+        fromChipGroup.removeAllViews();
+        subjectChipGroup.removeAllViews();
+
         for(Rule rule : rules){
 
             if(rule.getOperation() == EOperation.MOVE) {
@@ -150,6 +152,12 @@ public class MoveFragment extends Fragment {
         chipGroup.addView(chip);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getRulesForFolder(folder_id);
+    }
+
     class MyAsyncTask extends AsyncTask<Void, Integer, Boolean>{
 
         private int id;
@@ -175,6 +183,7 @@ public class MoveFragment extends Fragment {
         Chip mChip;
         ChipGroup mChipGroup;
         String keyword;
+        private Rule rule = new Rule();
 
         public RuleOnKeyListener(EditText mValue, ChipGroup mChipGroup){
 
@@ -219,7 +228,7 @@ public class MoveFragment extends Fragment {
                                     return;
                                 }
                                 rule = response.body();
-
+                                folderRules.add(rule);
                                 mChip = new Chip(mChipGroup.getContext());
                                 mChip.setText(rule.getValue());
                                 mChip.setCloseIconResource(R.drawable.ic_close);
@@ -321,7 +330,7 @@ public class MoveFragment extends Fragment {
         Toast toast = Toast.makeText(getActivity(), "This rule value is contradictory with existing one!", Toast.LENGTH_SHORT);
         Toast toast2 = Toast.makeText(getActivity(), "This rule value already exist!", Toast.LENGTH_SHORT);
 
-        if (folderRules != null && !folderRules.isEmpty()) {
+        if (folderRules != null) {
 
             for (Rule r : folderRules) {
 

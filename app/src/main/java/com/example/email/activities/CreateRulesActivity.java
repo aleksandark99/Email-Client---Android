@@ -65,7 +65,11 @@ public class CreateRulesActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
+//                RulesFragmentLifecycle listener = null;
+//                listener.onResumeFragment();
                 pager.setCurrentItem(tab.getPosition());
+
+
             }
 
             @Override
@@ -81,6 +85,9 @@ public class CreateRulesActivity extends AppCompatActivity {
 
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
+    }
+    public interface RulesFragmentLifecycle{
+        void onResumeFragment();
     }
 
 }

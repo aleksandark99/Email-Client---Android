@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.example.email.activities.CreateRulesActivity;
 import com.example.email.fragments.DeleteFragment;
 import com.example.email.fragments.MoveFragment;
 import com.example.email.model.Rule;
@@ -46,7 +47,11 @@ public class RulePagerAdapter extends FragmentPagerAdapter {
 
             case 1:
 
-                return new DeleteFragment();
+                Fragment deleteFragment = new DeleteFragment();
+                Bundle deleteArgs = new Bundle();
+                deleteArgs.putInt("folderId", folder_id);
+                deleteFragment.setArguments(deleteArgs);
+                return deleteFragment;
 
             default:
 
