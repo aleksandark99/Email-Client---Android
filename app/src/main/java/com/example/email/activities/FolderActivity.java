@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +25,7 @@ import android.widget.Toast;
 import com.example.email.R;
 import com.example.email.adapters.FolderAdapter;
 import com.example.email.adapters.FoldersAdapter;
+import com.example.email.fragments.CheckFolderFragment;
 import com.example.email.fragments.EditFolderFragment;
 import com.example.email.model.Folder;
 import com.example.email.model.Message;
@@ -66,6 +69,10 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final FolderService folderService = mRetrofit.create(FolderService.class);
+
+    private FragmentManager fragmentManager;
+    private FragmentTransaction transaction;
+    private CheckFolderFragment checkFolderFragment;
 
 
     @Override
@@ -178,6 +185,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
                     mActionMode = startSupportActionMode(mActionModeCallback);
 
+
+
                     return true;
                 }
 
@@ -220,19 +229,22 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
+            fragmentManager = getSupportFragmentManager();
+            transaction = fragmentManager.beginTransaction();
+            checkFolderFragment = new CheckFolderFragment();
+            Bundle args = new Bundle();
+            //args.putSerializable("checkedMessage", message);
+            checkFolderFragment.setArguments(args);
+
+
             switch(item.getItemId()){
 
                 case R.id.action_mode_copy:
 
-                    Toast.makeText(FolderActivity.this, "Copy option selected", Toast.LENGTH_SHORT).show();
-
-                    mode.finish();
-
-                    return true;
-
                 case R.id.action_mode_move:
 
-                    Toast.makeText(FolderActivity.this, "Move option selected", Toast.LENGTH_SHORT).show();
+                    transaction.replace(R.id.check_folder_fragment, checkFolderFragment).addToBackStack(null);
+                    transaction.commit();
 
                     mode.finish();
 

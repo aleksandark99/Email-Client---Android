@@ -25,6 +25,8 @@
             android:id="@+id/recViewFolder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:listSelector="@drawable/list_selector"
+            android:choiceMode="singleChoice"
             android:layout_marginTop="20dp"/>
 
 
@@ -41,5 +43,12 @@
             app:srcCompat="@drawable/ic_add"/>
 
     </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/check_folder_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="30dp"/>
 
 </LinearLayout>
