@@ -57,7 +57,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onResume() {
         super.onResume();
-            getAllMessagesForAccount(Helper.getActiveAccountId()); // u slucaju da se promeni acc iz profile activity posto idemo back ka inboxu mora ovako
+        if(Helper.getActiveAccountId()!=0){
+            getAllMessagesForAccount(Helper.getActiveAccountId());
+
+        }
     }
 
     @Override
@@ -103,10 +106,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration); // ove dve linije samo za dekoraciju nista vise
         emailsAdapter = new EmailsAdapter(this);
-        if(Helper.getActiveAccountId()!=0){
-            getAllMessagesForAccount(Helper.getActiveAccountId());
-
-        }
+//        if(Helper.getActiveAccountId()!=0){
+//            getAllMessagesForAccount(Helper.getActiveAccountId());
+//
+//        }
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -269,9 +272,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Repository.activeAccount=null;
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        Repository.activeAccount=null;
+//    }
 }
