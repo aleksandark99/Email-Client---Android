@@ -89,15 +89,18 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 //        chip.setChipIconResource(img);
 //        holder.chipGroup.addView(chip);
         holder.chipGroup.removeAllViews();
-        for (int i = 0; i < messages.get(position).getTags().size(); i++) {
+        if( messages.get(position).getTags()!=null){
+            for (int i = 0; i < messages.get(position).getTags().size(); i++) {
 
-            Chip chip = new Chip(holder.chipGroup.getContext());
-            chip.setText(messages.get(position).getTags().get(i).getTagName());
-            // chip.setChipIconResource(img);
-            int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
-            chip.setChipBackgroundColor(ColorStateList.valueOf(color));
-            holder.chipGroup.addView(chip);
+                Chip chip = new Chip(holder.chipGroup.getContext());
+                chip.setText(messages.get(position).getTags().get(i).getTagName());
+                // chip.setChipIconResource(img);
+                int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
+                chip.setChipBackgroundColor(ColorStateList.valueOf(color));
+                holder.chipGroup.addView(chip);
+            }
         }
+
         holder.attachment.setVisibility(View.INVISIBLE);
         if (messages.get(position).getAttachments().size() > 0) {
             holder.attachment.setVisibility(View.VISIBLE);
