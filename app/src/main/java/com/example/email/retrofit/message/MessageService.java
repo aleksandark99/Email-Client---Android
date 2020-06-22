@@ -10,6 +10,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface MessageService {
@@ -19,5 +20,11 @@ public interface MessageService {
 
     @GET("/messages/{account_id}")
     Call<Set<Message>> getAllMessages(@Path("account_id") int idAccount, @Header("Authorization") String authToken);
+
+    @GET("/messagesfromback/{account_id}")
+    Call<Set<Message>> getAllMessagesFromBack(@Path("account_id") int idAccount, @Header("Authorization") String authToken);
+
+    @PUT("/messages/")
+    Call<Boolean> makeMessageRead(@Body Message messageToBeMadeUnreadFalse,@Header("Authorization") String authToken);
 
 }

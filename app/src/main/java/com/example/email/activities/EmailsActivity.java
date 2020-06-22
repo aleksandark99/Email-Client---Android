@@ -53,14 +53,20 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
     SearchView searchView;
     EmailsAdapter emailsAdapter;
+    int hack;
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(Helper.getActiveAccountId()!=0){
-            getAllMessagesForAccount(Helper.getActiveAccountId());
+        if(Helper.getActiveAccountId()!=0 && hack==0){
+            getAllMessagesForAccount(Helper.getActiveAccountId(),hack);
+            hack=1;
+
+        }else {
+            getAllMessagesForAccount(Helper.getActiveAccountId(),hack);
 
         }
+
     }
 
     @Override
@@ -110,7 +116,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 //            getAllMessagesForAccount(Helper.getActiveAccountId());
 //
 //        }
-
+        hack=0;
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -118,7 +124,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
                 if (!recyclerView.canScrollVertically(-1)) {
               //      Toast.makeText(EmailsActivity.this, "First", Toast.LENGTH_LONG).show();
-                    getAllMessagesForAccount(Helper.getActiveAccountId());
+                    getAllMessagesForAccount(Helper.getActiveAccountId(),0);
                 }
             }
         });
@@ -240,11 +246,31 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         return true;
 
     }
-    public void getAllMessagesForAccount(int id){
+    public void getAllMessagesForAccount(int id,int h){
+//        Intent intent = getIntent();
+//        String isFromLogin="";
+//        if(intent.getStringExtra("from")!=null){
+//             isFromLogin=intent.getStringExtra("from");
+//        }
+//        if(isFromLogin.equals("LoginActivity")){
+//            Toast.makeText(this, "From Login", Toast.LENGTH_SHORT).show();
+//        }else{
+//            Toast.makeText(this, "NOTTTT Login", Toast.LENGTH_SHORT).show();
+//
+//        }
+
+
         ArrayList<Message> messages=new ArrayList<Message>();
         Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         MessageService messageService=mRetrofit.create(MessageService.class);
-        Call<Set<Message>> call=messageService.getAllMessages(id, Repository.jwt);
+        Call<Set<Message>> call;
+        if(h==0){
+            call=messageService.getAllMessages(id, Repository.jwt);
+
+        }else{
+            call=messageService.getAllMessagesFromBack(id, Repository.jwt);
+            Toast.makeText(this, "Poovi drugu metodu", Toast.LENGTH_SHORT).show();
+        }
 
         call.enqueue(new Callback<Set<Message>>() {
             @Override

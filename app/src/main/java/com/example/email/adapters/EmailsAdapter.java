@@ -23,6 +23,9 @@ import com.example.email.model.Contact;
 import com.example.email.model.Message;
 import com.example.email.model.Tag;
 import com.example.email.repository.Repository;
+import com.example.email.retrofit.RetrofitClient;
+import com.example.email.retrofit.account.AccountService;
+import com.example.email.retrofit.message.MessageService;
 import com.example.email.utility.Helper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -30,12 +33,20 @@ import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsViewHolder> implements Filterable {
 
     ArrayList<Message> messages;
     Context ctx;
     //za filter messages
     ArrayList<Message> messagesAll;
+
+    private final Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+    private final MessageService messageService = retrofit.create(MessageService.class);
 
 
     public EmailsAdapter(Context ctx, ArrayList<Message> messages) {
@@ -129,6 +140,24 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             public void onClick(View v) {
                 Intent intent = new Intent(ctx, EmailActivity.class);
                 intent.putExtra("message", messages.get(position));//Message.class je seriazable
+
+                //make this message read
+                messages.get(position).setUnread(false);
+                holder.cardView.setBackgroundColor(0xFFFFFFF);
+                Call<Boolean> call=messageService.makeMessageRead(messages.get(position), Repository.jwt);
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+//                        Toast.makeText(ctx, "Procitana", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+//                        Toast.makeText(ctx, "neuspelo", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
                 ctx.startActivity(intent);
 
             }

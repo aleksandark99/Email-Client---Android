@@ -60,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         Intent registerIntent = RegisterActivity.newIntent(this);
         Intent goToEmailsIntent = EmailsActivity.newIntent(this);
 
+        goToEmailsIntent.putExtra("from", "LoginActivity");
+
         LoginButton =(Button) findViewById(R.id.loginButton);
         LoginButton.setOnClickListener(v -> {
 
@@ -100,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                         //welcome toast
                         usernameEditText.setText(""); passwordEditText.setText("");
                         Log.i("USER",Repository.loggedUser.toString());
+
 
                         startActivity(goToEmailsIntent);
 
