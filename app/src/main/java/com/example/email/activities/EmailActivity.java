@@ -25,10 +25,18 @@ import com.example.email.adapters.EmailAttachmentAdapter;
 import com.example.email.model.Attachment;
 import com.example.email.model.Message;
 import com.example.email.model.Tag;
+import com.example.email.repository.Repository;
+import com.example.email.retrofit.RetrofitClient;
+import com.example.email.retrofit.message.MessageService;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class EmailActivity extends AppCompatActivity {
 
@@ -43,6 +51,8 @@ public class EmailActivity extends AppCompatActivity {
     Button replyAll,reply,forward;
     ImageView arrowIcon;
     ArrayList<Attachment> attachments;
+    Retrofit retrofit;
+    MessageService messageService;
 
     private RecyclerView recyclerView;
     private EmailAttachmentAdapter attachmentAdapter;
@@ -76,6 +86,8 @@ public class EmailActivity extends AppCompatActivity {
         recyclerView.setAdapter(attachmentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        retrofit = RetrofitClient.getRetrofitInstance();
+        messageService = retrofit.create(MessageService.class);
 
 
         reply=findViewById(R.id.replyButton);
@@ -224,6 +236,24 @@ public class EmailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete:
+                Call<Boolean> call=messageService.deleteMessage(mes, Repository.jwt);
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        Toast.makeText(EmailActivity.this, "Message deleted", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EmailActivity.this, EmailsActivity.class);
+
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                    }
+                });
+
+        }
         return super.onOptionsItemSelected(item);
     }
 

@@ -109,7 +109,12 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         //childFolders = new ArrayList<>(mFolder.getChildFolders());
 
-        folderMessages = new ArrayList<>(mFolder.getMessages());
+        if(mFolder.getMessages()!=null){
+            folderMessages = new ArrayList<>(mFolder.getMessages());
+
+        }else{
+            folderMessages=new ArrayList<Message>();
+        }
 
         folderAdapter = new FolderAdapter(this, folderMessages, this);
         loadChildFolders(mFolder.getId());

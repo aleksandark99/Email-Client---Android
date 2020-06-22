@@ -26,6 +26,7 @@ import com.example.email.R;
 import com.example.email.adapters.EmailsAdapter;
 import com.example.email.model.Contact;
 import com.example.email.model.Message;
+import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.message.MessageService;
@@ -43,7 +44,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RecyclerClickListener {
     RecyclerView recyclerView;
     private Toolbar toolbar;
     DrawerLayout emailsDrawerLayour;
@@ -55,6 +56,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     EmailsAdapter emailsAdapter;
     int hack;
 
+    ArrayList<Message> mms;
+
+    Retrofit retrofit;
+    MessageService messageService;
     @Override
     protected void onResume() {
         super.onResume();
@@ -111,7 +116,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration); // ove dve linije samo za dekoraciju nista vise
-        emailsAdapter = new EmailsAdapter(this);
+        emailsAdapter = new EmailsAdapter(this,this);
 //        if(Helper.getActiveAccountId()!=0){
 //            getAllMessagesForAccount(Helper.getActiveAccountId());
 //
@@ -129,6 +134,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
+
+           retrofit = RetrofitClient.getRetrofitInstance();
+            messageService = retrofit.create(MessageService.class);
+
+            //mms=new ArrayList<>();
     }
 
     @Override
@@ -277,9 +287,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
                 if (response.code() == 200){
 
-                    emailsAdapter.setData(new ArrayList<>((Set<Message>) response.body()));
+                    mms=new ArrayList<>((Set<Message>) response.body());
+                    emailsAdapter.setData(mms);
                     recyclerView.setAdapter(emailsAdapter);
-                    setMessages(new ArrayList<>((Set<Message>) response.body()));
+//                    setMessages(new ArrayList<>((Set<Message>) response.body()));
+                    setMessages(mms);
                 }
             }
 
@@ -295,6 +307,35 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     }
     private void setMessages(ArrayList<Message> m){
         this.messages=m;
+    }
+
+    @Override
+    public void OnItemClick(View view, int position) {
+        System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+        mms.get(position).setUnread(false);
+        Call<Boolean> call=messageService.makeMessageRead(mms.get(position), Repository.jwt);
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                    }
+                });
+        Intent intent = new Intent(this, EmailActivity.class);
+        intent.putExtra("message", mms.get(position));//Message.class je seriazable
+        startActivity(intent);
+    }
+
+    @Override
+    public void OnLongItemClick(View view, int position) {
+
+    }
+
+    @Override
+    public void onDeleteClick(View view, int position) {
+
     }
 
 

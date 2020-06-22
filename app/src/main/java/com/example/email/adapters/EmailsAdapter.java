@@ -22,6 +22,7 @@ import com.example.email.activities.EmailActivity;
 import com.example.email.model.Contact;
 import com.example.email.model.Message;
 import com.example.email.model.Tag;
+import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.account.AccountService;
@@ -44,21 +45,27 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
     Context ctx;
     //za filter messages
     ArrayList<Message> messagesAll;
+    private RecyclerClickListener recyclerClickListener;
+
 
     private final Retrofit retrofit = RetrofitClient.getRetrofitInstance();
     private final MessageService messageService = retrofit.create(MessageService.class);
 
 
-    public EmailsAdapter(Context ctx, ArrayList<Message> messages) {
+    public EmailsAdapter(Context ctx, ArrayList<Message> messages,RecyclerClickListener listener) {
         this.messages = messages;
         this.ctx = ctx;
+        this.recyclerClickListener = listener;
+
         //za FilterProba
 //        this.messagesAll = new ArrayList<>(messages);
 
     }
-    public EmailsAdapter(Context ctx ) {
+    public EmailsAdapter(Context ctx,RecyclerClickListener listener) {
         this.ctx = ctx;
         this.messagesAll=new ArrayList<Message>();
+        this.recyclerClickListener = listener;
+
         //za FilterProba
 //        this.messagesAll = new ArrayList<>(messages);
 
@@ -76,7 +83,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         LayoutInflater inflater = LayoutInflater.from(ctx);
         View view = inflater.inflate(R.layout.new_emails_row, parent, false);
 
-        return new EmailsViewHolder(view);
+        return new EmailsViewHolder(view,recyclerClickListener);
     }
 
     @Override
@@ -135,33 +142,31 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         }
 
 
-        holder.layoutRow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ctx, EmailActivity.class);
-                intent.putExtra("message", messages.get(position));//Message.class je seriazable
+//        holder.layoutRow.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(ctx, EmailActivity.class);
+//                intent.putExtra("message", messages.get(position));//Message.class je seriazable
 
                 //make this message read
-                messages.get(position).setUnread(false);
-                holder.cardView.setBackgroundColor(0xFFFFFFF);
-                Call<Boolean> call=messageService.makeMessageRead(messages.get(position), Repository.jwt);
-                call.enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-//                        Toast.makeText(ctx, "Procitana", Toast.LENGTH_SHORT).show();
-                    }
+//                messages.get(position).setUnread(false);
+//                holder.cardView.setBackgroundColor(0xFFFFFFF);
+//
+//                Call<Boolean> call=messageService.makeMessageRead(messages.get(position), Repository.jwt);
+//                call.enqueue(new Callback<Boolean>() {
+//                    @Override
+//                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Boolean> call, Throwable t) {
+//                    }
+//                });
 
-                    @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) {
-//                        Toast.makeText(ctx, "neuspelo", Toast.LENGTH_SHORT).show();
+//                ctx.startActivity(intent);
 
-                    }
-                });
-
-                ctx.startActivity(intent);
-
-            }
-        });
+//            }
+//        });
 
 
     }
@@ -230,7 +235,10 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         }
     };
 
-    public class EmailsViewHolder extends RecyclerView.ViewHolder {
+    public class EmailsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        RecyclerClickListener recyclerClickListener;
+
 
         TextView from, subject, shortContent, date;
         CardView cardView;
@@ -238,7 +246,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         ConstraintLayout layoutRow;
         ImageView attachment, profilePicture;
 
-        public EmailsViewHolder(@NonNull View itemView) {
+        public EmailsViewHolder(@NonNull View itemView,RecyclerClickListener listener) {
             super(itemView);
             from = itemView.findViewById(R.id.fromText1);
             subject = itemView.findViewById(R.id.subjectText1);
@@ -252,8 +260,15 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             attachment = itemView.findViewById(R.id.hasAttachmentIcon);
 
             profilePicture = itemView.findViewById(R.id.imageView5);
+            recyclerClickListener=listener;
+            itemView.setOnClickListener(this);
+
         }
 
 
+        @Override
+        public void onClick(View v) {
+            this.recyclerClickListener.OnItemClick(v, getLayoutPosition());
+        }
     }
 }
