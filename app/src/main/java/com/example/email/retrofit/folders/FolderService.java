@@ -19,6 +19,9 @@ public interface FolderService {
     @GET("/folders/{account_id}")
     Call<Set<Folder>> getFoldersByAccount(@Path("account_id") int acc_id, @Header("Authorization") String authToken);
 
+    @GET("/some_folders/{account_id}")
+    Call<Set<Folder>> getFoldersForChecking(@Path("account_id") int acc_id, @Header("Authorization") String authToken);
+
     @GET("/subfolders/{acc_id}/{parent_folder}")
     Call<Set<Folder>> getSubFoldersByAccount(@Path("acc_id") int acc_id, @Path("parent_folder") int parent, @Header("Authorization") String authToken);
 

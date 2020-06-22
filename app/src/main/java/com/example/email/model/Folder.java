@@ -1,5 +1,7 @@
 package com.example.email.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -106,5 +108,12 @@ public class Folder implements Serializable {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+
+        return name;
     }
 }

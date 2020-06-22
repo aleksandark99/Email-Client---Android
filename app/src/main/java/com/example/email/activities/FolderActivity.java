@@ -73,10 +73,6 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     private final FolderService folderService = mRetrofit.create(FolderService.class);
     private final MessageService messageService = mRetrofit.create(MessageService.class);
 
-    private FragmentManager fragmentManager;
-    private FragmentTransaction transaction;
-    private CheckFolderFragment checkFolderFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +180,6 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
                     mActionMode = startSupportActionMode(mActionModeCallback);
 
-
-
                     return true;
                 }
 
@@ -228,12 +222,10 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
-            fragmentManager = getSupportFragmentManager();
-            transaction = fragmentManager.beginTransaction();
-            checkFolderFragment = new CheckFolderFragment();
+            CheckFolderFragment fragment = new CheckFolderFragment();
             Bundle args = new Bundle();
             //args.putSerializable("checkedMessage", message);
-            checkFolderFragment.setArguments(args);
+            fragment.setArguments(args);
 
 
             switch(item.getItemId()){
@@ -242,8 +234,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
                 case R.id.action_mode_move:
 
-                    transaction.replace(R.id.check_folder_fragment, checkFolderFragment).addToBackStack(null);
-                    transaction.commit();
+                    fragment.show(getSupportFragmentManager(), "check folder");
 
                     mode.finish();
 
