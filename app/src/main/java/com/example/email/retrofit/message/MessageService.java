@@ -7,6 +7,7 @@ import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -32,4 +33,8 @@ public interface MessageService {
 
     @GET("/inactive_messages/{account_id}")
     Call<Set<Message>> getAllInactiveMessage(@Path("account_id") int account_id, @Header("Authorization") String authToken);
+
+    @PUT("/messages/delete")
+    Call<Boolean> deleteMessage(@Body Message messageToBeMadeUnreadFalse,@Header("Authorization") String authToken);
+
 }

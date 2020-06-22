@@ -112,9 +112,6 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
             }
         });
 
-
-
-
         folderAdapter = new FolderAdapter(this,this);
         loadChildFolders(folder_id);
         loadFolderMessages(folderName, folder_id);
