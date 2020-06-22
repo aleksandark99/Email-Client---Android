@@ -31,10 +31,9 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private RecyclerClickListener recyclerClickListener;
 
 
-    public FolderAdapter(Context ctx, ArrayList<Message> folderMessages, RecyclerClickListener listener) {
+    public FolderAdapter(Context ctx, RecyclerClickListener listener) {
 
         context = ctx;
-        messages = folderMessages;
         recyclerClickListener = listener;
 
     }
@@ -43,7 +42,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         folders = subFolders;
     }
 
-    public ArrayList<Folder> getSubFolders(){return folders;}
+    public void setMessages(ArrayList<Message> folderMessages) {messages = folderMessages;}
 
 
     @NonNull

@@ -33,6 +33,7 @@ import com.example.email.model.interfaces.RecyclerClickListener;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.folders.FolderService;
+import com.example.email.retrofit.message.MessageService;
 import com.example.email.utility.Helper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -67,8 +68,10 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private ArrayList<Message> folderMessages;
 
+
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final FolderService folderService = mRetrofit.create(FolderService.class);
+    private final MessageService messageService = mRetrofit.create(MessageService.class);
 
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
@@ -95,6 +98,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         String folderName = (!mFolder.getName().isEmpty()) ? mFolder.getName() : "";
 
+        int folder_id = mFolder.getId();
+
         hideBtnAddFolder(folderName);
 
         getSupportActionBar().setTitle(folderName);
@@ -107,15 +112,12 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
             }
         });
 
-        //childFolders = new ArrayList<>(mFolder.getChildFolders());
 
-        folderMessages = new ArrayList<>(mFolder.getMessages());
 
-        folderAdapter = new FolderAdapter(this, folderMessages, this);
-        loadChildFolders(mFolder.getId());
-        //folderAdapter.setData(childFolders);
-        //recyclerView.setAdapter(folderAdapter);
 
+        folderAdapter = new FolderAdapter(this,this);
+        loadChildFolders(folder_id);
+        loadFolderMessages(folderName, folder_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         btnAddSubFolder.setOnClickListener(new View.OnClickListener() {
@@ -283,6 +285,19 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         }
     }
 
+    private void loadFolderMessages(String name, int folder_id){
+
+        int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
+
+        if(name.equals("Trash")){
+            loadInactiveMessages(acc_id);
+
+        }else{
+            loadFolderMessagesByRules(folder_id);
+        }
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -423,6 +438,56 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
             @Override
             public void onFailure(Call<Set<Folder>> call, Throwable t) {
+                Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+            }
+        });
+    }
+
+    private void loadFolderMessagesByRules(int folder_id){
+
+        int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
+
+        Call<Set<Message>> call = messageService.getAllMessagesByRules(folder_id, acc_id, Repository.jwt);
+
+        call.enqueue(new Callback<Set<Message>>() {
+            @Override
+            public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
+                if (!response.isSuccessful()) {
+                    Log.i("ERROR: ", String.valueOf(response.code()));
+                    return;
+                }
+
+                folderMessages = new ArrayList<>(response.body());
+                folderAdapter.setMessages(folderMessages);
+                recyclerView.setAdapter(folderAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<Set<Message>> call, Throwable t) {
+                Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+            }
+        });
+    }
+
+    private void loadInactiveMessages(int account_id){
+
+        Call<Set<Message>> call = messageService.getAllInactiveMessage(account_id, Repository.jwt);
+
+        call.enqueue(new Callback<Set<Message>>() {
+            @Override
+            public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
+                if (!response.isSuccessful()) {
+                    Log.i("ERROR: ", String.valueOf(response.code()));
+                    return;
+                }
+
+                folderMessages = new ArrayList<>(response.body());
+                folderAdapter.setMessages(folderMessages);
+                recyclerView.setAdapter(folderAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<Set<Message>> call, Throwable t) {
                 Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
             }
         });

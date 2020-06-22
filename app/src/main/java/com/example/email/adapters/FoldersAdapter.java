@@ -24,6 +24,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
     private ArrayList<Folder> folders;
     private RecyclerClickListener recyclerClickListener;
 
+
     public FoldersAdapter(Context ctx, RecyclerClickListener listener){
 
         context = ctx;
@@ -57,7 +58,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
         Set<Folder> childFolders = folders.get(position).getChildFolders();
 
         int messageCount = (folderMessages == null) ? 0 : folderMessages.size();
-        int foldersCount = (folderMessages == null) ? 0 : childFolders.size();
+        int foldersCount = (childFolders == null) ? 0 : childFolders.size();
 
         holder.fNameView.setText(folders.get(position).getName());
         holder.mCountView.setText(messageCount + foldersCount  + "");

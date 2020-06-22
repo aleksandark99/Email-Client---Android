@@ -27,4 +27,9 @@ public interface MessageService {
     @PUT("/messages/")
     Call<Boolean> makeMessageRead(@Body Message messageToBeMadeUnreadFalse,@Header("Authorization") String authToken);
 
+    @GET("/messages/{folder_id}/{account_id}")
+    Call<Set<Message>> getAllMessagesByRules(@Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
+
+    @GET("/inactive_messages/{account_id}")
+    Call<Set<Message>> getAllInactiveMessage(@Path("account_id") int account_id, @Header("Authorization") String authToken);
 }
