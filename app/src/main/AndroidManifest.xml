@@ -21,6 +21,7 @@
         dodali dodatni parmetar android:required="", Google Play bi ogranicio vidljivost nase aplikacije samo na uredjaje koje imaju
         kameru.
     -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:required="true" />
@@ -112,6 +113,8 @@
         </activity>
         <activity android:name=".MainActivity" />
 
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.email.fileprovider"
@@ -121,6 +124,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <service android:name=".job_service.MyJobScheduler" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true">
+
+        </service>
+
     </application>
 
 </manifest>
