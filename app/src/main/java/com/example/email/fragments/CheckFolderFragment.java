@@ -31,6 +31,7 @@ import com.example.email.utility.Helper;
 import java.util.ArrayList;
 import java.util.Set;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +51,7 @@ public class CheckFolderFragment extends AppCompatDialogFragment {
     private ArrayList<Folder> folders;
 
     private static final int MOVE_OK = 10;
+    private static final int COPY_OK = 11;
     private Retrofit retrofit = RetrofitClient.getRetrofitInstance();
     private FolderService folderService = retrofit.create(FolderService.class);
     private MessageService messageService = retrofit.create(MessageService.class);
@@ -98,6 +100,7 @@ public class CheckFolderFragment extends AppCompatDialogFragment {
 
                         }else if(mode == R.id.action_mode_copy){
 
+                            copyMessageToFolder(message_id, folder_id);
                         }
 
                     }
@@ -175,6 +178,28 @@ public class CheckFolderFragment extends AppCompatDialogFragment {
             }
             @Override
             public void onFailure(Call<Message> call, Throwable t) {
+                Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+            }
+        });
+    }
+
+    private void copyMessageToFolder(int message_id, int folder_id){
+
+        Call<ResponseBody> call = messageService.copyMessageToFolder(message_id, folder_id, acc_id, Repository.jwt);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    Log.i("ERROR: ", String.valueOf(response.code()));
+                    return;
+                }
+                if(response.code() == 200){
+                    interfaceCommunicator.onFinishedMovedMessageDialog(COPY_OK, message_id);
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
             }
         });

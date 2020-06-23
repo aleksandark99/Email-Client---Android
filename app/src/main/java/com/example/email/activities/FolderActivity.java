@@ -52,6 +52,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     private static final int EDIT_SUBFOLDER = 4;
     private static final int EDIT_OK = 3;
     private static final int MOVE_OK = 10;
+    private static final int COPY_OK = 11;
 
     private Toolbar toolbar;
 
@@ -510,11 +511,15 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     public void onFinishedMovedMessageDialog(int code, int message_id) {
 
         if(code == MOVE_OK){
-            removeMessage(message_id);
+            moveMessage(message_id);
+            Toast.makeText(getApplicationContext(), "You have successfully moved message!", Toast.LENGTH_SHORT).show();
+
+        }else if(code == COPY_OK){
+            Toast.makeText(getApplicationContext(), "You have successfully copied message!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void removeMessage(int message_id){
+    private void moveMessage(int message_id){
         for(Message m : folderMessages){
             if(m.getId() == message_id){
                 folderMessages.remove(m);

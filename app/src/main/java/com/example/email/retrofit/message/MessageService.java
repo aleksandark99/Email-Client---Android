@@ -5,6 +5,7 @@ import com.example.email.model.Message;
 
 import java.util.Set;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -40,4 +41,6 @@ public interface MessageService {
     @PUT("/message/{message_id}/{folder_id}/{account_id}")
     Call<Message> moveMessageToFolder(@Path("message_id") int message_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
 
+    @POST("message/{message_id}/{folder_id}/{account_id}/copy")
+    Call<ResponseBody> copyMessageToFolder(@Path("message_id") int message_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
 }
