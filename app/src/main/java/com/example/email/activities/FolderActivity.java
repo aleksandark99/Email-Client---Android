@@ -46,11 +46,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FolderActivity extends AppCompatActivity implements RecyclerClickListener, EditFolderFragment.EditFolderNameDialogListener {
+public class FolderActivity extends AppCompatActivity implements RecyclerClickListener, EditFolderFragment.EditFolderNameDialogListener, CheckFolderFragment.MoveMessageDialogListener {
 
     private static final int ADD_SUBFOLDER = 3;
     private static final int EDIT_SUBFOLDER = 4;
     private static final int EDIT_OK = 3;
+    private static final int MOVE_OK = 10;
 
     private Toolbar toolbar;
 
@@ -68,6 +69,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private ArrayList<Message> folderMessages;
 
+    private Message selectedMessage;
 
     private final Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
     private final FolderService folderService = mRetrofit.create(FolderService.class);
@@ -166,6 +168,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     @Override
     public void OnLongItemClick(View view, int position) {
 
+        view.setBackgroundResource(R.color.colorAccent);
+
         if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_EMAIL) {
 
             view.setOnLongClickListener(new View.OnLongClickListener() {
@@ -178,7 +182,18 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
                         return false;
                     }
 
+                    selectedMessage = folderMessages.get(position);
+
+
                     mActionMode = startSupportActionMode(mActionModeCallback);
+
+                    Menu menu = mActionMode.getMenu();
+
+                    if(mFolder.getName().equals("Trash")){
+
+                        menu.findItem(R.id.action_mode_move).setVisible(false);
+                        menu.findItem(R.id.action_mode_copy).setVisible(false);
+                    }
 
                     return true;
                 }
@@ -222,22 +237,31 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
+            int item_id = item.getItemId();
+
             CheckFolderFragment fragment = new CheckFolderFragment();
             Bundle args = new Bundle();
-            //args.putSerializable("checkedMessage", message);
-            fragment.setArguments(args);
+            args.putSerializable("checkedMessage", selectedMessage);
 
 
-            switch(item.getItemId()){
+            switch(item_id){
 
                 case R.id.action_mode_copy:
 
-                case R.id.action_mode_move:
-
+                    args.putInt("action_mode", R.id.action_mode_copy);
+                    fragment.setArguments(args);
                     fragment.show(getSupportFragmentManager(), "check folder");
 
                     mode.finish();
+                    return true;
 
+                case R.id.action_mode_move:
+
+                    args.putInt("action_mode", R.id.action_mode_move);
+                    fragment.setArguments(args);
+                    fragment.show(getSupportFragmentManager(), "check folder");
+
+                    mode.finish();
                     return true;
 
                 case R.id.action_mode_del:
@@ -353,6 +377,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     protected void onResume() {
         super.onResume();
         loadChildFolders(mFolder.getId());
+        loadFolderMessagesByRules(mFolder.getId());
         Intent intent = new Intent();
         intent.putExtra("changedFolder", mFolder);
         setResult(RESULT_OK, intent);
@@ -479,5 +504,22 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
                 Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
             }
         });
+    }
+
+    @Override
+    public void onFinishedMovedMessageDialog(int code, int message_id) {
+
+        if(code == MOVE_OK){
+            removeMessage(message_id);
+        }
+    }
+
+    private void removeMessage(int message_id){
+        for(Message m : folderMessages){
+            if(m.getId() == message_id){
+                folderMessages.remove(m);
+                folderAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }
