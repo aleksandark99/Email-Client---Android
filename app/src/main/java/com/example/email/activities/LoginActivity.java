@@ -5,6 +5,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.email.R;
+import com.example.email.job_service.MyJobScheduler;
 import com.example.email.model.Account;
 import com.example.email.model.Login;
 import com.example.email.model.LoginResponse;
@@ -47,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         //____________________________________________________________________________________
+
+        JobScheduler existingJobScheduler = (JobScheduler) getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        existingJobScheduler.cancel(101);
 
         usernameEditText = findViewById(R.id.usernameFiled); passwordEditText = findViewById(R.id.passwordField);
 

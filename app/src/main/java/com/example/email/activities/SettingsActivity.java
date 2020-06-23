@@ -36,7 +36,6 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         drawerLayout = findViewById(R.id.settingsDrawerLayout);
 
-
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle("Settings");

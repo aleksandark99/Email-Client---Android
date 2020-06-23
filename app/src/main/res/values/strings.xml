@@ -20,11 +20,18 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
 
+
+        <string name="new_message">JobScheduler</string>
+        <string name="new_messages">Messages update</string>
+        <string name="message_number">%1$s messages</string>
+
+
+
     <string-array name="folders_name">
         <item>Sent</item>
         <item>Spam</item>
         <item>Drafts</item>
-        <item>Recieved</item>
+        <item>Received</item>
         <item>My folder</item>
     </string-array>
 

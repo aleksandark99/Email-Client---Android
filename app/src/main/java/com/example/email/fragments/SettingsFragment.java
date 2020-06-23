@@ -1,13 +1,19 @@
 package com.example.email.fragments;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.email.R;
+import com.example.email.job_service.MyJobScheduler;
 import com.example.email.repository.Repository;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -16,6 +22,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangedListener;
 
     private Preference switchPref;
+
+    public static JobScheduler mJobScheduler;
+    private JobInfo mJobInfo;
+    private final int id = 101;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -33,9 +43,34 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     Toast.makeText(getActivity(), "You must first select account!", Toast.LENGTH_LONG).show();
                 } else {
                     if (key.equals(LIST_KEY)){
+
+                        //kill existing service
+                        if (mJobScheduler != null) mJobScheduler.cancel(id);
+
                         Preference timeListPreference = findPreference(key);
                         timeListPreference.setSummary(sharedPreferences.getString(key, "test") + " minutes");
+                        //start service
+                        ComponentName componentName = new ComponentName(getActivity(), MyJobScheduler.class);
+                        JobInfo.Builder builder = new JobInfo.Builder(id ,componentName);
 
+                        String stringPeriod = sharedPreferences.getString(key, "15");
+
+                        int period = Integer.valueOf(stringPeriod) * 1000;
+                        builder.setPeriodic(period);
+                        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+                        builder.setPersisted(true); //this job exist even after system reboot
+
+                        mJobInfo = builder.build();
+
+                        mJobScheduler = (JobScheduler) getActivity().getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                        int res = mJobScheduler.schedule(mJobInfo);
+                        if (res == JobScheduler.RESULT_SUCCESS) {
+                            Log.i("res", "success");
+                            Toast.makeText(getActivity(), "Job started..", Toast.LENGTH_LONG).show();
+                        } else {
+                            Log.i("res", "not success");
+                            Toast.makeText(getActivity(), "Job not started..", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
 
@@ -46,16 +81,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         switchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                //attempt to sync with server when no account is selected
                 if ((boolean) newValue && Repository.activeAccount == null){
-                    Toast.makeText(getActivity(), "pOKUSJA DA SE SELEKTUJE ", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Select account for which you want to be notified! ", Toast.LENGTH_LONG).show();
                     return false;
+
+                } else if ((boolean) newValue && Repository.activeAccount != null){
+
                 } else {
-                    Toast.makeText(getActivity(), "pOKUSJA DA SE deSELEKTUJE ", Toast.LENGTH_LONG).show();
+                    //stop job service
+                    mJobScheduler = (JobScheduler) getActivity().getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                    mJobScheduler.cancel(id);
+                    Toast.makeText(getActivity(), "Job canceled... ", Toast.LENGTH_LONG).show();
                     return true; //allow deselect
                 }
-
-            };
+                return true;
+            }
         });
 
     }

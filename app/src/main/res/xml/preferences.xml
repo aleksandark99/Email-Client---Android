@@ -16,7 +16,7 @@
         <ListPreference
             app:key="sync_list"
             app:title="Sync time"
-            app:summary="Pull new messages from server"
+            app:summary="Please select sync time to pull new messages from server"
 
             app:entries="@array/syncTimes_entires"
             app:dependency="enable_sync"
