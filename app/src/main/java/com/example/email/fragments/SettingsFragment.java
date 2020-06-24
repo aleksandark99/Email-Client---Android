@@ -13,7 +13,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.email.R;
-import com.example.email.job_service.MyJobScheduler;
+import com.example.email.service.MyJobScheduler;
 import com.example.email.repository.Repository;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -50,6 +50,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         Preference timeListPreference = findPreference(key);
                         timeListPreference.setSummary(sharedPreferences.getString(key, "test") + " minutes");
                         //start service
+
                         ComponentName componentName = new ComponentName(getActivity(), MyJobScheduler.class);
                         JobInfo.Builder builder = new JobInfo.Builder(id ,componentName);
 

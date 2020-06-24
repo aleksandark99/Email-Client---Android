@@ -1,4 +1,4 @@
-package com.example.email.job_service;
+package com.example.email.service;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
@@ -14,13 +14,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.email.R;
-import com.example.email.repository.Repository;
 
 public class MyJobScheduler extends JobService {
-
-    //private Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
-    //private MessageService mMessageService = mRetrofit.create(MessageService.class);
-    private JobParameters params;
 
     private static int notificationID = 1;
     private static String channelID = "M_CH_ID";
@@ -30,17 +25,17 @@ public class MyJobScheduler extends JobService {
     @SuppressLint("StaticFieldLeak")
     @Override
     public boolean onStartJob(final JobParameters params) {
-        //final JobParameters par = params;
-        //Log.i("TAG", "onStartJob: pocinje fetchDaTA()");
-        // fetchData();
-        mJobExecutor = new JobExecutor(getApplicationContext(), String.valueOf(Repository.activeAccount.getId()))
+
+        mJobExecutor = new JobExecutor(getApplicationContext())
         {
+
+
             @Override
             protected void onPostExecute(String i){
                 Toast.makeText(getApplicationContext(), "Integer returned " + i, Toast.LENGTH_SHORT).show();
                 Log.i("registrovan text", String.valueOf(i));
 
-                //provera za ako je veci od 0 kreiraj notifikaciju
+                //provera za ako je veci od 0
                 int numberOfNewMessages =Integer.valueOf(i);
                 if (numberOfNewMessages > 0){
                     createNotificationChannel();
@@ -48,7 +43,7 @@ public class MyJobScheduler extends JobService {
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), channelID);
 
                     mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
-                    mBuilder.setContentTitle(getApplicationContext().getString(R.string.new_message));
+                    mBuilder.setContentTitle(getApplicationContext().getString(R.string.new_messages));
                     mBuilder.setContentText(i + " new messages");
                     mBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
@@ -74,8 +69,8 @@ public class MyJobScheduler extends JobService {
 
     private void createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence name = "PersonalNotif";
-            String desc = "aaaaa";
+            CharSequence name = "Notification";
+            String desc = "New messages";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel notificationChannel = new NotificationChannel(channelID, name, importance);
             notificationChannel.setDescription(desc);
