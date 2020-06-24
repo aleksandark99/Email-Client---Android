@@ -22,11 +22,18 @@ import android.widget.Toast;
 import com.example.email.R;
 import com.example.email.model.Tag;
 import com.example.email.repository.Repository;
+import com.example.email.retrofit.RetrofitClient;
+import com.example.email.retrofit.tags.TagsService;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class TagsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private Toolbar toolbar;
@@ -38,14 +45,16 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
     private EditText chipText;
     private ArrayList<Tag> tags;
     View forDelete;
+    private final Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+    private final TagsService tagsService=retrofit.create(TagsService.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
         Context ctx = getApplicationContext();
-        tags = Repository.get(this).getMyTags();
-
+//        tags = Repository.get(this).getMyTags();
+        tags=new ArrayList<>(Repository.loggedUser.getTags());
         toolbar = findViewById(R.id.customEmailsToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);//Removes Title from toolbar
@@ -155,7 +164,21 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                     Tag t = new Tag();
                     t.setTagName(chip.getText().toString());
 //                    tags.add(t);
-                    Repository.get(ctx).addTag(chip.getText().toString());
+//                    Repository.get(ctx).addTag(chip.getText().toString());
+                    Call<Tag> call = tagsService.addNewTag(t, Repository.loggedUser.getId(), Repository.jwt);
+                    call.enqueue(new Callback<Tag>() {
+                        @Override
+                        public void onResponse(Call<Tag> call, Response<Tag> response) {
+                            
+                        }
+
+                        @Override
+                        public void onFailure(Call<Tag> call, Throwable t) {
+
+                        }
+                    });
+
+                    Repository.loggedUser.getTags().add(t);
                     tagsChipGroup.addView(chip);
                     chipText.setText("");
 

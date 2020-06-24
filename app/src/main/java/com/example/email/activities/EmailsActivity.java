@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +62,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
     Retrofit retrofit;
     MessageService messageService;
+    ProgressBar progressBar;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -67,7 +71,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             getAllMessagesForAccount(Helper.getActiveAccountId(),hack);
             hack=1;
 
-        }else {
+        }else if (Helper.getActiveAccountId()!=0 ) {
             getAllMessagesForAccount(Helper.getActiveAccountId(),hack);
 
         }
@@ -139,6 +143,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             messageService = retrofit.create(MessageService.class);
 
             //mms=new ArrayList<>();
+            progressBar=findViewById(R.id.progressBar);
+     //   progressBar.setVisibility(View.GONE);
+
+
+
     }
 
     @Override
@@ -268,7 +277,9 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 //            Toast.makeText(this, "NOTTTT Login", Toast.LENGTH_SHORT).show();
 //
 //        }
-
+      //  progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.bringToFront();
 
         ArrayList<Message> messages=new ArrayList<Message>();
         Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
@@ -292,6 +303,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     recyclerView.setAdapter(emailsAdapter);
 //                    setMessages(new ArrayList<>((Set<Message>) response.body()));
                     setMessages(mms);
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
@@ -304,6 +316,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         });
 
 //        return messages;
+//        progressBar.setVisibility(View.GONE);
+
     }
     private void setMessages(ArrayList<Message> m){
         this.messages=m;
