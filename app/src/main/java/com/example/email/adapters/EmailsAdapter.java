@@ -3,6 +3,7 @@ package com.example.email.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.example.email.utility.Helper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -88,7 +90,12 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 
     @Override
     public void onBindViewHolder(@NonNull EmailsViewHolder holder, int position) {
-        holder.date.setText("Resiti api 24/26");
+
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//        String formattedDateTime = messages.get(position).getDateReceived().format(formatter);
+//
+        holder.date.setText(customdateformater(messages.get(position).getDate_time()));
+        System.out.println(messages.get(position).getDate_time()+"DATUMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         holder.from.setText(messages.get(position).getFrom());
         holder.subject.setText(messages.get(position).getSubject());
         holder.shortContent.setText(messages.get(position).getContent());
@@ -140,7 +147,6 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         } else {
             holder.profilePicture.setImageResource(R.drawable.ic_person_black_24dp);
         }
-
 
 //        holder.layoutRow.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -266,9 +272,13 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         }
 
 
+
         @Override
         public void onClick(View v) {
             this.recyclerClickListener.OnItemClick(v, getLayoutPosition());
         }
+    }
+    private String customdateformater(String datetoformat){
+        return datetoformat.substring(0,10)+" "+datetoformat.substring(11,16);
     }
 }

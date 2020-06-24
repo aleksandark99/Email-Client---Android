@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -63,6 +64,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     Retrofit retrofit;
     MessageService messageService;
     ProgressBar progressBar;
+
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onResume() {
@@ -126,24 +129,34 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 //
 //        }
         hack=0;
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+        swipeRefreshLayout=findViewById(R.id.swipeerrrr);
 
-                if (!recyclerView.canScrollVertically(-1)) {
-              //      Toast.makeText(EmailsActivity.this, "First", Toast.LENGTH_LONG).show();
-                    getAllMessagesForAccount(Helper.getActiveAccountId(),0);
-                }
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getAllMessagesForAccount(Helper.getActiveAccountId(),0);
+
             }
         });
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                Log.d("POZVANNNN","POZVANNNNNNNN");
+//
+//                if (!recyclerView.canScrollVertically(-1)) {
+//              //      Toast.makeText(EmailsActivity.this, "First", Toast.LENGTH_LONG).show();
+//                    getAllMessagesForAccount(Helper.getActiveAccountId(),0);
+//                }
+//            }
+//        });
 
 
            retrofit = RetrofitClient.getRetrofitInstance();
             messageService = retrofit.create(MessageService.class);
 
             //mms=new ArrayList<>();
-            progressBar=findViewById(R.id.progressBar);
+//            progressBar=findViewById(R.id.progressBar);
      //   progressBar.setVisibility(View.GONE);
 
 
@@ -155,7 +168,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         switch (item.getItemId()) {
             case R.id.sortByDate:
                 Toast.makeText(EmailsActivity.this, "SortByDate", Toast.LENGTH_SHORT).show();
-                messages.sort(Comparator.comparing(Message::getDateReceived));
+                messages.sort(Comparator.comparing(Message::getDate_time));
                 emailsAdapter.setData(messages);
 
                 emailsAdapter.notifyDataSetChanged();
@@ -266,27 +279,16 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
     }
     public void getAllMessagesForAccount(int id,int h){
-//        Intent intent = getIntent();
-//        String isFromLogin="";
-//        if(intent.getStringExtra("from")!=null){
-//             isFromLogin=intent.getStringExtra("from");
-//        }
-//        if(isFromLogin.equals("LoginActivity")){
-//            Toast.makeText(this, "From Login", Toast.LENGTH_SHORT).show();
-//        }else{
-//            Toast.makeText(this, "NOTTTT Login", Toast.LENGTH_SHORT).show();
-//
-//        }
-      //  progressBar.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.bringToFront();
+//        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.bringToFront();
+                Log.d("POZVANNNN","POZVANNNNNNNN");
 
         ArrayList<Message> messages=new ArrayList<Message>();
         Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
         MessageService messageService=mRetrofit.create(MessageService.class);
         Call<Set<Message>> call;
         if(h==0){
-            call=messageService.getAllMessages(id, Repository.jwt);
+                     call=messageService.getAllMessages(id, Repository.jwt);
 
         }else{
             call=messageService.getAllMessagesFromBack(id, Repository.jwt);
@@ -303,7 +305,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     recyclerView.setAdapter(emailsAdapter);
 //                    setMessages(new ArrayList<>((Set<Message>) response.body()));
                     setMessages(mms);
-                    progressBar.setVisibility(View.GONE);
+//                    progressBar.setVisibility(View.GONE);
+                    System.out.println(mms+"MMMMMMMMMMMMS");
+                    swipeRefreshLayout.setRefreshing(false);
+
                 }
             }
 
@@ -311,6 +316,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             public void onFailure(Call<Set<Message>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Eror PRILIKOM preuzimanja poruka POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
                 Log.d("SSS",t.getMessage());
+                swipeRefreshLayout.setRefreshing(false);
+
 
             }
         });
