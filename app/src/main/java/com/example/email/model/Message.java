@@ -31,7 +31,6 @@ public class Message implements Serializable {
         this.unread = false;
         this.tags = new ArrayList<Tag>();
 
-
     }
 
 

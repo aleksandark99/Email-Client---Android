@@ -33,10 +33,16 @@ public interface MessageService {
     Call<Set<Message>> getAllMessagesByRules(@Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
 
     @GET("/inactive_messages/{account_id}")
-    Call<Set<Message>> getAllInactiveMessage(@Path("account_id") int account_id, @Header("Authorization") String authToken);
+    Call<Set<Message>> getAllInactiveMessages(@Path("account_id") int account_id, @Header("Authorization") String authToken);
+
+    @GET("/sent_messages/{account_id}")
+    Call<Set<Message>> getAllSentMessages(@Path("account_id") int account_id, @Header("Authorization") String authToken);
 
     @PUT("/messages/delete")
     Call<Boolean> deleteMessage(@Body Message messageToBeMadeUnreadFalse,@Header("Authorization") String authToken);
+
+    @DELETE("/message/delete/{message_id}")
+    Call<ResponseBody> deleteMessagePhysically(@Path("message_id") int message_id, @Header("Authorization") String authToken);
 
     @PUT("/message/{message_id}/{folder_id}/{account_id}")
     Call<Message> moveMessageToFolder(@Path("message_id") int message_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);

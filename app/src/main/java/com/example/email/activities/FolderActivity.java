@@ -113,7 +113,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         folderAdapter = new FolderAdapter(this,this);
         loadChildFolders(folder_id);
-        loadFolderMessages(folderName, folder_id);
+        loadFolderMessages(folder_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         btnAddSubFolder.setOnClickListener(new View.OnClickListener() {
@@ -267,10 +267,14 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
                 case R.id.action_mode_del:
 
-                    Toast.makeText(FolderActivity.this, "Delete option selected", Toast.LENGTH_SHORT).show();
+                    if(mFolder.getName().equals("Trash")){
+                        openDeleteDialogTrash((int) selectedMessage.getId());
+
+                    }else{
+                        openDeleteDialogMessage(selectedMessage);
+                    }
 
                     mode.finish();
-
                     return true;
 
 
@@ -298,17 +302,20 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         }
     }
 
-    private void loadFolderMessages(String name, int folder_id){
+    private void loadFolderMessages(int folder_id){
 
         int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
+        String folderName = mFolder.getName();
 
-        if(name.equals("Trash")){
+        if(folderName.equals("Trash")){
             loadInactiveMessages(acc_id);
+        }
+        if(folderName.equals("Sent")) {
+            loadSentMessages(acc_id);
 
-        }else{
+        }else if (!folderName.equals("Sent") && !folderName.equals("Drafts") && !folderName.equals("Trash")){
             loadFolderMessagesByRules(folder_id);
         }
-
     }
 
     @Override
@@ -360,7 +367,6 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         EditFolderFragment editFragment = new EditFolderFragment();
         Bundle args = new Bundle();
         args.putSerializable("folderToChange", mFolder);
-        System.out.println("PRE POZIVANJA FRAGMENTA " + mFolder.isActive());
         editFragment.setArguments(args);
         editFragment.show(getSupportFragmentManager(), "edit folder");
     }
@@ -378,10 +384,96 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     protected void onResume() {
         super.onResume();
         loadChildFolders(mFolder.getId());
-        loadFolderMessagesByRules(mFolder.getId());
+        //loadFolderMessagesByRules(mFolder.getId());
         Intent intent = new Intent();
         intent.putExtra("changedFolder", mFolder);
         setResult(RESULT_OK, intent);
+    }
+
+    private void openDeleteDialogMessage(Message message){
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        alertDialog.setTitle("Confirm");
+        alertDialog.setMessage("Are you sure you want to delete message?");
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Call<Boolean> call = messageService.deleteMessage(message, Repository.jwt);
+
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (!response.isSuccessful()) {
+                            Log.i("Some error happened during message delete!", String.valueOf(response.code()));
+                            return;
+                        }
+                        if(response.code() == 200){
+                            folderMessages.remove(message);
+                            folderAdapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), "You have successfully delete message!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+                    }
+                });
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void openDeleteDialogTrash(int message_id){
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage("Removing message from Trash will permanently delete this message!Are you sure you want to do this?");
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Call<ResponseBody> call = messageService.deleteMessagePhysically(message_id, Repository.jwt);
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (!response.isSuccessful()) {
+                            Log.i("Some error happened during message delete!", String.valueOf(response.code()));
+                            return;
+                        }
+                        if(response.code() == 200){
+                            folderMessages.remove(selectedMessage);
+                            folderAdapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), "You have successfully delete message!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+                    }
+                });
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
 
@@ -485,7 +577,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private void loadInactiveMessages(int account_id){
 
-        Call<Set<Message>> call = messageService.getAllInactiveMessage(account_id, Repository.jwt);
+        Call<Set<Message>> call = messageService.getAllInactiveMessages(account_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Message>>() {
             @Override
@@ -505,6 +597,31 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
                 Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
             }
         });
+    }
+
+    private void loadSentMessages(int account_id){
+
+        Call<Set<Message>> call = messageService.getAllSentMessages(account_id, Repository.jwt);
+
+        call.enqueue(new Callback<Set<Message>>() {
+            @Override
+            public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
+                if (!response.isSuccessful()) {
+                    Log.i("ERROR: ", String.valueOf(response.code()));
+                    return;
+                }
+
+                folderMessages = new ArrayList<>(response.body());
+                folderAdapter.setMessages(folderMessages);
+                recyclerView.setAdapter(folderAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<Set<Message>> call, Throwable t) {
+                Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+            }
+        });
+
     }
 
     @Override
