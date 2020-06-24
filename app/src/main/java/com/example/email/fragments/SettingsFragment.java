@@ -50,6 +50,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         Preference timeListPreference = findPreference(key);
                         timeListPreference.setSummary(sharedPreferences.getString(key, "test") + " minutes");
                         //start service
+
                         ComponentName componentName = new ComponentName(getActivity(), MyJobScheduler.class);
                         JobInfo.Builder builder = new JobInfo.Builder(id ,componentName);
 

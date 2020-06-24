@@ -20,9 +20,9 @@ public class JobExecutor extends AsyncTask<Void, Void, String> {
     private String idAccount;
 
 
-    public JobExecutor(Context context, String idAccount) {
+    public JobExecutor(Context context ) {
         this.context = context;
-        this.idAccount = idAccount;
+
     }
 
     @Override

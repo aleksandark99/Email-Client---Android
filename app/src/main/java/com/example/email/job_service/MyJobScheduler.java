@@ -16,6 +16,11 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.email.R;
 import com.example.email.repository.Repository;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class MyJobScheduler extends JobService {
 
     //private Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
@@ -33,14 +38,60 @@ public class MyJobScheduler extends JobService {
         //final JobParameters par = params;
         //Log.i("TAG", "onStartJob: pocinje fetchDaTA()");
         // fetchData();
-        mJobExecutor = new JobExecutor(getApplicationContext(), String.valueOf(Repository.activeAccount.getId()))
+        mJobExecutor = new JobExecutor(getApplicationContext())
         {
+
+            @Override
+            protected String doInBackground(Void... voids) {
+
+                String result;
+                String inputLine;
+
+                try {
+                    //Create a URL object holding our url
+                    URL myUrl = new URL("http://10.0.2.2:8080/messages/notify/"+String.valueOf(Repository.activeAccount.getId()));
+                    //Create a connection
+                    HttpURLConnection connection =(HttpURLConnection) myUrl.openConnection();
+                    connection.setRequestMethod("GET");
+
+                    //connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setRequestProperty("Content-Language", "en-US");
+                    connection.setRequestProperty("Authorization", Repository.jwt);
+                    connection.setReadTimeout(15000);
+                    connection.setConnectTimeout(15000);
+                    //Connect to our url
+                    connection.connect();
+
+
+                    InputStreamReader streamReader = new
+                            InputStreamReader(connection.getInputStream());
+                    //Create a new buffered reader and String Builder
+                    BufferedReader reader = new BufferedReader(streamReader);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    //Check if the line we are reading is not null
+                    while((inputLine = reader.readLine()) != null){
+                        stringBuilder.append(inputLine);
+                    }
+                    //Close our InputStream and Buffered reader
+                    reader.close();
+                    streamReader.close();
+                    //Set our result equal to our stringBuilder
+                    result = stringBuilder.toString();
+                    // Log.i("TAaaaaG", String.valueOf(result));
+                    return result;
+
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
             @Override
             protected void onPostExecute(String i){
                 Toast.makeText(getApplicationContext(), "Integer returned " + i, Toast.LENGTH_SHORT).show();
                 Log.i("registrovan text", String.valueOf(i));
 
-                //provera za ako je veci od 0 kreiraj notifikaciju
+                //provera za ako je veci od 0
                 int numberOfNewMessages =Integer.valueOf(i);
                 if (numberOfNewMessages > 0){
                     createNotificationChannel();

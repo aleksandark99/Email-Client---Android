@@ -201,6 +201,12 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
                 startActivity(new Intent(this, TagsActivity.class));
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
+            case R.id.logOut:
+                //logout
+                Intent login=new Intent(this,LoginActivity.class);
+                login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(login);
+                ContactsActivity.this.finish();
         }
         return true;
     }
