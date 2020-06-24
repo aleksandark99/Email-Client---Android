@@ -43,7 +43,7 @@ public class MyJobScheduler extends JobService {
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), channelID);
 
                     mBuilder.setSmallIcon(R.drawable.ic_message_black_24dp);
-                    mBuilder.setContentTitle(getApplicationContext().getString(R.string.new_message));
+                    mBuilder.setContentTitle(getApplicationContext().getString(R.string.new_messages));
                     mBuilder.setContentText(i + " new messages");
                     mBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
