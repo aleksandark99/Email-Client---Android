@@ -1,7 +1,9 @@
-package com.example.email.job_service;
+package com.example.email.service;
 
 import android.content.Context;
 import android.os.AsyncTask;
+
+import com.example.email.repository.Repository;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -17,7 +19,6 @@ public class JobExecutor extends AsyncTask<Void, Void, String> {
     private static final int CONNECTION_TIMEOUT = 15000;
     private Context context;
 
-    private String idAccount;
 
 
     public JobExecutor(Context context ) {
@@ -33,12 +34,14 @@ public class JobExecutor extends AsyncTask<Void, Void, String> {
 
         try {
             //Create a URL object holding our url
-            URL myUrl = new URL("http://10.0.2.2:8080/messages/notify/"+idAccount);
+            URL myUrl = new URL("http://10.0.2.2:8080/messages/notify/"+String.valueOf(Repository.activeAccount.getId()));
             //Create a connection
             HttpURLConnection connection =(HttpURLConnection) myUrl.openConnection();
             connection.setRequestMethod(REQUEST_METHOD);
             connection.setReadTimeout(READ_TIMEOUT);
             connection.setConnectTimeout(CONNECTION_TIMEOUT);
+            connection.setRequestProperty("Content-Language", "en-US");
+            connection.setRequestProperty("Authorization", Repository.jwt);
             //Connect to our url
             connection.connect();
 
@@ -63,6 +66,7 @@ public class JobExecutor extends AsyncTask<Void, Void, String> {
         } catch (Exception e){
             e.printStackTrace();
         }
+
         return null;
     }
 

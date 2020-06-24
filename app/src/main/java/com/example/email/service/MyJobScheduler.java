@@ -1,4 +1,4 @@
-package com.example.email.job_service;
+package com.example.email.service;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
@@ -14,18 +14,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.email.R;
-import com.example.email.repository.Repository;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class MyJobScheduler extends JobService {
-
-    //private Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
-    //private MessageService mMessageService = mRetrofit.create(MessageService.class);
-    private JobParameters params;
 
     private static int notificationID = 1;
     private static String channelID = "M_CH_ID";
@@ -35,56 +25,10 @@ public class MyJobScheduler extends JobService {
     @SuppressLint("StaticFieldLeak")
     @Override
     public boolean onStartJob(final JobParameters params) {
-        //final JobParameters par = params;
-        //Log.i("TAG", "onStartJob: pocinje fetchDaTA()");
-        // fetchData();
+
         mJobExecutor = new JobExecutor(getApplicationContext())
         {
 
-            @Override
-            protected String doInBackground(Void... voids) {
-
-                String result;
-                String inputLine;
-
-                try {
-                    //Create a URL object holding our url
-                    URL myUrl = new URL("http://10.0.2.2:8080/messages/notify/"+String.valueOf(Repository.activeAccount.getId()));
-                    //Create a connection
-                    HttpURLConnection connection =(HttpURLConnection) myUrl.openConnection();
-                    connection.setRequestMethod("GET");
-
-                    //connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setRequestProperty("Content-Language", "en-US");
-                    connection.setRequestProperty("Authorization", Repository.jwt);
-                    connection.setReadTimeout(15000);
-                    connection.setConnectTimeout(15000);
-                    //Connect to our url
-                    connection.connect();
-
-
-                    InputStreamReader streamReader = new
-                            InputStreamReader(connection.getInputStream());
-                    //Create a new buffered reader and String Builder
-                    BufferedReader reader = new BufferedReader(streamReader);
-                    StringBuilder stringBuilder = new StringBuilder();
-                    //Check if the line we are reading is not null
-                    while((inputLine = reader.readLine()) != null){
-                        stringBuilder.append(inputLine);
-                    }
-                    //Close our InputStream and Buffered reader
-                    reader.close();
-                    streamReader.close();
-                    //Set our result equal to our stringBuilder
-                    result = stringBuilder.toString();
-                    // Log.i("TAaaaaG", String.valueOf(result));
-                    return result;
-
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                return null;
-            }
 
             @Override
             protected void onPostExecute(String i){
@@ -125,8 +69,8 @@ public class MyJobScheduler extends JobService {
 
     private void createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence name = "PersonalNotif";
-            String desc = "aaaaa";
+            CharSequence name = "Notification";
+            String desc = "New messages";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel notificationChannel = new NotificationChannel(channelID, name, importance);
             notificationChannel.setDescription(desc);

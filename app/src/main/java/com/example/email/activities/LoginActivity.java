@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.job.JobScheduler;
-import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,11 +17,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.email.R;
-import com.example.email.job_service.MyJobScheduler;
-import com.example.email.model.Account;
 import com.example.email.model.Login;
 import com.example.email.model.LoginResponse;
-import com.example.email.model.User;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.login.LoginService;
