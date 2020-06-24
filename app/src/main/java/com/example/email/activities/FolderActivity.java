@@ -152,6 +152,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     @Override
     public void OnItemClick(View view, int position) {
 
+        view.setBackgroundColor(0xFFFFFFF);
+
         if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_FOLDER) {
 
             Intent intent = new Intent(this, FolderActivity.class);
@@ -169,7 +171,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     @Override
     public void OnLongItemClick(View view, int position) {
 
-        view.setBackgroundResource(R.color.colorAccent);
+        view.setBackgroundColor(0XFFC5D1D8);
 
         if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_EMAIL) {
 

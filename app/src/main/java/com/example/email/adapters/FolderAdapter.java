@@ -1,6 +1,7 @@
 package com.example.email.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +10,21 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.email.R;
+import com.example.email.model.Contact;
 import com.example.email.model.Folder;
 import com.example.email.model.Message;
 import com.example.email.model.interfaces.RecyclerClickListener;
+import com.example.email.repository.Repository;
+import com.example.email.utility.Helper;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -197,6 +205,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView from, subject, shortContent, date;
         CardView cardView;
         ChipGroup chipGroup;
+        ConstraintLayout layoutRow;
+        ImageView attachment, profilePicture;
 
         RecyclerClickListener recyclerClickListener;
 
@@ -209,6 +219,12 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             cardView = itemView.findViewById(R.id.cardViewEmailRow1);//test za unread
             chipGroup = itemView.findViewById(R.id.ChipGroupRow);
 
+            layoutRow = itemView.findViewById(R.id.new_email_row_id);
+
+            attachment = itemView.findViewById(R.id.hasAttachmentIcon);
+
+            profilePicture = itemView.findViewById(R.id.imageView5);
+
             recyclerClickListener = listener;
 
             itemView.setOnClickListener(this);
@@ -218,10 +234,47 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         private void setEmailDetails(Message message){
 
+            date.setText("API");
             from.setText(message.getFrom());
             subject.setText(message.getSubject());
-            date.setText("Api problem");
             shortContent.setText(message.getContent());
+            if (message.isUnread()) {
+                cardView.setBackgroundColor(0XFFC5D1D8);
+            } else {
+                cardView.setBackgroundColor(0xFFFFFFF);
+            }
+            chipGroup.removeAllViews();
+
+            if( message.getTags()!=null){
+
+                for (int i = 0; i < message.getTags().size(); i++) {
+                    Chip chip = new Chip(chipGroup.getContext());
+                    chip.setText(message.getTags().get(i).getTagName());
+                    int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(color));
+                    chipGroup.addView(chip);
+                }
+            }
+
+            attachment.setVisibility(View.INVISIBLE);
+            if (message.getAttachments().size() > 0) {
+                attachment.setVisibility(View.VISIBLE);
+            }
+
+            Contact c;
+            try {
+                c = Repository.get(context).findContactByEmail(message.getFrom().toLowerCase());
+
+            } catch (Exception e) {
+                c = null;
+
+            }
+            if (c != null) {
+                Helper.displayImageIntoImageView(c.getPhotoPath(), profilePicture, context);
+
+            } else {
+                profilePicture.setImageResource(R.drawable.ic_person_black_24dp);
+            }
 
         }
 
