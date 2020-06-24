@@ -18,6 +18,7 @@ public class Message implements Serializable {
     private String subject;
     private String content;
     private LocalDateTime date;
+    private String date_time;
     private boolean unread;
     private ArrayList<Tag> tags;
     private ArrayList<Attachment> attachments;
@@ -56,7 +57,7 @@ public class Message implements Serializable {
         this.account = account;
     }
 
-    public Message(long id, String from, ArrayList<String> to, ArrayList<String> cc, ArrayList<String> bcc, String subject, String content, LocalDateTime date, boolean unread, ArrayList<Tag> tags) {
+    public Message(long id, String from, ArrayList<String> to, ArrayList<String> cc, ArrayList<String> bcc, String subject, String content,String date_time, LocalDateTime date, boolean unread, ArrayList<Tag> tags) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -67,6 +68,7 @@ public class Message implements Serializable {
         this.date= date;
         this.unread = unread;
         this.tags = tags;
+        this.date_time=date_time;
     }
 // GETTERS AND SETTERS ///////////////////////////////////////////////////////////////////////
     public long getId() {
@@ -154,6 +156,18 @@ public class Message implements Serializable {
 
     public void setAttachments(ArrayList<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public String getDate_time() {
+        return date_time;
+    }
+
+    public void setDate_time(String date_time) {
+        this.date_time = date_time;
     }
 
     @Override
