@@ -22,6 +22,7 @@ public class Repository {
     public static User loggedUser = null;
     public static String jwt = null;
     public static Account activeAccount = null;
+    public static boolean ascending=true;
     public static SharedPreferences sharedPreferences = null;
 
 

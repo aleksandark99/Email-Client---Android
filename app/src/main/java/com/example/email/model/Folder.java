@@ -40,6 +40,8 @@ public class Folder implements Serializable {
     @Expose
     private boolean isActive;
 
+
+
     public Folder(){}
 
     public Folder(int id, String name, Folder parent_folder, Set<Folder> childFolders, Set<Message> messages, Set<Rule> destination, boolean isActive) {
