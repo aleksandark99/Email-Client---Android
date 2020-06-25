@@ -241,7 +241,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         }
     };
 
-    public class EmailsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class EmailsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         RecyclerClickListener recyclerClickListener;
 
@@ -268,7 +268,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             profilePicture = itemView.findViewById(R.id.imageView5);
             recyclerClickListener=listener;
             itemView.setOnClickListener(this);
-
+            itemView.setOnLongClickListener(this);
         }
 
 
@@ -276,6 +276,13 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         @Override
         public void onClick(View v) {
             this.recyclerClickListener.OnItemClick(v, getLayoutPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            this.recyclerClickListener.OnLongItemClick(v, getLayoutPosition());
+            return true;
         }
     }
     private String customdateformater(String datetoformat){

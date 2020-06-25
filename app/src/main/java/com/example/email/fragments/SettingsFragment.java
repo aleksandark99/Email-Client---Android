@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -19,9 +20,10 @@ import com.example.email.repository.Repository;
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     public static final String LIST_KEY = "sync_list";
+    public static final String SORT_KEY = "sortValuesMessages";
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangedListener;
 
-    private Preference switchPref;
+    private Preference switchPref, sortPref;
 
     public static JobScheduler mJobScheduler;
     private JobInfo mJobInfo;
@@ -33,6 +35,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
         switchPref = findPreference("enable_sync");
+        sortPref = findPreference(SORT_KEY);
 
         preferenceChangedListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -94,6 +97,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     mJobScheduler.cancel(id);
                     Toast.makeText(getActivity(), "Job canceled... ", Toast.LENGTH_LONG).show();
                     return true; //allow deselect
+                }
+                return true;
+            }
+        });
+
+        sortPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                String sortValue = newValue.toString();
+                if(preference instanceof ListPreference){
+                    ListPreference sortPreference = (ListPreference) preference;
+                    int index = sortPreference.findIndexOfValue(sortValue);
+                    System.out.println("VALUEEEEEEEEEEEE " + sortPreference.getEntries()[index]);
+                    preference.setSummary(sortPreference.getEntries()[index]);
                 }
                 return true;
             }

@@ -2,17 +2,22 @@ package com.example.email.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,6 +32,7 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.EmailsAdapter;
+import com.example.email.fragments.CheckFolderFragment;
 import com.example.email.model.Contact;
 import com.example.email.model.Message;
 import com.example.email.model.interfaces.RecyclerClickListener;
@@ -47,7 +53,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RecyclerClickListener {
+public class EmailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RecyclerClickListener, CheckFolderFragment.MoveMessageDialogListener {
     RecyclerView recyclerView;
     private Toolbar toolbar;
     DrawerLayout emailsDrawerLayour;
@@ -66,6 +72,11 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     ProgressBar progressBar;
 
     SwipeRefreshLayout swipeRefreshLayout;
+
+    private ActionMode mActionMode;
+    private Message selectedMessage;
+    private static final int MOVE_OK = 10;
+    private static final int COPY_OK = 11;
 
     @Override
     protected void onResume() {
@@ -273,6 +284,14 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
                 break;
 
+            case R.id.logOut:
+
+                Intent logOut = new Intent(this, LoginActivity.class);
+                logOut.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(logOut);
+                this.finish();
+                break;
+
         }
 
         return true;
@@ -332,6 +351,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public void OnItemClick(View view, int position) {
+
+        if(mActionMode != null){
+            mActionMode.finish();}
+
         System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
         mms.get(position).setUnread(false);
         Call<Boolean> call=messageService.makeMessageRead(mms.get(position), Repository.jwt);
@@ -352,17 +375,154 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     public void OnLongItemClick(View view, int position) {
 
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                if (mActionMode != null) {
+
+                    return false;
+                }
+                selectedMessage = messages.get(position);
+
+                mActionMode = startSupportActionMode(mActionModeCallback);
+
+                return true;
+            }
+        });
+
     }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+            mode.getMenuInflater().inflate(R.menu.action_mode_menu, menu);
+            mode.setTitle("Choose the option");
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            int item_id = item.getItemId();
+
+            CheckFolderFragment fragment = new CheckFolderFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("checkedMessage", selectedMessage);
+
+            switch(item_id){
+
+                case R.id.action_mode_copy:
+
+                    args.putInt("action_mode", R.id.action_mode_copy);
+                    fragment.setArguments(args);
+                    fragment.show(getSupportFragmentManager(), "check folder");
+
+                    mode.finish();
+                    return true;
+
+                case R.id.action_mode_move:
+
+                    args.putInt("action_mode", R.id.action_mode_move);
+                    fragment.setArguments(args);
+                    fragment.show(getSupportFragmentManager(), "check folder");
+
+                    mode.finish();
+                    return true;
+
+                case R.id.action_mode_del:
+
+                    openDeleteDialogMessage(selectedMessage);
+                    mode.finish();
+                    return true;
+
+                default: return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+
+            mActionMode = null;
+        }
+    };
+
+    private void openDeleteDialogMessage(Message message){
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        alertDialog.setTitle("Confirm");
+        alertDialog.setMessage("Are you sure you want to delete message?");
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Call<Boolean> call = messageService.deleteMessage(message, Repository.jwt);
+
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (!response.isSuccessful()) {
+                            Log.i("Some error happened during message delete!", String.valueOf(response.code()));
+                            return;
+                        }
+                        if(response.code() == 200){
+                            messages.remove(message);
+                            emailsAdapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), "You have successfully delete message!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+                    }
+                });
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+
 
     @Override
     public void onDeleteClick(View view, int position) {
 
     }
 
+    @Override
+    public void onFinishedMovedMessageDialog(int code, int message_id) {
 
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        Repository.activeAccount=null;
-//    }
+        if(code == MOVE_OK){
+            moveMessage(message_id);
+            Toast.makeText(getApplicationContext(), "You have successfully moved message!", Toast.LENGTH_SHORT).show();
+
+        }else if(code == COPY_OK){
+            Toast.makeText(getApplicationContext(), "You have successfully copied message!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void moveMessage(int message_id){
+        for(Message m : messages){
+            if(m.getId() == message_id){
+                messages.remove(m);
+                emailsAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 }

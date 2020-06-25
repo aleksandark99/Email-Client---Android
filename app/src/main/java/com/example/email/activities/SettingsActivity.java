@@ -70,26 +70,35 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
             case R.id.messages_item:
 
                 startActivity(new Intent(SettingsActivity.this, EmailsActivity.class));
-
                 break;
 
             case R.id.contacts_item:
 
                 startActivity(new Intent(SettingsActivity.this, ContactsActivity.class));
-
                 break;
 
 
             case R.id.folders_item:
 
                 startActivity(new Intent(SettingsActivity.this, FoldersActivity.class));
-
                 break;
 
             case R.id.profile_item:
 
                 startActivity(new Intent(this, ProfileActivity.class));
+                break;
 
+            case R.id.logOut:
+
+                Intent logOut = new Intent(this, LoginActivity.class);
+                logOut.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(logOut);
+                this.finish();
+                break;
+
+            case R.id.tags_item:
+
+                startActivity(new Intent(this, TagsActivity.class));
                 break;
         }
 

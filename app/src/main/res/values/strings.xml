@@ -27,22 +27,6 @@
 
 
 
-    <string-array name="folders_name">
-        <item>Sent</item>
-        <item>Spam</item>
-        <item>Drafts</item>
-        <item>Received</item>
-        <item>My folder</item>
-    </string-array>
-
-    <integer-array name="message_count">
-        <item>23</item>
-        <item>34</item>
-        <item>56</item>
-        <item>89</item>
-        <item>5</item>
-    </integer-array>
-
     <string-array name="sortingTypes">
         <item>Descending</item>
         <item>Ascending</item>
