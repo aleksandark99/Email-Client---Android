@@ -8,6 +8,13 @@
 <!--        app:showAsAction="ifRoom"></item>-->
 
     <item
+        android:id="@+id/tagForMessageId"
+        android:icon="@drawable/add_tag_icon"
+        android:title="Add new tag"
+
+        app:showAsAction="always"></item>
+
+    <item
         android:id="@+id/delete"
         android:icon="@drawable/ic_delete_black_24dp"
         android:title="Back"

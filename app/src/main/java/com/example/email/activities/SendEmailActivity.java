@@ -303,10 +303,10 @@ public class SendEmailActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //getData();
+        getData();
 
 
-        //setData();
+        setData();
 
         recyclerView=findViewById(R.id.recycler_view_attachmentsSend);
         attachmentAdapter=new AttachmentAdapter(attachments,this);
@@ -351,7 +351,7 @@ public class SendEmailActivity extends AppCompatActivity {
                     chipGroupTags.addView(chip);
                 }
             }
-            if (toArrayString!=null) {
+            if (toArrayString!=null && toArrayString.size()>0) {
                 for (String t : toArrayString
                 ) {
                     Chip chip = new Chip(chipGroupTo.getContext());
@@ -393,7 +393,7 @@ public class SendEmailActivity extends AppCompatActivity {
 
                 }
             }
-            if(fromMessageString!=null){
+            if(fromMessageString!=null&& !fromMessageString.equals("")){
                 Chip chip = new Chip(chipGroupTo.getContext());
                 chip.setText(fromMessageString);
                 chip.setCloseIconResource(R.drawable.exit_icon);
