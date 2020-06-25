@@ -30,6 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -98,10 +99,25 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                     case DialogInterface.BUTTON_POSITIVE:
                         /// ovo uraditi tek ako prodje na bekendu
                         Chip c = (Chip) forDelete;
-                        tagsChipGroup.removeView(forDelete);
-                        // OVO RADITI AKO PRODJE NA BEKU i radit za repo ne samo ovde vizuelno
-                        tags.removeIf(tag -> (tag.getTagName().equals(c.getText().toString())));
-                        Repository.get(ctx).removeTag(c.getText().toString());
+
+                        Call<ResponseBody> call=tagsService.deleteTag(forDelete.getId(), Repository.jwt);
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                tagsChipGroup.removeView(forDelete);
+                                // OVO RADITI AKO PRODJE NA BEKU i radit za repo ne samo ovde vizuelno
+                                tags.removeIf(tag -> (tag.getTagName().equals(c.getText().toString())));
+
+
+                                Repository.get(ctx).removeTag(c.getText().toString());
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+
                         // takodje removati iz iz repository liste
                         break;
 
@@ -169,7 +185,8 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                     call.enqueue(new Callback<Tag>() {
                         @Override
                         public void onResponse(Call<Tag> call, Response<Tag> response) {
-                            
+                            Repository.loggedUser.getTags().add(t);
+                            tagsChipGroup.addView(chip);
                         }
 
                         @Override
@@ -178,8 +195,7 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                         }
                     });
 
-                    Repository.loggedUser.getTags().add(t);
-                    tagsChipGroup.addView(chip);
+
                     chipText.setText("");
 
                 } else {
