@@ -234,7 +234,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         private void setEmailDetails(Message message){
 
-            date.setText("API");
+            date.setText(customdateformater(message.getDate_time()));
             from.setText(message.getFrom());
             subject.setText(message.getSubject());
             shortContent.setText(message.getContent());
@@ -289,7 +289,11 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             this.recyclerClickListener.OnLongItemClick(v, getLayoutPosition());
 
-            return false;
+            return true;
         }
+    }
+
+    private String customdateformater(String datetoformat){
+        return datetoformat.substring(0,10)+" "+datetoformat.substring(11,16);
     }
 }

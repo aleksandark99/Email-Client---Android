@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 
 import com.example.email.R;
 import com.example.email.adapters.FolderAdapter;
-import com.example.email.adapters.FoldersAdapter;
 import com.example.email.fragments.CheckFolderFragment;
 import com.example.email.fragments.EditFolderFragment;
 import com.example.email.model.Folder;
@@ -152,7 +150,10 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     @Override
     public void OnItemClick(View view, int position) {
 
-        view.setBackgroundColor(0xFFFFFFF);
+        if(mActionMode != null){
+          view.setBackgroundColor(0xFFFFFFF);
+          mActionMode.finish();}
+
 
         if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_FOLDER) {
 
@@ -166,6 +167,17 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         }
 
+        if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_EMAIL){
+
+            Message message = folderMessages.get(position);
+            if(message.isUnread()){
+                message.setUnread(false);
+                setMessageAsRead(message);
+            }
+            Intent intent = new Intent(this, EmailActivity.class);
+            intent.putExtra("message",message);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -315,10 +327,15 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         if(folderName.equals("Sent")) {
             loadSentMessages(acc_id);
 
+        }
+        if(folderName.equals("Drafts")){
+            loadDraftsMessage(acc_id);
+
         }else if (!folderName.equals("Sent") && !folderName.equals("Drafts") && !folderName.equals("Trash")){
             loadFolderMessagesByRules(folder_id);
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -386,7 +403,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     protected void onResume() {
         super.onResume();
         loadChildFolders(mFolder.getId());
-        //loadFolderMessagesByRules(mFolder.getId());
+        loadFolderMessages(mFolder.getId());
         Intent intent = new Intent();
         intent.putExtra("changedFolder", mFolder);
         setResult(RESULT_OK, intent);
@@ -477,7 +494,6 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         });
         alertDialog.show();
     }
-
 
     private void openDeleteDialog(int folder_id, int position){
 
@@ -626,6 +642,31 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     }
 
+    private void loadDraftsMessage(int acc_id) {
+
+        Call<Set<Message>> call = messageService.getAllDraftsMessages(acc_id, Repository.jwt);
+
+        call.enqueue(new Callback<Set<Message>>() {
+            @Override
+            public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
+                if (!response.isSuccessful()) {
+                    Log.i("ERROR: ", String.valueOf(response.code()));
+                    return;
+                }
+
+                folderMessages = new ArrayList<>(response.body());
+                folderAdapter.setMessages(folderMessages);
+                recyclerView.setAdapter(folderAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<Set<Message>> call, Throwable t) {
+                Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
+            }
+        });
+
+    }
+
     @Override
     public void onFinishedMovedMessageDialog(int code, int message_id) {
 
@@ -645,5 +686,19 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
                 folderAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    private void setMessageAsRead(Message message){
+
+        Call<Boolean> call=messageService.makeMessageRead(message, Repository.jwt);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+            }
+        });
     }
 }

@@ -14,6 +14,7 @@ import com.example.email.R;
 import com.example.email.model.Folder;
 import com.example.email.model.Message;
 import com.example.email.model.interfaces.RecyclerClickListener;
+import com.example.email.repository.Repository;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -128,6 +129,5 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FoldersV
             return false;
         }
     }
-
 
 }

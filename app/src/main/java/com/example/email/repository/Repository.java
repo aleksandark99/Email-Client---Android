@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 
+
 /*Dummy repository Singleton class for storing different objects*/
 public class Repository {
 
@@ -24,7 +25,6 @@ public class Repository {
     public static Account activeAccount = null;
     public static boolean ascending=true;
     public static SharedPreferences sharedPreferences = null;
-
 
 
 
@@ -49,7 +49,6 @@ public class Repository {
         tags = new ArrayList<Tag>();
         setStaticTags();
         setStaticMessages();
-
     }
 
 

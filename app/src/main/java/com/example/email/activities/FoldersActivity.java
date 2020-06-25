@@ -181,25 +181,34 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
             case R.id.messages_item:
 
                 startActivity(new Intent(FoldersActivity.this, EmailsActivity.class));
-
                 break;
 
             case R.id.contacts_item:
 
                 startActivity(new Intent(FoldersActivity.this, ContactsActivity.class));
-
                 break;
 
             case R.id.settings_item:
 
                 startActivity(new Intent(FoldersActivity.this, SettingsActivity.class));
-
                 break;
 
             case R.id.profile_item:
 
                 startActivity(new Intent(this, ProfileActivity.class));
+                break;
 
+            case R.id.logOut:
+
+                Intent logOut = new Intent(this, LoginActivity.class);
+                logOut.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(logOut);
+                this.finish();
+                break;
+
+            case R.id.tags_item:
+
+                startActivity(new Intent(this, TagsActivity.class));
                 break;
         }
 
@@ -215,8 +224,6 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
         Intent intent = new Intent(this, FolderActivity.class);
 
         previewFolder = folders.get(position);
-
-        System.out.println("Folders activity active item " + previewFolder.isActive());
 
         intent.putExtra("folder", previewFolder);
 

@@ -38,6 +38,9 @@ public interface MessageService {
     @GET("/sent_messages/{account_id}")
     Call<Set<Message>> getAllSentMessages(@Path("account_id") int account_id, @Header("Authorization") String authToken);
 
+    @GET("/drafts_messages/{account_id}")
+    Call<Set<Message>> getAllDraftsMessages(@Path("account_id") int account_id, @Header("Authorization") String authToken);
+
     @PUT("/messages/delete")
     Call<Boolean> deleteMessage(@Body Message messageToBeMadeUnreadFalse,@Header("Authorization") String authToken);
 
