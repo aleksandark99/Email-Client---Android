@@ -444,6 +444,7 @@ public class SendEmailActivity extends AppCompatActivity {
 
 
         }
+        //za "submnu za tagove on add tags se otvara lista sa tagovima a ovde se na osnovu id-a za svaku stavku dodaje cip
         for (Tag t:Repository.loggedUser.getTags()
              ) {
             if(t.getId()==item.getItemId()){
@@ -477,14 +478,6 @@ public class SendEmailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.send_email_menu_toolbar, menu);
-
- //       menu.addSubMenu(Menu.NONE, R.id.addTagId, Menu.NONE,"asdasdsad");
-
-
-//        SubMenu themeMenu = menu.findItem(R.id.addTagId).getSubMenu();
-//        themeMenu.clear();
-
-
         for (Tag t: Repository.loggedUser.getTags()  ) {
 
             MenuItem menuItem = menu.findItem(R.id.addTagId).getSubMenu().add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
@@ -492,15 +485,6 @@ public class SendEmailActivity extends AppCompatActivity {
             //themeMenu.add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
         }
 
-
-//        themeMenu.add(0, 1, Menu.NONE, "Automatic");
-//        themeMenu.add("SSSSS");
-//        themeMenu.add("DDDD");
-
-//        themeMenu.add(0, R.id.theme_auto, Menu.NONE, "Automatic");
-//        themeMenu.add(0, R.id.theme_day, Menu.NONE, "Default");
-//        themeMenu.add(0, , Menu.NONE, "Night");
-//        themeMenu.add(0, , Menu.NONE, "Battery Saving");
 
         return true;
     }

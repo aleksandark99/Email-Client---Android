@@ -12,7 +12,11 @@
         android:icon="@drawable/add_tag_icon"
         android:title="Add new tag"
 
-        app:showAsAction="always"></item>
+        app:showAsAction="always">
+        <menu>
+
+        </menu>
+    </item>
 
     <item
         android:id="@+id/delete"

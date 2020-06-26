@@ -405,6 +405,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
                     return false;
                 }
+
                 selectedMessage = messages.get(position);
 
                 mActionMode = startSupportActionMode(mActionModeCallback);

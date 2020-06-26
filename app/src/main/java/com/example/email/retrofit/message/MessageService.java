@@ -29,6 +29,12 @@ public interface MessageService {
     @PUT("/messages/")
     Call<Boolean> makeMessageRead(@Body Message messageToBeMadeUnreadFalse,@Header("Authorization") String authToken);
 
+    @PUT("/messages/addTag/{tagId}")
+    Call<Boolean> addTagToMessage(@Path("tagId") int tagId,@Body Message message,@Header("Authorization") String authToken);
+
+    @PUT("/messages/removeTag/{tagId}")
+    Call<Boolean> removeTagToMessage(@Path("tagId") int tagId,@Body Message message,@Header("Authorization") String authToken);
+
     @GET("/messages/{folder_id}/{account_id}")
     Call<Set<Message>> getAllMessagesByRules(@Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
 

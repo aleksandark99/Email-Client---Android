@@ -103,10 +103,6 @@ public class EmailActivity extends AppCompatActivity {
                 mes.setTo(null);
                 mes.setCc(null);
                 intent.putExtra("message",mes);
-//                intent.putExtra("from", fromString);
-//                intent.putExtra("subject",subjectString);
-//                intent.putExtra("content",contentString);
-//                intent.putExtra("tags",tags);
                 startActivity(intent);
 
             }
@@ -116,12 +112,7 @@ public class EmailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent= new Intent(EmailActivity.this,SendEmailActivity.class);
                 intent.putExtra("message",mes);
-//                intent.putExtra("To",toLongString);
-//                intent.putExtra("CC",ccLongString);
-//
-//                intent.putExtra("subject",subjectString);
-//                intent.putExtra("content",contentString);
-//                intent.putExtra("tags",tags);
+
                 startActivity(intent);
             }
         });
@@ -134,10 +125,6 @@ public class EmailActivity extends AppCompatActivity {
                 mes.setTo(null);
                 mes.setCc(null);
                 intent.putExtra("message",mes);
-
-                //                intent.putExtra("subject",subjectString);
-//                intent.putExtra("content",contentString);
-//                intent.putExtra("tags",tags);
                 startActivity(intent);
 
             }
@@ -174,7 +161,6 @@ public class EmailActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);//Removes Title from toolbar
-       // getSupportActionBar().setTitle("Inbox");
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -224,8 +210,29 @@ public class EmailActivity extends AppCompatActivity {
                 chip.setText(tag.getTagName());
                 int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
                 chip.setChipBackgroundColor(ColorStateList.valueOf(color));
-//            Integer img = R.drawable.ic_lens_black_24dp;
-                //  chip.setChipIconResource(img);
+                chip.setCloseIconResource(R.drawable.ic_close);
+                chip.setCloseIconVisible(true);
+                chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // pozovi na back za remove
+                        Call<Boolean> call=messageService.removeTagToMessage(tag.getId(),mes,Repository.jwt);
+                        call.enqueue(new Callback<Boolean>() {
+                            @Override
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                chipGroup.removeView(v);
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Boolean> call, Throwable t) {
+
+                            }
+                        });
+                        //remove tag from list
+                    }
+                });
+
                 chipGroup.addView(chip);
             }
         }
@@ -244,16 +251,69 @@ public class EmailActivity extends AppCompatActivity {
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                         Toast.makeText(EmailActivity.this, "Message deleted", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(EmailActivity.this, EmailsActivity.class);
-
                         startActivity(intent);
                     }
-
                     @Override
                     public void onFailure(Call<Boolean> call, Throwable t) {
                     }
                 });
 
+
         }
+        for (Tag t:Repository.loggedUser.getTags()
+        ) {
+            if(t.getId()==item.getItemId()){
+                Toast.makeText(this, t.getTagName(), Toast.LENGTH_SHORT).show();
+
+                Chip chip = new Chip(chipGroup.getContext());
+                chip.setId(t.getId());
+                chip.setText(t.getTagName());
+                chip.setCloseIconResource(R.drawable.exit_icon);
+                chip.setCloseIconVisible(true);
+                int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
+                chip.setChipBackgroundColor(ColorStateList.valueOf(color));
+                chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // pozovi na back za remove
+                        Call<Boolean> call=messageService.removeTagToMessage(t.getId(),mes,Repository.jwt);
+                        call.enqueue(new Callback<Boolean>() {
+                            @Override
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                chipGroup.removeView(v);
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Boolean> call, Throwable t) {
+
+                            }
+                        });
+                        //remove tag from list
+                    }
+                });
+                //add tag to list of tags
+                //pozovi na back za add
+
+                Call<Boolean> call=messageService.addTagToMessage(t.getId(),mes,Repository.jwt);
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        chipGroup.addView(chip);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+
+                    }
+                });
+
+            }
+
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -261,8 +321,9 @@ public class EmailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.email_menu_toolbar, menu);
-
-
+        for (Tag t: Repository.loggedUser.getTags()  ) {
+            MenuItem menuItem = menu.findItem(R.id.tagForMessageId).getSubMenu().add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
+        }
         return true;
     }
 }
