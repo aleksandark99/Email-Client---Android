@@ -176,10 +176,18 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortValue = prefs.getString("sortValuesMessages", "");
+        int isAscOrDesc =Integer.parseInt(sortValue);
         switch (item.getItemId()) {
             case R.id.sortByDate:
                 Toast.makeText(EmailsActivity.this, "SortByDate", Toast.LENGTH_SHORT).show();
-                messages.sort(Comparator.comparing(Message::getDate_time));
+                if(isAscOrDesc==1){
+                    messages.sort(Comparator.comparing(Message::getDate_time));
+
+                }else {
+                    messages.sort(Comparator.comparing(Message::getDate_time).reversed());
+                }
                 emailsAdapter.setData(messages);
 
                 emailsAdapter.notifyDataSetChanged();
@@ -187,7 +195,16 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 return true;
             case R.id.sortBySender:
                 Toast.makeText(EmailsActivity.this, "sortBySender", Toast.LENGTH_SHORT).show();
-                messages.sort(Comparator.comparing(Message::getFrom));
+               // messages.sort(Comparator.comparing(Message::getFrom));
+
+                if(isAscOrDesc==1){
+                    messages.sort(Comparator.comparing(Message::getFrom));
+
+                }else {
+                    messages.sort(Comparator.comparing(Message::getFrom).reversed());
+                }
+
+
                 emailsAdapter.setData(messages);
 
                 emailsAdapter.notifyDataSetChanged();
@@ -196,7 +213,12 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
             case R.id.sortBySubject:
                 Toast.makeText(EmailsActivity.this, "sortBySubject", Toast.LENGTH_SHORT).show();
-                messages.sort(Comparator.comparing(Message::getSubject));
+                if(isAscOrDesc==1){
+                    messages.sort(Comparator.comparing(Message::getSubject));
+
+                }else {
+                    messages.sort(Comparator.comparing(Message::getSubject).reversed());
+                }
                 emailsAdapter.setData(messages);
                 emailsAdapter.notifyDataSetChanged();
 
