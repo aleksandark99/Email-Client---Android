@@ -179,7 +179,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             fNameView.setText(folder.getName());
             int childFoldersSize = (folder.getChildFolders() == null) ? 0 : folder.getChildFolders().size();
             int childFolderMessages = (folder.getMessages() == null) ? 0 : folder.getMessages().size();
-            mCountView.setText(childFoldersSize + childFolderMessages  + "");
+            //mCountView.setText(childFoldersSize + childFolderMessages  + "");
             folderImage.setImageResource(R.drawable.ic_folder_purple);
         }
 
