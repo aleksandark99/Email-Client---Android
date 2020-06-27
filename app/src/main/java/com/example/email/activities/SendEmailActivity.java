@@ -300,7 +300,7 @@ public class SendEmailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);//Removes Title from toolbar
         // getSupportActionBar().setTitle("Inbox");
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);// set drawable icon
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getData();

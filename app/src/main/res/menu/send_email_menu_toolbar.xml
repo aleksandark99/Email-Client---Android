@@ -6,9 +6,8 @@
 
     <item
         android:id="@+id/addTagId"
-        android:icon="@drawable/add_tag_icon"
+        android:icon="@drawable/ic_add_circle_white"
         android:title="Add new tag"
-
         app:showAsAction="always">
 
 <menu>
@@ -18,19 +17,19 @@
     </item>
     <item
         android:id="@+id/addAttachment"
-        android:icon="@drawable/ic_attachment_black_24dp"
+        android:icon="@drawable/ic_attachment_white"
         android:title="Add new tag"
 
         app:showAsAction="always"></item>
     <item
         android:id="@+id/cancelEmail"
-        android:icon="@drawable/exit_icon"
+        android:icon="@drawable/ic_exit_white"
         android:title="Cancel"
         app:showAsAction="always"
         ></item>
     <item
         android:id="@+id/sendEmailConfirm"
-        android:icon="@drawable/send_black"
+        android:icon="@drawable/ic_send_icon"
         android:title="Send"
         app:showAsAction="always"
         ></item>
