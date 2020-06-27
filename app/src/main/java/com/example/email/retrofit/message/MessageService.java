@@ -58,4 +58,10 @@ public interface MessageService {
 
     @POST("message/{message_id}/{folder_id}/{account_id}/copy")
     Call<ResponseBody> copyMessageToFolder(@Path("message_id") int message_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
+
+
+    @POST("/message/drafts/{account_id}")
+    Call<ResponseBody> moveMessageToDraft(@Path("account_id") int account_id,@Body Message message,  @Header("Authorization") String authToken);
+
+
 }

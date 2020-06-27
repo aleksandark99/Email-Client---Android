@@ -45,6 +45,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -613,16 +614,6 @@ public class SendEmailActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Complete action using"), 10);
 
     }
-
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 101 && resultCode == RESULT_OK) {
-//            URI = data.getData();
-//            dataString = URI.getLastPathSegment();
-//            Log.d("SEE IF ATTSELCT WORKS", dataString);
-//
-//        }
-//    }
     @Override
     public void onActivityResult(int requestCode, int resultCode,
                              Intent resultData) {
@@ -684,6 +675,39 @@ public class SendEmailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Log.d("USAO","BBBBBBBBBBBBBBBBBBBB");
+
+
+        try {
+            Log.d("USAO","1");
+
+            Log.d("USAO","2");
+
+            Message mesForDraft=createDraftMessage();
+            Log.d("USAO","3");
+
+            Toast.makeText(this, mesForDraft.getContent(), Toast.LENGTH_SHORT).show();
+                Call<ResponseBody> call = mMessageService.moveMessageToDraft(Repository.loggedUser.getAccounts().iterator().next().getId(),mesForDraft,Repository.jwt);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Log.d("AAAAAAAAAAAAAA","BBBBBBBBBBBBBBBBBBBB");
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.d("ccc","FAILLL");
+
+                    }
+                });
+
+            }catch (Exception e){
+
+            }
+
+
+
+
     }
 
     public byte[] getBytes(InputStream inputStream) throws IOException {
@@ -696,6 +720,74 @@ public class SendEmailActivity extends AppCompatActivity {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+    private Message createDraftMessage(){
+        Message newMessage = new Message("This constructor is only for test, this string doesn't do anything useful...");
+
+        try{
+            Account account=Repository.activeAccount;
+
+            newMessage.setAccount(account);
+
+        }catch (Exception e){
+
+        }
+
+        try{        String textSubject = subject.getText().toString(); newMessage.setSubject(textSubject);
+
+
+        }catch (Exception e){
+            String textSubject="";
+        }
+
+        try{        ArrayList<String> toAddress = extractArrayListFromChipGroup(chipGroupTo); newMessage.setTo(toAddress);
+
+
+        }catch (Exception e){
+
+        }
+
+        try{        String from = ((Chip) chipGroupFrom.getChildAt(0)).getText().toString();  newMessage.setFrom(from);
+
+        }catch (Exception e){
+            String from="";
+
+        }
+
+
+        if (chipGroupCC.getChildCount() > 0) { ArrayList<String> ccAddress = extractArrayListFromChipGroup(chipGroupCC); newMessage.setCc(ccAddress);}
+
+        if (chipGroupBCC.getChildCount() > 0) { ArrayList<String> bccAddress = extractArrayListFromChipGroup(chipGroupBCC); newMessage.setBcc(bccAddress);}
+
+        if (chipGroupTags.getChildCount() > 0) { ArrayList<Tag> tags = extractTagsFromChipGroup();  newMessage.setTags(tags);}
+
+
+        try{
+            String textContent = content.getText().toString(); newMessage.setContent(textContent);
+
+        }catch (Exception e){
+            String textContent="";
+
+        }
+        newMessage.setDate(LocalDateTime.now());
+
+//        try{
+//            newMessage.setDate(LocalDateTime.now());
+//
+//
+//
+//        }catch (Exception e){
+//
+//        }
+        newMessage.setUnread(false);
+        try{
+
+        }catch (Exception e){
+            newMessage.setAttachments(attachmentAdapter.getAttachments());
+
+        }
+
+        return newMessage;
     }
 
 
