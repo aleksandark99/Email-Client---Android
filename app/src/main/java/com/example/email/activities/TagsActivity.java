@@ -44,7 +44,7 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
     private ChipGroup tagsChipGroup;
     private Button add, cancel;
     private EditText chipText;
-    private ArrayList<Tag> tags;
+    private ArrayList<Tag> tags,ttt;
     View forDelete;
     private final Retrofit retrofit = RetrofitClient.getRetrofitInstance();
     private final TagsService tagsService=retrofit.create(TagsService.class);
@@ -55,7 +55,14 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_tags);
         Context ctx = getApplicationContext();
 //        tags = Repository.get(this).getMyTags();
-        tags=new ArrayList<>(Repository.loggedUser.getTags());
+        ttt=new ArrayList<>(Repository.loggedUser.getTags());
+        tags=new ArrayList<Tag>();
+        for(Tag t: ttt){
+            if(t.isActive()){
+                tags.add(t);
+            }
+        }
+
         toolbar = findViewById(R.id.customEmailsToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);//Removes Title from toolbar
@@ -99,17 +106,18 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                     case DialogInterface.BUTTON_POSITIVE:
                         /// ovo uraditi tek ako prodje na bekendu
                         Chip c = (Chip) forDelete;
+                        String idd=Integer.toString(c.getId());
+                                Toast.makeText(ctx,idd+"sadsasdasad", Toast.LENGTH_SHORT).show();
 
                         Call<ResponseBody> call=tagsService.deleteTag(forDelete.getId(), Repository.jwt);
                         call.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                tagsChipGroup.removeView(forDelete);
-                                // OVO RADITI AKO PRODJE NA BEKU i radit za repo ne samo ovde vizuelno
-                                tags.removeIf(tag -> (tag.getTagName().equals(c.getText().toString())));
-
-
-                                Repository.get(ctx).removeTag(c.getText().toString());
+                               if(response.isSuccessful()){
+                                   tagsChipGroup.removeView(forDelete);
+                                   tags.removeIf(tag -> (tag.getTagName().equals(c.getText().toString())));
+                                   Repository.get(ctx).removeTag(c.getText().toString());
+                               }
                             }
 
                             @Override
@@ -139,23 +147,6 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                     int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
                     chip.setChipBackgroundColor(ColorStateList.valueOf(color));
 
-
-//                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            switch (which) {
-//                                case DialogInterface.BUTTON_POSITIVE:
-//                                    /// ovo uraditi tek ako prodje na bekendu
-//                                    tagsChipGroup.removeView(forDelete);
-//                                    // takodje removati iz iz repository liste
-//                                    break;
-//
-//                                case DialogInterface.BUTTON_NEGATIVE:
-//                                    Toast.makeText(TagsActivity.this, "Delete canceled", Toast.LENGTH_SHORT).show();
-//                                    break;
-//                            }
-//                        }
-//                    };
                     chip.setOnCloseIconClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -185,6 +176,12 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                     call.enqueue(new Callback<Tag>() {
                         @Override
                         public void onResponse(Call<Tag> call, Response<Tag> response) {
+
+                            Tag rt=response.body();
+
+                            t.setId(rt.getId());
+                            chip.setId(rt.getId());
+
                             Repository.loggedUser.getTags().add(t);
                             tagsChipGroup.addView(chip);
                         }
@@ -227,7 +224,7 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                 chip.setCloseIconVisible(true);
                 int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
                 chip.setChipBackgroundColor(ColorStateList.valueOf(color));
-
+                chip.setId(t.getId());
                 chip.setOnCloseIconClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

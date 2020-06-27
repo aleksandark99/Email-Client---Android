@@ -56,7 +56,7 @@
 
             <ImageView
                 android:id="@+id/hasAttachmentIcon"
-                android:layout_width="22dp"
+                android:layout_width="wrap_content"
                 android:layout_height="22dp"
                 android:layout_margin="5dp"
                 android:layout_marginTop="5dp"
@@ -78,7 +78,7 @@
 
             <TextView
                 android:id="@+id/dateText1"
-                android:layout_width="115dp"
+                android:layout_width="120dp"
                 android:layout_height="22dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
@@ -97,7 +97,7 @@
 
             <TextView
                 android:id="@+id/subjectText1"
-                android:layout_width="314dp"
+                android:layout_width="250dp"
                 android:layout_height="22dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="6dp"

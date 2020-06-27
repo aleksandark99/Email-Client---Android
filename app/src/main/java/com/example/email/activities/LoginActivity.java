@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.email.R;
 import com.example.email.model.Login;
 import com.example.email.model.LoginResponse;
+import com.example.email.model.Tag;
 import com.example.email.repository.Repository;
 import com.example.email.retrofit.RetrofitClient;
 import com.example.email.retrofit.login.LoginService;
@@ -104,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                         //welcome toast
                         usernameEditText.setText(""); passwordEditText.setText("");
                         Log.i("USER",Repository.loggedUser.toString());
+
 
 
                         startActivity(goToEmailsIntent);

@@ -132,7 +132,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         }
         Contact c;
         try {
-            c = Repository.get(ctx).findContactByEmail(messages.get(position).getFrom().toLowerCase());
+            c = Repository.get(ctx).findContactByEmail(messages.get(position).getFrom());
 
 
         } catch (Exception e) {

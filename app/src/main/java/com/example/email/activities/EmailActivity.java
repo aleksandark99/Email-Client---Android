@@ -173,7 +173,8 @@ public class EmailActivity extends AppCompatActivity {
             fromString=m.getFrom();
             toLongString=m.getTo();
             ccLongString=m.getCc();
-            //dateString=
+            dateString=m.getDate_time();
+            dateString=dateString.substring(0,10)+" "+dateString.substring(11,16);
             contentString=m.getContent();
             To=m.getTo().get(0);
             attachments=m.getAttachments();
@@ -183,6 +184,7 @@ public class EmailActivity extends AppCompatActivity {
         }
     }
     private void setData(){
+        dateText.setText(dateString);
         subjectText.setText(subjectString);
         fromText.setText(fromString);
         contentText.setText(contentString);

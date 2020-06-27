@@ -466,6 +466,7 @@ public class SendEmailActivity extends AppCompatActivity {
                 });
                 //add tag to list of tags
                 chipGroupTags.addView(chip);
+                break;
 
             }
 
@@ -479,9 +480,9 @@ public class SendEmailActivity extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.send_email_menu_toolbar, menu);
         for (Tag t: Repository.loggedUser.getTags()  ) {
-
-            MenuItem menuItem = menu.findItem(R.id.addTagId).getSubMenu().add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
-
+            if(t.isActive()) {
+                MenuItem menuItem = menu.findItem(R.id.addTagId).getSubMenu().add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
+            }
             //themeMenu.add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
         }
 
@@ -679,6 +680,12 @@ public class SendEmailActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     public byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         int bufferSize = 1024;
