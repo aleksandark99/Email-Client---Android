@@ -426,7 +426,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                Call<Boolean> call = messageService.deleteMessage(message, Repository.jwt);
+                Call<Boolean> call = messageService.deleteMessage(Repository.loggedUser.getId(),message, Repository.jwt);
 
                 call.enqueue(new Callback<Boolean>() {
                     @Override
@@ -690,7 +690,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private void setMessageAsRead(Message message){
 
-        Call<Boolean> call=messageService.makeMessageRead(message, Repository.jwt);
+        Call<Boolean> call=messageService.makeMessageRead(Repository.loggedUser.getId(),message, Repository.jwt);
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {

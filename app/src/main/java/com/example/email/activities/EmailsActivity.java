@@ -329,10 +329,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         MessageService messageService=mRetrofit.create(MessageService.class);
         Call<Set<Message>> call;
         if(h==0){
-                     call=messageService.getAllMessages(id, Repository.jwt);
+                     call=messageService.getAllMessages(Repository.loggedUser.getId(),id, Repository.jwt);
 
         }else{
-            call=messageService.getAllMessagesFromBack(id, Repository.jwt);
+            call=messageService.getAllMessagesFromBack(Repository.loggedUser.getId(),id, Repository.jwt);
             Toast.makeText(this, "Poovi drugu metodu", Toast.LENGTH_SHORT).show();
         }
 
@@ -379,7 +379,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
         mms.get(position).setUnread(false);
-        Call<Boolean> call=messageService.makeMessageRead(mms.get(position), Repository.jwt);
+        Call<Boolean> call=messageService.makeMessageRead(Repository.loggedUser.getId(),mms.get(position), Repository.jwt);
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -495,7 +495,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                Call<Boolean> call = messageService.deleteMessage(message, Repository.jwt);
+                Call<Boolean> call = messageService.deleteMessage(Repository.loggedUser.getId(),message, Repository.jwt);
 
                 call.enqueue(new Callback<Boolean>() {
                     @Override

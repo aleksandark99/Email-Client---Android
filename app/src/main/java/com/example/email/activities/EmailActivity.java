@@ -223,7 +223,7 @@ public class EmailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // pozovi na back za remove
-                        Call<Boolean> call=messageService.removeTagToMessage(tag.getId(),mes,Repository.jwt);
+                        Call<Boolean> call=messageService.removeTagToMessage(Repository.loggedUser.getId(),tag.getId(),mes,Repository.jwt);
                         call.enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -252,7 +252,7 @@ public class EmailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete:
-                Call<Boolean> call=messageService.deleteMessage(mes, Repository.jwt);
+                Call<Boolean> call=messageService.deleteMessage(Repository.loggedUser.getId(),mes, Repository.jwt);
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -283,7 +283,7 @@ public class EmailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // pozovi na back za remove
-                        Call<Boolean> call=messageService.removeTagToMessage(t.getId(),mes,Repository.jwt);
+                        Call<Boolean> call=messageService.removeTagToMessage(Repository.loggedUser.getId(),t.getId(),mes,Repository.jwt);
                         call.enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -302,7 +302,7 @@ public class EmailActivity extends AppCompatActivity {
                 //add tag to list of tags
                 //pozovi na back za add
 
-                Call<Boolean> call=messageService.addTagToMessage(t.getId(),mes,Repository.jwt);
+                Call<Boolean> call=messageService.addTagToMessage(Repository.loggedUser.getId(),t.getId(),mes,Repository.jwt);
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {

@@ -545,7 +545,7 @@ public class SendEmailActivity extends AppCompatActivity {
 
 
     private void sendMessage(Message newMessage){
-        Call<Boolean> call = mMessageService.sendNewMessage(newMessage, Repository.findIdOfSendingAccoount(((Chip) chipGroupFrom.getChildAt(0)).getText().toString()), Repository.jwt);
+        Call<Boolean> call = mMessageService.sendNewMessage(Repository.loggedUser.getId(),newMessage, Repository.findIdOfSendingAccoount(((Chip) chipGroupFrom.getChildAt(0)).getText().toString()), Repository.jwt);
 
         call.enqueue(new Callback<Boolean>() {
 
