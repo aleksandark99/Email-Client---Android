@@ -48,6 +48,7 @@ public class DeleteFragment extends Fragment {
     private final RuleService ruleService = mRetrofit.create(RuleService.class);
 
     private int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
+    private int user_id = Repository.loggedUser.getId();
     private int folder_id;
 
 
@@ -91,7 +92,7 @@ public class DeleteFragment extends Fragment {
 
     private void getRulesForFolder(int folder_id){
 
-        Call<Set<Rule>> call = ruleService.getRulesByFolder(folder_id, acc_id, Repository.jwt);
+        Call<Set<Rule>> call = ruleService.getRulesByFolder(user_id, folder_id, acc_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Rule>>() {
             @Override
@@ -197,7 +198,7 @@ public class DeleteFragment extends Fragment {
                             rule.setCondition(ECondition.SUBJECT);
                         }
 
-                        Call<Rule> call = ruleService.createRule(rule, folder_id, acc_id, Repository.jwt);
+                        Call<Rule> call = ruleService.createRule(user_id, rule, folder_id, acc_id, Repository.jwt);
 
                         call.enqueue(new Callback<Rule>() {
                             @Override
@@ -278,7 +279,7 @@ public class DeleteFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    Call<ResponseBody> call = ruleService.deleteRule(mChip.getId(), folder_id, acc_id, Repository.jwt);
+                    Call<ResponseBody> call = ruleService.deleteRule(user_id, mChip.getId(), folder_id, acc_id, Repository.jwt);
 
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override

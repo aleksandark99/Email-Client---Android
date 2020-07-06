@@ -93,7 +93,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 if(messages != null) {
 
-                    if(position <= messages.size()) {
+                    if(position <= messages.size() || position > messages.size()) {
 
                         int foldersSize = (folders == null) ? 0 : folders.size();
 

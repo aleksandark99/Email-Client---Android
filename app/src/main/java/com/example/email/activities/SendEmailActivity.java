@@ -687,7 +687,7 @@ public class SendEmailActivity extends AppCompatActivity {
             Log.d("USAO","3");
 
             Toast.makeText(this, mesForDraft.getContent(), Toast.LENGTH_SHORT).show();
-                Call<ResponseBody> call = mMessageService.moveMessageToDraft(Repository.loggedUser.getAccounts().iterator().next().getId(),mesForDraft,Repository.jwt);
+                Call<ResponseBody> call = mMessageService.moveMessageToDraft(Repository.loggedUser.getId(), Repository.loggedUser.getAccounts().iterator().next().getId(),mesForDraft,Repository.jwt);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

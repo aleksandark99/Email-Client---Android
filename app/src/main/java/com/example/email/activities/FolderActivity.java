@@ -74,6 +74,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
     private final FolderService folderService = mRetrofit.create(FolderService.class);
     private final MessageService messageService = mRetrofit.create(MessageService.class);
 
+    private int user_id = Repository.loggedUser.getId();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +97,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         String folderName = (!mFolder.getName().isEmpty()) ? mFolder.getName() : "";
 
-        int folder_id = mFolder.getId();
+        //int folder_id = mFolder.getId();
 
         hideBtnAddFolder(folderName);
 
@@ -110,8 +112,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
         });
 
         folderAdapter = new FolderAdapter(this,this);
-        loadChildFolders(folder_id);
-        loadFolderMessages(folder_id);
+        //loadChildFolders(folder_id);
+        //loadFolderMessages(folder_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         btnAddSubFolder.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +171,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         if(folderAdapter.getItemViewType(position) == FolderAdapter.TYPE_EMAIL){
 
-            Message message = folderMessages.get(position);
+            int foldersSize = (childFolders == null) ? 0 : childFolders.size();
+            Message message = folderMessages.get(position - foldersSize);
             if(message.isUnread()){
                 message.setUnread(false);
                 setMessageAsRead(message);
@@ -197,7 +200,8 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
                         return false;
                     }
 
-                    selectedMessage = folderMessages.get(position);
+                    int foldersSize = (childFolders == null) ? 0 : childFolders.size();
+                    selectedMessage = folderMessages.get(position - foldersSize);
 
 
                     mActionMode = startSupportActionMode(mActionModeCallback);
@@ -469,7 +473,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                Call<ResponseBody> call = messageService.deleteMessagePhysically(message_id, Repository.jwt);
+                Call<ResponseBody> call = messageService.deleteMessagePhysically(user_id, message_id, Repository.jwt);
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -513,7 +517,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
                 int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
 
-                Call<ResponseBody> call = folderService.deleteFolder(folder_id, acc_id, Repository.jwt);
+                Call<ResponseBody> call = folderService.deleteFolder(user_id, folder_id, acc_id, Repository.jwt);
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -544,7 +548,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
 
-        Call<Set<Folder>> call = folderService.getSubFoldersByAccount(acc_id, parent_folder_id, Repository.jwt);
+        Call<Set<Folder>> call = folderService.getSubFoldersByAccount(user_id, acc_id, parent_folder_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Folder>>() {
             @Override
@@ -571,7 +575,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
         int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
 
-        Call<Set<Message>> call = messageService.getAllMessagesByRules(folder_id, acc_id, Repository.jwt);
+        Call<Set<Message>> call = messageService.getAllMessagesByRules(user_id, folder_id, acc_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Message>>() {
             @Override
@@ -595,7 +599,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private void loadInactiveMessages(int account_id){
 
-        Call<Set<Message>> call = messageService.getAllInactiveMessages(account_id, Repository.jwt);
+        Call<Set<Message>> call = messageService.getAllInactiveMessages(user_id, account_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Message>>() {
             @Override
@@ -619,7 +623,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private void loadSentMessages(int account_id){
 
-        Call<Set<Message>> call = messageService.getAllSentMessages(account_id, Repository.jwt);
+        Call<Set<Message>> call = messageService.getAllSentMessages(user_id, account_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Message>>() {
             @Override
@@ -644,7 +648,7 @@ public class FolderActivity extends AppCompatActivity implements RecyclerClickLi
 
     private void loadDraftsMessage(int acc_id) {
 
-        Call<Set<Message>> call = messageService.getAllDraftsMessages(acc_id, Repository.jwt);
+        Call<Set<Message>> call = messageService.getAllDraftsMessages(user_id, acc_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Message>>() {
             @Override

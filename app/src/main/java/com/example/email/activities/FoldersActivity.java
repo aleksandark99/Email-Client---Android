@@ -261,7 +261,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
         int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
 
-        Call<Set<Folder>> call = folderService.getFoldersByAccount(acc_id, Repository.jwt);
+        Call<Set<Folder>> call = folderService.getFoldersByAccount(Repository.loggedUser.getId(), acc_id, Repository.jwt);
 
         call.enqueue(new Callback<Set<Folder>>() {
 
@@ -309,7 +309,7 @@ public class FoldersActivity extends AppCompatActivity implements NavigationView
 
                 int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
 
-                Call<ResponseBody> call = folderService.deleteFolder(folder_id, acc_id, Repository.jwt);
+                Call<ResponseBody> call = folderService.deleteFolder(Repository.loggedUser.getId(), folder_id, acc_id, Repository.jwt);
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override

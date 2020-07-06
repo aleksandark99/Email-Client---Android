@@ -58,6 +58,8 @@ public class CheckFolderFragment extends AppCompatDialogFragment {
 
     private int acc_id = (Helper.getActiveAccountId() != 0) ? Helper.getActiveAccountId() : 0;
 
+    private int user_id = Repository.loggedUser.getId();
+
     private int mode, message_id, folder_id;
 
     public MoveMessageDialogListener interfaceCommunicator;
@@ -130,7 +132,7 @@ public class CheckFolderFragment extends AppCompatDialogFragment {
 
     private void loadAvailableFolders(){
 
-        Call<Set<Folder>> call = folderService.getFoldersForChecking(acc_id, (int) message.getId(), Repository.jwt);
+        Call<Set<Folder>> call = folderService.getFoldersForChecking(user_id, acc_id, (int) message.getId(), Repository.jwt);
 
         call.enqueue(new Callback<Set<Folder>>() {
             @Override
@@ -157,7 +159,7 @@ public class CheckFolderFragment extends AppCompatDialogFragment {
 
     private void moveMessageToFolder(int message_id, int folder_id){
 
-        Call<Message> call = messageService.moveMessageToFolder(message_id, folder_id, acc_id, Repository.jwt);
+        Call<Message> call = messageService.moveMessageToFolder(user_id, message_id, folder_id, acc_id, Repository.jwt);
 
         call.enqueue(new Callback<Message>() {
             @Override
@@ -185,7 +187,7 @@ public class CheckFolderFragment extends AppCompatDialogFragment {
 
     private void copyMessageToFolder(int message_id, int folder_id){
 
-        Call<ResponseBody> call = messageService.copyMessageToFolder(message_id, folder_id, acc_id, Repository.jwt);
+        Call<ResponseBody> call = messageService.copyMessageToFolder(user_id, message_id, folder_id, acc_id, Repository.jwt);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

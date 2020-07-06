@@ -38,33 +38,33 @@ public interface MessageService {
     @PUT("/{user_id}/messages/removeTag/{tagId}")
     Call<Boolean> removeTagToMessage(@Path("user_id") int user_id,@Path("tagId") int tagId,@Body Message message,@Header("Authorization") String authToken);
 
-    @GET("/messages/{folder_id}/{account_id}")
-    Call<Set<Message>> getAllMessagesByRules(@Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
+    @GET("/{user_id}/messages/{folder_id}/{account_id}")
+    Call<Set<Message>> getAllMessagesByRules(@Path("user_id") int user_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
 
-    @GET("/inactive_messages/{account_id}")
-    Call<Set<Message>> getAllInactiveMessages(@Path("account_id") int account_id, @Header("Authorization") String authToken);
+    @GET("/{user_id}/inactive_messages/{account_id}")
+    Call<Set<Message>> getAllInactiveMessages(@Path("user_id") int user_id, @Path("account_id") int account_id, @Header("Authorization") String authToken);
 
-    @GET("/sent_messages/{account_id}")
-    Call<Set<Message>> getAllSentMessages(@Path("account_id") int account_id, @Header("Authorization") String authToken);
+    @GET("/{user_id}/sent_messages/{account_id}")
+    Call<Set<Message>> getAllSentMessages(@Path("user_id") int user_id, @Path("account_id") int account_id, @Header("Authorization") String authToken);
 
-    @GET("/drafts_messages/{account_id}")
-    Call<Set<Message>> getAllDraftsMessages(@Path("account_id") int account_id, @Header("Authorization") String authToken);
+    @GET("/{user_id}/drafts_messages/{account_id}")
+    Call<Set<Message>> getAllDraftsMessages(@Path("user_id") int user_id, @Path("account_id") int account_id, @Header("Authorization") String authToken);
 
     @PUT("/{user_id}/messages/delete")
     Call<Boolean> deleteMessage(@Path("user_id") int user_id,@Body Message messageToBeMadeUnreadFalse,@Header("Authorization") String authToken);
 
-    @DELETE("/message/delete/{message_id}")
-    Call<ResponseBody> deleteMessagePhysically(@Path("message_id") int message_id, @Header("Authorization") String authToken);
+    @DELETE("/{user_id}/message/delete/{message_id}")
+    Call<ResponseBody> deleteMessagePhysically(@Path("user_id") int user_id, @Path("message_id") int message_id, @Header("Authorization") String authToken);
 
-    @PUT("/message/{message_id}/{folder_id}/{account_id}")
-    Call<Message> moveMessageToFolder(@Path("message_id") int message_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
+    @PUT("/{user_id}/message/{message_id}/{folder_id}/{account_id}")
+    Call<Message> moveMessageToFolder(@Path("user_id") int user_id, @Path("message_id") int message_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
 
-    @POST("message/{message_id}/{folder_id}/{account_id}/copy")
-    Call<ResponseBody> copyMessageToFolder(@Path("message_id") int message_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
+    @POST("/{user_id}/message/{message_id}/{folder_id}/{account_id}/copy")
+    Call<ResponseBody> copyMessageToFolder(@Path("user_id") int user_id, @Path("message_id") int message_id, @Path("folder_id") int folder_id, @Path("account_id") int acc_id, @Header("Authorization") String authToken);
 
 
-    @POST("/message/drafts/{account_id}")
-    Call<ResponseBody> moveMessageToDraft(@Path("account_id") int account_id,@Body Message message,  @Header("Authorization") String authToken);
+    @POST("/{user_id}/message/drafts/{account_id}")
+    Call<ResponseBody> moveMessageToDraft(@Path("user_id") int user_id, @Path("account_id") int account_id,@Body Message message,  @Header("Authorization") String authToken);
 
 
 }

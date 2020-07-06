@@ -74,7 +74,7 @@ public class EditFolderFragment extends AppCompatDialogFragment {
 
                             folderToChange.setName(changedFolderName);
 
-                            Call<Folder> call = folderService.updateFolder(folderToChange, acc_id, Repository.jwt);
+                            Call<Folder> call = folderService.updateFolder(Repository.loggedUser.getId(), folderToChange, acc_id, Repository.jwt);
 
                             call.enqueue(new Callback<Folder>() {
 
