@@ -1,4 +1,4 @@
-Project specification can be found [here](https://drive.google.com/file/d/1kANI6EvRQaEhoOds8VnfSNNkPVYz_MOU/view?usp=sharing).
+Project specification can be found [here](https://drive.google.com/file/d/1kANI6EvRQaEhoOds8VnfSNNkPVYz_MOU/view?usp=sharing).  
 [Backend](https://github.com/aleksandark99/Email-Client---Spring-Boot) can be found here.
 
 ![singleMessage](https://user-images.githubusercontent.com/48245241/98266273-64aded00-1f8a-11eb-98ed-7a1f6c6da4f0.png)
