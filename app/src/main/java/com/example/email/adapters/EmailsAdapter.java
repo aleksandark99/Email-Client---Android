@@ -54,28 +54,23 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
     private final MessageService messageService = retrofit.create(MessageService.class);
 
 
-    public EmailsAdapter(Context ctx, ArrayList<Message> messages,RecyclerClickListener listener) {
+    public EmailsAdapter(Context ctx, ArrayList<Message> messages, RecyclerClickListener listener) {
         this.messages = messages;
         this.ctx = ctx;
         this.recyclerClickListener = listener;
 
-        //za FilterProba
-//        this.messagesAll = new ArrayList<>(messages);
-
     }
-    public EmailsAdapter(Context ctx,RecyclerClickListener listener) {
+
+    public EmailsAdapter(Context ctx, RecyclerClickListener listener) {
         this.ctx = ctx;
-        this.messagesAll=new ArrayList<Message>();
+        this.messagesAll = new ArrayList<Message>();
         this.recyclerClickListener = listener;
 
-        //za FilterProba
-//        this.messagesAll = new ArrayList<>(messages);
-
     }
 
-    public void setData(ArrayList<Message> mm){
-        this.messages=mm;
-        this.messagesAll=new ArrayList<>(messages);
+    public void setData(ArrayList<Message> mm) {
+        this.messages = mm;
+        this.messagesAll = new ArrayList<>(messages);
         notifyDataSetChanged();
     }
 
@@ -85,17 +80,13 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         LayoutInflater inflater = LayoutInflater.from(ctx);
         View view = inflater.inflate(R.layout.new_emails_row, parent, false);
 
-        return new EmailsViewHolder(view,recyclerClickListener);
+        return new EmailsViewHolder(view, recyclerClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull EmailsViewHolder holder, int position) {
 
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-//        String formattedDateTime = messages.get(position).getDateReceived().format(formatter);
-//
         holder.date.setText(customdateformater(messages.get(position).getDate_time()));
-        System.out.println(messages.get(position).getDate_time()+"DATUMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         holder.from.setText(messages.get(position).getFrom());
         holder.subject.setText(messages.get(position).getSubject());
         holder.shortContent.setText(messages.get(position).getContent());
@@ -107,14 +98,10 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         } else {
             holder.cardView.setBackgroundColor(0xFFFFFFF);
         }
-//        Chip chip = new Chip(holder.chipGroup.getContext());
-//       chip.setText("test bravo 1");
         Integer img = R.drawable.ic_lens_black_24dp;
 
-//        chip.setChipIconResource(img);
-//        holder.chipGroup.addView(chip);
         holder.chipGroup.removeAllViews();
-        if( messages.get(position).getTags()!=null){
+        if (messages.get(position).getTags() != null) {
             for (int i = 0; i < messages.get(position).getTags().size(); i++) {
 
                 Chip chip = new Chip(holder.chipGroup.getContext());
@@ -154,7 +141,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
 //                Intent intent = new Intent(ctx, EmailActivity.class);
 //                intent.putExtra("message", messages.get(position));//Message.class je seriazable
 
-                //make this message read
+        //make this message read
 //                messages.get(position).setUnread(false);
 //                holder.cardView.setBackgroundColor(0xFFFFFFF);
 //
@@ -196,7 +183,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             if (constraint.toString().equals("")) {
                 filteredMessages.addAll(messagesAll);
                 Toast.makeText(ctx, "aaaaa", Toast.LENGTH_SHORT).show();
-               // notifyDataSetChanged();
+                // notifyDataSetChanged();
             } else {
                 for (Message message : messagesAll) {
 
@@ -205,7 +192,6 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
                             message.getFrom().toLowerCase().contains(constraint.toString().toLowerCase()) ||
                             Helper.DoesItContainString(message.getTo(), constraint.toString().toLowerCase()) ||
                             Helper.DoesItContainTag(message.getTags(), constraint.toString().toLowerCase())
-                        //    message.getTo().toLowerCase().contains(constraint.toString().toLowerCase())
 
                     ) {
                         filteredMessages.add(message);
@@ -230,10 +216,8 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         //run on ui thread
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-                messages.clear();
-                messages.addAll((Collection<? extends Message>) results.values);
-
-
+            messages.clear();
+            messages.addAll((Collection<? extends Message>) results.values);
 
 
             notifyDataSetChanged();
@@ -252,7 +236,7 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
         ConstraintLayout layoutRow;
         ImageView attachment, profilePicture;
 
-        public EmailsViewHolder(@NonNull View itemView,RecyclerClickListener listener) {
+        public EmailsViewHolder(@NonNull View itemView, RecyclerClickListener listener) {
             super(itemView);
             from = itemView.findViewById(R.id.fromText1);
             subject = itemView.findViewById(R.id.subjectText1);
@@ -266,11 +250,10 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             attachment = itemView.findViewById(R.id.hasAttachmentIcon);
 
             profilePicture = itemView.findViewById(R.id.imageView5);
-            recyclerClickListener=listener;
+            recyclerClickListener = listener;
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
-
 
 
         @Override
@@ -285,7 +268,8 @@ public class EmailsAdapter extends RecyclerView.Adapter<EmailsAdapter.EmailsView
             return true;
         }
     }
-    private String customdateformater(String datetoformat){
-        return datetoformat.substring(0,10)+" "+datetoformat.substring(11,16);
+
+    private String customdateformater(String datetoformat) {
+        return datetoformat.substring(0, 10) + " " + datetoformat.substring(11, 16);
     }
 }

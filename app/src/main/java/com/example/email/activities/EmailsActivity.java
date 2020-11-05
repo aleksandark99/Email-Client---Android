@@ -81,12 +81,12 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onResume() {
         super.onResume();
-        if(Helper.getActiveAccountId()!=0 && hack==0){
-            getAllMessagesForAccount(Helper.getActiveAccountId(),hack);
-            hack=1;
+        if (Helper.getActiveAccountId() != 0 && hack == 0) {
+            getAllMessagesForAccount(Helper.getActiveAccountId(), hack);
+            hack = 1;
 
-        }else if (Helper.getActiveAccountId()!=0 ) {
-            getAllMessagesForAccount(Helper.getActiveAccountId(),hack);
+        } else if (Helper.getActiveAccountId() != 0) {
+            getAllMessagesForAccount(Helper.getActiveAccountId(), hack);
 
         }
 
@@ -122,30 +122,27 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 //        name.setText(Repository.loggedUser.getUsername());
 
 
-
-
         //Repository.get(this).setMessages(getAllMessagesForAccount(1));
         //messages = Repository.get(this).getMessages();
 //        emailsAdapter = new EmailsAdapter(this, messages);
 //        recyclerView.setAdapter(emailsAdapter);
 
 
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration); // ove dve linije samo za dekoraciju nista vise
-        emailsAdapter = new EmailsAdapter(this,this);
+        emailsAdapter = new EmailsAdapter(this, this);
 //        if(Helper.getActiveAccountId()!=0){
 //            getAllMessagesForAccount(Helper.getActiveAccountId());
 //
 //        }
-        hack=0;
-        swipeRefreshLayout=findViewById(R.id.swipeerrrr);
+        hack = 0;
+        swipeRefreshLayout = findViewById(R.id.swipeerrrr);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getAllMessagesForAccount(Helper.getActiveAccountId(),0);
+                getAllMessagesForAccount(Helper.getActiveAccountId(), 0);
 
             }
         });
@@ -163,29 +160,22 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 //        });
 
 
-           retrofit = RetrofitClient.getRetrofitInstance();
-            messageService = retrofit.create(MessageService.class);
-
-            //mms=new ArrayList<>();
-//            progressBar=findViewById(R.id.progressBar);
-     //   progressBar.setVisibility(View.GONE);
-
-
-
+        retrofit = RetrofitClient.getRetrofitInstance();
+        messageService = retrofit.create(MessageService.class);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String sortValue = prefs.getString("sortValuesMessages", "");
-        int isAscOrDesc =Integer.parseInt(sortValue);
+        int isAscOrDesc = Integer.parseInt(sortValue);
         switch (item.getItemId()) {
             case R.id.sortByDate:
                 Toast.makeText(EmailsActivity.this, "SortByDate", Toast.LENGTH_SHORT).show();
-                if(isAscOrDesc==1){
+                if (isAscOrDesc == 1) {
                     messages.sort(Comparator.comparing(Message::getDate_time));
 
-                }else {
+                } else {
                     messages.sort(Comparator.comparing(Message::getDate_time).reversed());
                 }
                 emailsAdapter.setData(messages);
@@ -195,12 +185,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                 return true;
             case R.id.sortBySender:
                 Toast.makeText(EmailsActivity.this, "sortBySender", Toast.LENGTH_SHORT).show();
-               // messages.sort(Comparator.comparing(Message::getFrom));
-
-                if(isAscOrDesc==1){
+                if (isAscOrDesc == 1) {
                     messages.sort(Comparator.comparing(Message::getFrom));
 
-                }else {
+                } else {
                     messages.sort(Comparator.comparing(Message::getFrom).reversed());
                 }
 
@@ -213,10 +201,10 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
             case R.id.sortBySubject:
                 Toast.makeText(EmailsActivity.this, "sortBySubject", Toast.LENGTH_SHORT).show();
-                if(isAscOrDesc==1){
+                if (isAscOrDesc == 1) {
                     messages.sort(Comparator.comparing(Message::getSubject));
 
-                }else {
+                } else {
                     messages.sort(Comparator.comparing(Message::getSubject).reversed());
                 }
                 emailsAdapter.setData(messages);
@@ -224,8 +212,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
                 return true;
             case R.id.sendNewMailId:
-                Toast.makeText(EmailsActivity.this, "sasadasdsda", Toast.LENGTH_SHORT).show();
-
                 startActivity(new Intent(this, SendEmailActivity.class));
                 return true;
 
@@ -234,7 +220,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -319,35 +304,30 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         return true;
 
     }
-    public void getAllMessagesForAccount(int id,int h){
-//        progressBar.setVisibility(View.VISIBLE);
-//        progressBar.bringToFront();
-                Log.d("POZVANNNN","POZVANNNNNNNN");
 
-        ArrayList<Message> messages=new ArrayList<Message>();
+    public void getAllMessagesForAccount(int id, int h) {
+
+
+        ArrayList<Message> messages = new ArrayList<Message>();
         Retrofit mRetrofit = RetrofitClient.getRetrofitInstance();
-        MessageService messageService=mRetrofit.create(MessageService.class);
+        MessageService messageService = mRetrofit.create(MessageService.class);
         Call<Set<Message>> call;
-        if(h==0){
-                     call=messageService.getAllMessages(Repository.loggedUser.getId(),id, Repository.jwt);
+        if (h == 0) {
+            call = messageService.getAllMessages(Repository.loggedUser.getId(), id, Repository.jwt);
 
-        }else{
-            call=messageService.getAllMessagesFromBack(Repository.loggedUser.getId(),id, Repository.jwt);
-            Toast.makeText(this, "Poovi drugu metodu", Toast.LENGTH_SHORT).show();
+        } else {
+            call = messageService.getAllMessagesFromBack(Repository.loggedUser.getId(), id, Repository.jwt);
         }
 
         call.enqueue(new Callback<Set<Message>>() {
             @Override
             public void onResponse(Call<Set<Message>> call, Response<Set<Message>> response) {
-                if (response.code() == 200){
+                if (response.code() == 200) {
 
-                    mms=new ArrayList<>((Set<Message>) response.body());
+                    mms = new ArrayList<>((Set<Message>) response.body());
                     emailsAdapter.setData(mms);
                     recyclerView.setAdapter(emailsAdapter);
-//                    setMessages(new ArrayList<>((Set<Message>) response.body()));
                     setMessages(mms);
-//                    progressBar.setVisibility(View.GONE);
-                    System.out.println(mms+"MMMMMMMMMMMMS");
                     swipeRefreshLayout.setRefreshing(false);
 
                 }
@@ -356,39 +336,37 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onFailure(Call<Set<Message>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Eror PRILIKOM preuzimanja poruka POGLEDAJ KONZOLU", Toast.LENGTH_SHORT).show();
-                Log.d("SSS",t.getMessage());
                 swipeRefreshLayout.setRefreshing(false);
 
 
             }
         });
 
-//        return messages;
-//        progressBar.setVisibility(View.GONE);
 
     }
-    private void setMessages(ArrayList<Message> m){
-        this.messages=m;
+
+    private void setMessages(ArrayList<Message> m) {
+        this.messages = m;
     }
 
     @Override
     public void OnItemClick(View view, int position) {
 
-        if(mActionMode != null){
-            mActionMode.finish();}
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
 
-        System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
         mms.get(position).setUnread(false);
-        Call<Boolean> call=messageService.makeMessageRead(Repository.loggedUser.getId(),mms.get(position), Repository.jwt);
-                call.enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                    }
+        Call<Boolean> call = messageService.makeMessageRead(Repository.loggedUser.getId(), mms.get(position), Repository.jwt);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            }
 
-                    @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) {
-                    }
-                });
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+            }
+        });
         Intent intent = new Intent(this, EmailActivity.class);
         intent.putExtra("message", mms.get(position));//Message.class je seriazable
         startActivity(intent);
@@ -441,7 +419,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             Bundle args = new Bundle();
             args.putSerializable("checkedMessage", selectedMessage);
 
-            switch(item_id){
+            switch (item_id) {
 
                 case R.id.action_mode_copy:
 
@@ -467,7 +445,8 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                     mode.finish();
                     return true;
 
-                default: return false;
+                default:
+                    return false;
             }
         }
 
@@ -478,7 +457,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
         }
     };
 
-    private void openDeleteDialogMessage(Message message){
+    private void openDeleteDialogMessage(Message message) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
@@ -495,7 +474,7 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                Call<Boolean> call = messageService.deleteMessage(Repository.loggedUser.getId(),message, Repository.jwt);
+                Call<Boolean> call = messageService.deleteMessage(Repository.loggedUser.getId(), message, Repository.jwt);
 
                 call.enqueue(new Callback<Boolean>() {
                     @Override
@@ -504,12 +483,13 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
                             Log.i("Some error happened during message delete!", String.valueOf(response.code()));
                             return;
                         }
-                        if(response.code() == 200){
+                        if (response.code() == 200) {
                             messages.remove(message);
                             emailsAdapter.notifyDataSetChanged();
                             Toast.makeText(getApplicationContext(), "You have successfully delete message!", Toast.LENGTH_SHORT).show();
                         }
                     }
+
                     @Override
                     public void onFailure(Call<Boolean> call, Throwable t) {
                         Log.i("ERROR: ", t.getMessage(), t.fillInStackTrace());
@@ -522,7 +502,6 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     }
 
 
-
     @Override
     public void onDeleteClick(View view, int position) {
 
@@ -531,18 +510,18 @@ public class EmailsActivity extends AppCompatActivity implements NavigationView.
     @Override
     public void onFinishedMovedMessageDialog(int code, int message_id) {
 
-        if(code == MOVE_OK){
+        if (code == MOVE_OK) {
             moveMessage(message_id);
             Toast.makeText(getApplicationContext(), "You have successfully moved message!", Toast.LENGTH_SHORT).show();
 
-        }else if(code == COPY_OK){
+        } else if (code == COPY_OK) {
             Toast.makeText(getApplicationContext(), "You have successfully copied message!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void moveMessage(int message_id){
-        for(Message m : messages){
-            if(m.getId() == message_id){
+    private void moveMessage(int message_id) {
+        for (Message m : messages) {
+            if (m.getId() == message_id) {
                 messages.remove(m);
                 emailsAdapter.notifyDataSetChanged();
             }

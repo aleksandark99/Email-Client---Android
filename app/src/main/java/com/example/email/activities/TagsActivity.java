@@ -36,7 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class TagsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class TagsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navTags;
@@ -44,10 +44,10 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
     private ChipGroup tagsChipGroup;
     private Button add, cancel;
     private EditText chipText;
-    private ArrayList<Tag> tags,ttt;
+    private ArrayList<Tag> tags, ttt;
     View forDelete;
     private final Retrofit retrofit = RetrofitClient.getRetrofitInstance();
-    private final TagsService tagsService=retrofit.create(TagsService.class);
+    private final TagsService tagsService = retrofit.create(TagsService.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +55,10 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_tags);
         Context ctx = getApplicationContext();
 //        tags = Repository.get(this).getMyTags();
-        ttt=new ArrayList<>(Repository.loggedUser.getTags());
-        tags=new ArrayList<Tag>();
-        for(Tag t: ttt){
-            if(t.isActive()){
+        ttt = new ArrayList<>(Repository.loggedUser.getTags());
+        tags = new ArrayList<Tag>();
+        for (Tag t : ttt) {
+            if (t.isActive()) {
                 tags.add(t);
             }
         }
@@ -106,18 +106,18 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                     case DialogInterface.BUTTON_POSITIVE:
                         /// ovo uraditi tek ako prodje na bekendu
                         Chip c = (Chip) forDelete;
-                        String idd=Integer.toString(c.getId());
-                                Toast.makeText(ctx,idd+"sadsasdasad", Toast.LENGTH_SHORT).show();
+                        String idd = Integer.toString(c.getId());
+                        Toast.makeText(ctx, idd + "sadsasdasad", Toast.LENGTH_SHORT).show();
 
-                        Call<ResponseBody> call=tagsService.deleteTag(forDelete.getId(), Repository.jwt);
+                        Call<ResponseBody> call = tagsService.deleteTag(forDelete.getId(), Repository.jwt);
                         call.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                               if(response.isSuccessful()){
-                                   tagsChipGroup.removeView(forDelete);
-                                   tags.removeIf(tag -> (tag.getTagName().equals(c.getText().toString())));
-                                   Repository.get(ctx).removeTag(c.getText().toString());
-                               }
+                                if (response.isSuccessful()) {
+                                    tagsChipGroup.removeView(forDelete);
+                                    tags.removeIf(tag -> (tag.getTagName().equals(c.getText().toString())));
+                                    Repository.get(ctx).removeTag(c.getText().toString());
+                                }
                             }
 
                             @Override
@@ -170,14 +170,12 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                     });
                     Tag t = new Tag();
                     t.setTagName(chip.getText().toString());
-//                    tags.add(t);
-//                    Repository.get(ctx).addTag(chip.getText().toString());
                     Call<Tag> call = tagsService.addNewTag(t, Repository.loggedUser.getId(), Repository.jwt);
                     call.enqueue(new Callback<Tag>() {
                         @Override
                         public void onResponse(Call<Tag> call, Response<Tag> response) {
 
-                            Tag rt=response.body();
+                            Tag rt = response.body();
 
                             t.setId(rt.getId());
                             chip.setId(rt.getId());
@@ -284,7 +282,7 @@ public class TagsActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, TagsActivity.class));
                 break;
             case R.id.messages_item:
-                startActivity(new Intent(this,EmailsActivity.class));
+                startActivity(new Intent(this, EmailsActivity.class));
                 break;
         }
 

@@ -40,15 +40,15 @@ import retrofit2.Retrofit;
 
 public class EmailActivity extends AppCompatActivity {
 
-    TextView subjectText,fromText,toText,dateText,contentText,toLongText,fromLongText,ccLongText;
+    TextView subjectText, fromText, toText, dateText, contentText, toLongText, fromLongText, ccLongText;
 
-    String subjectString,fromString,dateString,contentString,fromLongString,To;
+    String subjectString, fromString, dateString, contentString, fromLongString, To;
 
-    ArrayList<String> toLongString,ccLongString;
+    ArrayList<String> toLongString, ccLongString;
     Message mes;
     ArrayList<Tag> tags;
-    LinearLayout detailToTexts,toLongLinearLayout,ccLongLinearLayout;
-    Button replyAll,reply,forward;
+    LinearLayout detailToTexts, toLongLinearLayout, ccLongLinearLayout;
+    Button replyAll, reply, forward;
     ImageView arrowIcon;
     ArrayList<Attachment> attachments;
     Retrofit retrofit;
@@ -75,14 +75,14 @@ public class EmailActivity extends AppCompatActivity {
         ccLongText = findViewById(R.id.EmailCcLong);
         detailToTexts = findViewById(R.id.detailToTexts);
         arrowIcon = findViewById(R.id.arrowPicture);
-        chipGroup =findViewById(R.id.ChipGroupSingleEmail);
-        toLongLinearLayout =findViewById(R.id.toLongLinearLayout);
+        chipGroup = findViewById(R.id.ChipGroupSingleEmail);
+        toLongLinearLayout = findViewById(R.id.toLongLinearLayout);
         ccLongLinearLayout = findViewById(R.id.ccLongLinearLayout);
         getData();
         setData();
 
-        recyclerView=findViewById(R.id.email_attachment_recycler);
-        attachmentAdapter= new EmailAttachmentAdapter(attachments,this);
+        recyclerView = findViewById(R.id.email_attachment_recycler);
+        attachmentAdapter = new EmailAttachmentAdapter(attachments, this);
         recyclerView.setAdapter(attachmentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -90,19 +90,19 @@ public class EmailActivity extends AppCompatActivity {
         messageService = retrofit.create(MessageService.class);
 
 
-        reply=findViewById(R.id.replyButton);
-        replyAll=findViewById(R.id.replyAllButton);
-        forward=findViewById(R.id.forwardButton);
+        reply = findViewById(R.id.replyButton);
+        replyAll = findViewById(R.id.replyAllButton);
+        forward = findViewById(R.id.forwardButton);
 
 
         reply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(EmailActivity.this,SendEmailActivity.class);
+                Intent intent = new Intent(EmailActivity.this, SendEmailActivity.class);
 
                 mes.setTo(null);
                 mes.setCc(null);
-                intent.putExtra("message",mes);
+                intent.putExtra("message", mes);
                 startActivity(intent);
 
             }
@@ -110,8 +110,8 @@ public class EmailActivity extends AppCompatActivity {
         replyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(EmailActivity.this,SendEmailActivity.class);
-                intent.putExtra("message",mes);
+                Intent intent = new Intent(EmailActivity.this, SendEmailActivity.class);
+                intent.putExtra("message", mes);
 
                 startActivity(intent);
             }
@@ -120,11 +120,11 @@ public class EmailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent= new Intent(EmailActivity.this,SendEmailActivity.class);
+                Intent intent = new Intent(EmailActivity.this, SendEmailActivity.class);
                 mes.setFrom("");
                 mes.setTo(null);
                 mes.setCc(null);
-                intent.putExtra("message",mes);
+                intent.putExtra("message", mes);
                 startActivity(intent);
 
             }
@@ -134,10 +134,10 @@ public class EmailActivity extends AppCompatActivity {
         toText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(detailToTexts.getVisibility()==View.VISIBLE){
+                if (detailToTexts.getVisibility() == View.VISIBLE) {
                     detailToTexts.setVisibility(View.GONE);
                     arrowIcon.setImageResource(R.drawable.ic_arrow_downward_black_24dp);
-                }else{
+                } else {
                     detailToTexts.setVisibility(View.VISIBLE);
                     arrowIcon.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
                 }
@@ -147,10 +147,10 @@ public class EmailActivity extends AppCompatActivity {
         arrowIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(detailToTexts.getVisibility()==View.VISIBLE){
+                if (detailToTexts.getVisibility() == View.VISIBLE) {
                     detailToTexts.setVisibility(View.GONE);
                     arrowIcon.setImageResource(R.drawable.arrowdown);
-                }else{
+                } else {
                     detailToTexts.setVisibility(View.VISIBLE);
                     arrowIcon.setImageResource(R.drawable.arrowup);
                 }
@@ -164,55 +164,57 @@ public class EmailActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-    private void getData(){
-        if(getIntent().hasExtra("message")){
-            Message m = (Message)getIntent().getSerializableExtra("message");
-            mes=m;
-            subjectString=m.getSubject();
-            tags = m.getTags();
-            fromString=m.getFrom();
-            toLongString=m.getTo();
-            ccLongString=m.getCc();
-            dateString=m.getDate_time();
-            dateString=dateString.substring(0,10)+" "+dateString.substring(11,16);
-            contentString=m.getContent();
-            try{
-                To=m.getTo().get(0);
 
-            }catch (Exception e){
+    private void getData() {
+        if (getIntent().hasExtra("message")) {
+            Message m = (Message) getIntent().getSerializableExtra("message");
+            mes = m;
+            subjectString = m.getSubject();
+            tags = m.getTags();
+            fromString = m.getFrom();
+            toLongString = m.getTo();
+            ccLongString = m.getCc();
+            dateString = m.getDate_time();
+            dateString = dateString.substring(0, 10) + " " + dateString.substring(11, 16);
+            contentString = m.getContent();
+            try {
+                To = m.getTo().get(0);
+
+            } catch (Exception e) {
 
             }
-            attachments=m.getAttachments();
+            attachments = m.getAttachments();
 
-        }else{
-            Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
         }
     }
-    private void setData(){
+
+    private void setData() {
         dateText.setText(dateString);
         subjectText.setText(subjectString);
         fromText.setText(fromString);
         contentText.setText(contentString);
-        if (toLongString.size()>0){
+        if (toLongString.size() > 0) {
             toText.setText(toLongString.get(0));
 
-            for (String s:toLongString) {
+            for (String s : toLongString) {
                 TextView t = new TextView(this);
                 t.setText(s);
                 toLongLinearLayout.addView(t);
             }
         }
-        if (ccLongString.size()>0){
+        if (ccLongString.size() > 0) {
 
-            for (String s:ccLongString) {
+            for (String s : ccLongString) {
                 TextView t = new TextView(this);
                 t.setText(s);
                 ccLongLinearLayout.addView(t);
             }
         }
 
-        if(tags.size()>0){// ovde verovatno treba tags.size()>0 al me mrzi da proverim
-            for (Tag tag:tags) {
+        if (tags.size() > 0) {// ovde verovatno treba tags.size()>0 al me mrzi da proverim
+            for (Tag tag : tags) {
                 Chip chip = new Chip(chipGroup.getContext());
                 chip.setText(tag.getTagName());
                 int color = ((int) (Math.random() * 16777215)) | (0xFF << 24);
@@ -223,7 +225,7 @@ public class EmailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // pozovi na back za remove
-                        Call<Boolean> call=messageService.removeTagToMessage(Repository.loggedUser.getId(),tag.getId(),mes,Repository.jwt);
+                        Call<Boolean> call = messageService.removeTagToMessage(Repository.loggedUser.getId(), tag.getId(), mes, Repository.jwt);
                         call.enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -244,15 +246,14 @@ public class EmailActivity extends AppCompatActivity {
             }
         }
 
-        }
-
+    }
 
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete:
-                Call<Boolean> call=messageService.deleteMessage(Repository.loggedUser.getId(),mes, Repository.jwt);
+                Call<Boolean> call = messageService.deleteMessage(Repository.loggedUser.getId(), mes, Repository.jwt);
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -260,6 +261,7 @@ public class EmailActivity extends AppCompatActivity {
                         Intent intent = new Intent(EmailActivity.this, EmailsActivity.class);
                         startActivity(intent);
                     }
+
                     @Override
                     public void onFailure(Call<Boolean> call, Throwable t) {
                     }
@@ -267,9 +269,9 @@ public class EmailActivity extends AppCompatActivity {
 
 
         }
-        for (Tag t:Repository.loggedUser.getTags()
+        for (Tag t : Repository.loggedUser.getTags()
         ) {
-            if(t.getId()==item.getItemId()){
+            if (t.getId() == item.getItemId()) {
                 Toast.makeText(this, t.getTagName(), Toast.LENGTH_SHORT).show();
 
                 Chip chip = new Chip(chipGroup.getContext());
@@ -283,7 +285,7 @@ public class EmailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // pozovi na back za remove
-                        Call<Boolean> call=messageService.removeTagToMessage(Repository.loggedUser.getId(),t.getId(),mes,Repository.jwt);
+                        Call<Boolean> call = messageService.removeTagToMessage(Repository.loggedUser.getId(), t.getId(), mes, Repository.jwt);
                         call.enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -302,7 +304,7 @@ public class EmailActivity extends AppCompatActivity {
                 //add tag to list of tags
                 //pozovi na back za add
 
-                Call<Boolean> call=messageService.addTagToMessage(Repository.loggedUser.getId(),t.getId(),mes,Repository.jwt);
+                Call<Boolean> call = messageService.addTagToMessage(Repository.loggedUser.getId(), t.getId(), mes, Repository.jwt);
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -328,7 +330,7 @@ public class EmailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.email_menu_toolbar, menu);
-        for (Tag t: Repository.loggedUser.getTags()  ) {
+        for (Tag t : Repository.loggedUser.getTags()) {
             MenuItem menuItem = menu.findItem(R.id.tagForMessageId).getSubMenu().add(Menu.NONE, t.getId(), Menu.NONE, t.getTagName());
         }
         return true;
